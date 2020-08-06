@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="budget_web_settings_dashboard_action" model="ir.actions.client">
+		<field name="name">Dashboard</field>
+		<field name="tag">budget_settings_dashboard.main</field>
+	</record>
+	<menuitem id="budget_dashboard_menu" name="Dashboard" parent="menu_root_budget" action="budget_web_settings_dashboard_action"
+		sequence="0"/>
+</odoo>

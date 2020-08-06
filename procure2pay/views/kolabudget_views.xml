@@ -1,0 +1,121 @@
+<odoo>
+	<data>
+
+		<menuitem
+			name="Budgets"
+			id="kola_budgets_main_menu"
+			parent="procure2pay_root_menu"
+			sequence="1"/>
+
+		<menuitem id="procure_budgets_menu"
+			name="Budgets"
+			parent="kola_budgets_main_menu"
+			action="budget_management.action_budget_management"
+			sequence="1"/>
+
+
+		<record id="view_budget_kanban_view_search_panel" model="ir.ui.view">
+			<field name="name">budget.budget</field>
+			<field name="model">budget.management</field>
+			<field name="inherit_id" ref="budget_management.budget_kanban_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//templates">
+					<searchpanel>
+						<field name="company_id" groups="base.group_multi_company" icon="fa-building"/>
+						<field name="state"/>
+						<field name="department_id"/>
+					</searchpanel>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="budget_tree_with_onboarding" model="ir.ui.view">
+			<field name="name">budget.management.tree.with.onboarding</field>
+			<field name="model">budget.management</field>
+			<field name="inherit_id" ref="budget_management.budget_management_list"/>
+			<field name="mode">primary</field>
+			<field name="arch" type="xml">
+				<xpath expr="//tree" position="attributes">
+					<attribute name="banner_route">'/procure2pay/p2p_onboarding/budgets</attribute>
+				</xpath>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_order_calendar">
+			<field name="name">Budget Calendar</field>
+			<field name="model">budget.management</field>
+			<field name="priority" eval="2"/>
+			<field name="arch" type="xml">
+				<calendar string="Calendar View" date_start="create_date" color="department_id">
+					<field name="department_id"/>
+					<field name="total_budget_cost" widget="monetary"/>
+					<field name="budget_config_id" invisible="0"/>
+				</calendar>
+			</field>
+		</record>
+
+
+		<menuitem
+			id="p2p_budget_forecasts_menu"
+			name="Budget Forecasts"
+			parent="kola_budgets_main_menu"
+			groups="budget_management.bm_finance"
+			sequence="2"/>
+
+		<menuitem
+			id="p2p_savings_forecasts_menu"
+			name="Savings Forecasts"
+			parent="p2p_budget_forecasts_menu"
+			action="budget_management.savings_forecasts_action"
+			sequence="1"/>
+
+		<menuitem
+			id="p2p_loans_forecasts_menu"
+			name="Loan Forecasts"
+			parent="p2p_budget_forecasts_menu"
+			action="budget_management.loan_forecasts_action"
+			sequence="2"/>
+
+		<menuitem id="p2p_staffing_projections_menu"
+			name="Staffing Projections"
+			parent="p2p_budget_forecasts_menu"
+			action="budget_management.staffing_projections_action"
+			sequence="3"/>
+
+
+		<record id="p2p_action_budget_guidelines" model="ir.actions.act_window">
+			<field name="name">Budget Guidelines</field>
+			<field name="res_model">budget.guidline</field>
+			<field name="view_mode">tree,form,graph,activity,pivot</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create budget guidelines for units to draft their budgets
+				</p>
+				<p>
+					The budget guidelines clearly indicate the focus of draft budgets for each unit
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="guidelines_menu"
+			parent="budget_config_menu"
+			action="p2p_action_budget_guidelines"
+			sequence="1"
+			groups="budget_management.bm_ict_admin"/>
+
+		<act_window
+			id="p2p_budget_type_action"
+			name="Budget Configurations"
+			res_model="budget.config"
+			view_mode="tree,form"/>
+
+		<menuitem
+			id="p2p_budget_type_menu"
+			name="Budget Types"
+			parent="budget_config_menu"
+			action="p2p_budget_type_action"
+			groups="budget_management.bm_ict_admin"/>
+
+	</data>
+</odoo>

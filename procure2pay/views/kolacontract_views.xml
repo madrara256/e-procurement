@@ -1,0 +1,57 @@
+<odoo>
+	<data>
+		<record id="contract_action_one_view" model="ir.actions.act_window">
+			<field name="name">Contracts</field>
+			<field name="res_model">kola.contract</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="inherit_id" ref="kolacontract.kolacontract_form"/>
+			<field name="search_view_id" ref="kolacontract.kolacontract_review_filter"/>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>create</i> to create a new contract
+				</p>
+				<p>
+					This windows provides for creation and tracking of contracts for service providers/suppliers
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			name="Contracts"
+			id="kola_contracts_main_menu" parent="procure2pay_root_menu"
+			sequence="5"/>
+
+		<menuitem id="kolacontract_submenu" name="Contracts"
+			parent="kola_contracts_main_menu"
+			action="contract_action_one_view"
+			sequence="1"/>
+
+
+		<menuitem
+			name="Vendor Management"
+			id="kola_contracts_vendor_menu" parent="procure2pay_root_menu"
+			sequence="6"/>
+
+		<menuitem
+			id="qualified_vendor_menu"
+			name="Qualified Vendors" parent="kola_contracts_vendor_menu"
+			action="kolacontract.res_partner_action_window"
+			sequence="1"/>
+
+		<menuitem
+			id="pre_qualify_vendor_menu"
+			name="Pre-Qualify Vendors" parent="kola_contracts_vendor_menu"
+			action="kolacontract.res_partner_action_window"
+			sequence="2"/>
+
+		<menuitem
+			id="kolacontract_terminate" name="Terminate Contract"
+			parent="kola_contracts_main_menu"
+			action="kolacontract.action_contract_termination"
+			sequence="2"/>
+
+
+	</data>
+</odoo>

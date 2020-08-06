@@ -1,0 +1,34 @@
+<odoo>
+	<data>
+		 <!-- Top menu item -->
+
+	<menuitem
+		name="Budgets"
+		id="menu_root_budget"
+		web_icon="budget_management,static/description/icon.png"
+		sequence="8"/>
+
+	<!-- menu categories -->
+
+	<menuitem
+		id="budget_forecasts_menu"
+		name="Budget Forecasts"
+		parent="menu_root_budget"
+		sequence="3"/>
+
+	<menuitem
+		name="Analysis/Reporting"
+		id="budgets_analytics_menu"
+		parent="menu_root_budget"
+		sequence="4"/>
+
+	<menuitem
+		name="Configurations"
+		id="budgets_configs_menu"
+		parent="menu_root_budget"
+		groups="bm_ict_admin,bm_finance"
+		sequence="5"/>
+
+	</data>
+
+</odoo>

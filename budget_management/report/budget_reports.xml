@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<report
+			string="Budget Reports"
+			id="action_report_annual_budgets"
+			model="budget.management"
+			report_type="qweb-pdf"
+			name="budget_management.report_annualbudget"
+			file="budget_management.report_annualbudget"
+			print_report_name="
+			(object.state in ('draft', 'validate') and 'Budget - %s' %(object.name))"/>
+	</data>
+</odoo>

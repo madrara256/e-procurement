@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="mt_terminate_draft" model="mail.message.subtype">
+			<field name="name">Draft Contract for Termination</field>
+			<field name="res_model">kolacontract.terminate</field>
+			<field name="description">Contract has been drafted for termination</field>
+	</record>
+
+	<record id="mt_terminate_confirm" model="mail.message.subtype">
+			<field name="name">Contract Termination Confirmed</field>
+			<field name="res_model">kolacontract.terminate</field>
+			<field name="description">Contract has been confirmed for termination</field>
+	</record>
+
+	<record id="mt_terminate_validate" model="mail.message.subtype">
+			<field name="name">Contract Termination Validated</field>
+			<field name="res_model">kolacontract.terminate</field>
+			<field name="description"></field>
+	</record>
+
+	<record id="mt_terminate_reject" model="mail.message.subtype">
+			<field name="name">Contract Termination Rejection</field>
+			<field name="res_model">kolacontract.terminate</field>
+			<field name="description">Contract termination has been rejected</field>
+	</record>
+
+</odoo>

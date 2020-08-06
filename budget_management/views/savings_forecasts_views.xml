@@ -1,0 +1,176 @@
+<odoo>
+	<data>
+		<record model='ir.ui.view' id='savings_forecasts_tree'>
+			<field name='name'>Projections</field>
+			<field name='model'>savings.forecasts</field>
+			<field name='arch' type='xml'>
+				<tree string="description">
+					<field name="team_id"/>
+					<field name="months"/>
+					<field name="forecast_volume"/>
+					<field name="forecast_cases"/>
+					<field name="actual_volume"/>
+					<field name="actual_cases"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="savings_forecasts_form">
+			<field name="name">Savings Projections</field>
+			<field name="model">savings.forecasts</field>
+			<field name="arch" type="xml">
+				<form string="description">
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+								<field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+							</button>
+						</div>
+						<group>
+							<group>
+								<field name="team_id"/>
+								<field name="budget_id"/>
+								<field name="forecast_volume"/>
+								<field name="forecast_cases"/>
+							</group>
+							<group>
+								<field name="months"/>
+								<field name="actual_volume"/>
+								<field name="actual_cases"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="savings_forecasts_filter" model="ir.ui.view">
+			<field name="name">savings forecasts filter</field>
+			<field name="model">savings.forecasts</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<filter name="months" string="By Months" domain="[]" context="{'group_by' : 'months'}"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="savings_forecasts_kanban" model="ir.ui.view">
+			<field name="name">Savings Forecasts</field>
+			<field name="model">savings.forecasts</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="months" class="o_kanban_medium_column">
+					<field name="team_id"/>
+					<field name="months"/>
+					<field name="forecast_volume"/>
+					<field name="forecast_cases"/>
+					<field name="actual_volume"/>
+					<field name="actual_cases"/>
+					<field name="active"/>
+					<field name="color"/>
+					<templates>
+						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-pencil-square-o" />Edit</a></t>
+										<t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash-o" />Delete</a></t>
+									</div>
+								</div>
+								<div class="o_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal;">
+													<div class="o_primary"><strong><field name="team_id"/></strong></div>
+												</span>
+											</div>
+											<div class="o_kanban_record_body">
+												<span>Volume forecast: <field name="forecast_volume"/></span><br/>
+												<span>Case forecast: <field name="forecast_cases"/></span><br/>
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span></span>
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<span></span>
+													</div>
+												</div>
+												<div>
+
+												</div>
+											</div>
+
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+
+												</div>
+												<div class="oe_kanban_bottom_right">
+													<img t-att-src="kanban_image('budget.management', 'image_small', record.team_id.raw_value)" t-att-title="record.team_id.value" t-att-alt="record.team_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
+					</templates>
+					<searchpanel>
+						<field name="months"/>
+					</searchpanel>
+				</kanban>
+			</field>
+		</record>
+
+		<record id="savings_forecasts_action" model="ir.actions.act_window">
+			<field name="name">Savings forecasts</field>
+			<field name="res_model">savings.forecasts</field>
+			<field name="view_mode">kanban,form,pivot,graph,activity</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Annual Savings forecasts/Projections
+				</p>
+				<p>
+					This window shows the savings projections/savings forecasts for the current year
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="savings_forecasts_menu"
+			name="Savings Forecasts"
+			parent="budget_forecasts_menu"
+			action="savings_forecasts_action"
+			sequence="1"/>
+
+		<record id="savings_forecasts_analysis_action" model="ir.actions.act_window">
+			<field name="name">Savings forecast Analysis</field>
+			<field name="res_model">savings.forecasts</field>
+			<field name="view_mode">graph,pivot</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Annual savings forecasts/Projections analysis
+				</p>
+				<p>
+					This window shows the savings projections/forecasts analysis for the current year
+				</p>
+			</field>
+		</record>
+
+		<!-- <menuitem
+			id="savings_forecasts_analysis_menu"
+			name="Savings Analysis"
+			parent="budget_forecasts_menu"
+			action="savings_forecasts_analysis_action"
+			sequence="2"/>
+ -->
+	</data>
+</odoo>

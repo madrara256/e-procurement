@@ -1,0 +1,103 @@
+<odoo>
+	<data>
+		<menuitem
+			name="Purchases"
+			id="kola_purchase_main_menu"
+			parent="procure2pay_root_menu"
+			sequence="4"/>
+
+		<record id="view_puchase_order_view_search_panel" model="ir.ui.view">
+			<field name="name">purchase.order.searchpanel</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.view_purchase_order_kanban"/>
+			<field name="arch" type="xml">
+				<xpath expr="//templates">
+					<searchpanel>
+						<field name="company_id" groups="base.group_multi_company" icon="fa-building"/>
+						<field name="state"/>
+						<!-- <field name="department_id"/> -->
+					</searchpanel>
+				</xpath>
+			</field>
+		</record>
+
+		<!-- <record id="p2ppurchase_rfq" model="ir.actions.act_window">
+			<field name="name">Requests for Quotation</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">purchase.order</field>
+			<field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>
+			<field name="domain">[('state', '=', 'draft')]</field>
+			<field name="context">{}</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create a request for quotation
+				</p><p>
+					The quotation contains the history of the discussion
+					you had with your vendor.
+				</p>
+			</field>
+		</record> -->
+
+		<record id="p2ppurchase_order" model="ir.actions.act_window">
+			<field name="name">RFQs &amp; Purchase Orders</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">purchase.order</field>
+			<field name="view_mode">kanban,tree,form,pivot,graph,calendar,activity</field>
+			<field name="domain">[]</field>
+			<field name="context">{}</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create a request for quotation
+				</p><p>
+					The quotation contains the history of the discussion
+					you had with your vendor.
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="kolapurchase_menu"
+			name="Purchases"
+			parent="kola_purchase_main_menu"
+			sequence="2"/>
+
+		<menuitem
+			id="p2p_rfq_menu"
+			parent="kola_purchase_main_menu"
+			action="p2ppurchase_order"
+			sequence="3"/>
+
+
+		<!-- <menuitem
+			id="p2p_purchase_order_menu"
+			parent="kola_purchase_main_menu"
+			action="p2ppurchase_order"
+			sequence="4"/> -->
+
+		<!-- <menuitem
+			id="menu_procurement_management_supplier_name"
+			name="Vendors"
+			parent="kolapurchase_menu"
+			action="base.action_partner_supplier_form"
+			sequence="5"/> -->
+
+		<!-- <menuitem
+			name="Products"
+			id="p2p_product_menu"
+			action="purchase.product_normal_action_puchased"
+			parent="kolapurchase_menu"
+			sequence="6"/> -->
+
+		<!-- <menuitem
+			id="purchases_control_menu"
+			name="Controls"
+			parent="kola_purchase_main_menu"/> -->
+
+		<!-- <menuitem
+			id="purchase_vendor_bills_menu"
+			name="Vendor Bill"
+			parent="purchases_control_menu"
+			action="purchase.action_invoice_pending"/> -->
+
+	</data>
+</odoo>

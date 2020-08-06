@@ -1,0 +1,49 @@
+<odoo>
+
+	<!-- Procure2pay Groups -->
+
+	<record id="kola_procure2pay_category" model="ir.module.category">
+		<field name="name">Procure2Pay</field>
+		<field name="description">Security Groups for Procure2Pay</field>
+	</record>
+
+	<record id="kola_procure2pay_ict" model="res.groups">
+		<field name="name">ICT(System Administrator)</field>
+		<field name="category_id" ref="kola_procure2pay_category"/>
+		<field name="comment">Members in this group will be able to manage the System</field>
+	</record>
+
+	<record id="kola_procure2pay_user" model="res.groups">
+		<field name="name">User</field>
+		<field name="category_id" ref="kola_procure2pay_category"/>
+		<field name="comment">Members in this group wil be able to view,create,read purchase requisition</field>
+	</record>
+
+	<record id="kola_procure2pay_admin" model="res.groups">
+		<field name="name">Administration</field>
+		<field name="category_id" ref="kola_procure2pay_category"/>
+		<field name="comment">Members in this group will be able to reject,create,read purchase requisition</field>
+	</record>
+
+	<record id="kola_procure2pay_procurement" model="res.groups">
+		<field name="name">Procurement</field>
+		<field name="category_id" ref="kola_procure2pay_category"/>
+		<field name="comment">Members in this group will be able to ...</field>
+	</record>
+
+	<record id="kola_procure2pay_finance" model="res.groups">
+		<field name="name">Finance</field>
+		<field name="category_id" ref="kola_procure2pay_category"/>
+		<field name="comment">Members in this group will be able to ...</field>
+	</record>
+
+	<record id="kola_procure2pay_ed" model="res.groups">
+		<field name="name">ED</field>
+		<field name="category_id" ref="kola_procure2pay_category"/>
+		<field name="comment">Members in this group will be able to ...</field>
+	</record>
+
+	<!-- Procure2pay Record rules -->
+
+
+</odoo>

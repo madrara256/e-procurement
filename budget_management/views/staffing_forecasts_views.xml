@@ -1,0 +1,123 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="staffing_tree_id">
+			<field name="name">Staffing Projections</field>
+			<field name="model">staff.forecasts</field>
+			<field name="arch" type="xml">
+				<tree string="description">
+					<field name="department_id"/>
+					<field name="job_id"/>
+					<field name="current_number"/>
+					<field name="proposed_number"/>
+					<field name="difference" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="staffing_form_id">
+			<field name="name">Staffing Projections</field>
+			<field name="model">staff.forecasts</field>
+			<field name="arch" type="xml">
+				<form string="description">
+					<sheet>
+						<group>
+							<group>
+								<field name="department_id"/>
+								<field name="months"/>
+								<field name="job_id"/>
+							</group>
+							<group>
+								<field name="current_number"/>
+								<field name="proposed_number"/>
+								<field name="difference" invisible="1"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="staffing_search_filter" model="ir.ui.view">
+			<field name="name">Staffing Projections</field>
+			<field name="model">staff.forecasts</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<filter name="department_id" string="By Department" domain="[]" context="{'group_by' : 'department_id'}"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="staffing_projections_action" model="ir.actions.act_window">
+			<field name="name">Staffing Forecast</field>
+			<field name="res_model">staff.forecasts</field>
+			<field name="view_mode">tree,form,pivot,graph,activity</field>
+			<field name="context">{'search_default_department_id':1}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Annual budget staffing forecasts/projections
+				</p>
+				<p>
+					This window shows staffing forecasts/projections for the current annual budget
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="staffing_forecasts_menu"
+			name="Staffing Projections"
+			parent="budget_forecasts_menu"
+			action="staffing_projections_action"
+			sequence="3"/>
+
+		<record id="staffing_forecasts_analysis_pivot" model="ir.ui.view">
+			<field name="name">Staffing Analysis</field>
+			<field name="model">staff.forecasts</field>
+			<field name="arch" type="xml">
+				<pivot string="Staffing Analysis">
+					<field name="months" type="measure"/>
+					<field name="department_id" type="measure"/>
+					<field name="job_id" type="measure"/>
+					<field name="current_number" type="measure"/>
+					<field name="proposed_number" type="measure"/>
+					<field name="difference" type="measure"/>
+				</pivot>
+			</field>
+		</record>
+
+		<record id="staffing_forecasts_analysis_graph" model="ir.ui.view">
+			<field name="name">Staffing Analysis</field>
+			<field name="model">staff.forecasts</field>
+			<field name="arch" type="xml">
+				<graph string="Staffing Analysis">
+					<field name="months" type="measure"/>
+					<field name="department_id" type="col"/>
+					<field name="job_id" type="row"/>
+					<field name="current_number" type="measure"/>
+					<field name="proposed_number" type="measure"/>
+					<field name="difference" type="measure"/>
+				</graph>
+			</field>
+		</record>
+
+		<record id="staffing_projections_analysis_action" model="ir.actions.act_window">
+			<field name="name">Staffing Forecast Analysis</field>
+			<field name="res_model">staff.forecasts</field>
+			<field name="view_mode">graph,pivot,activity</field>
+			<field name="context">{'search_default_department_id':1}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Annual budget staffing forecasts/projections Analysis
+				</p>
+				<p>
+					This window shows staffing forecasts/projections Analysis for the current annual budget
+				</p>
+			</field>
+		</record>
+	</data>
+</odoo>

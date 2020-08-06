@@ -1,0 +1,12 @@
+<odoo>
+	<data>
+		<menuitem name="Procurement System" id="procure2pay_root_menu"
+		web_icon="procure2pay,static/description/icon.png"/>
+
+		<menuitem
+			id="p2p_reporting_menu"
+			name="Reporting"
+			parent="procure2pay_root_menu"
+			sequence="9"/>
+	</data>
+</odoo>

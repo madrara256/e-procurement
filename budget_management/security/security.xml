@@ -1,0 +1,121 @@
+<odoo>
+	<record id="bm_group_category" model="ir.module.category">
+		<field name="name">Budget Management</field>
+		<field name="description">Budget Management Groups</field>
+	</record>
+
+	<record id="bm_ict_admin" model="res.groups">
+		<field name="name">ICT Administration</field>
+		<field name="category_id" ref="bm_group_category"/>
+		<field name="comment">These will be able to read,write,create,unlink records</field>
+	</record>
+
+	<record id="bm_finance" model="res.groups">
+		<field name="name">Finance Department</field>
+		<field name="category_id" ref="bm_group_category"/>
+		<field name="comment">These will be able to read,write,no create,no unlink</field>
+	</record>
+
+
+	<record id="bm_approval_committee" model="res.groups">
+		<field name="name">Top Management</field>
+		<field name="category_id" ref="bm_group_category"/>
+		<field name="comment">These will be able to view all the budgets of all departments</field>
+	</record>
+
+	<record id="bm_unit_users" model="res.groups">
+		<field name="name">Users</field>
+		<field name="category_id" ref="bm_group_category"/>
+		<field name="comment">These will view and edit the budget only when in draft state</field>
+	</record>
+
+	<record id="bm_manager" model="res.groups">
+		<field name="name">Managers</field>
+		<field name="category_id" ref="bm_group_category"/>
+		<field name="comment">demo comment</field>
+	</record>
+
+	<record id="bm_reg_manager" model="res.groups">
+		<field name="name">Regional Managers</field>
+		<field name="category_id" ref="bm_group_category"/>
+		<field name="comment">demo comment</field>
+	</record>
+
+
+	<!-- Record rules -->
+	<!-- <record id="users_can_modify_budget" model="ir.rule">
+		<field name="name">User Drafts Budget</field>
+		<field name="model_id" ref="model_budget_management"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_unit_users'))]"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="0"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">
+			[
+				('department_id.member_ids.user_id', 'in', [user.id]),
+			]
+		</field>
+	</record> -->
+
+	<!-- <record id="managers_can_alter_budgets" model="ir.rule">
+		<field name="name">Unit Manager Approval</field>
+		<field name="model_id" ref="model_budget_management"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_manager'))]"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">
+			[
+				('state', 'in', ['draft', 'propose', 'validate', 'reject'])
+			]
+		</field>
+	</record> -->
+
+	<!-- <record id="reg_managers_can_alter_budgets" model="ir.rule">
+		<field name="name">Regional Manager Approval</field>
+		<field name="model_id" ref="model_budget_management"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_reg_manager'))]"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">
+			[
+				('state', 'in', ['draft', 'propose', 'validate', 'reject'])
+			]
+		</field>
+	</record> -->
+
+	<!-- <record id="finance_can_alter_budgets" model="ir.rule">
+		<field name="name">Finance Review/Consolidation</field>
+		<field name="model_id" ref="model_budget_management"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_finance'))]"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">
+			[
+				('state', 'in', ['draft', 'propose', 'review1', 'review', 'validate', 'reject'])
+			]
+		</field>
+	</record> -->
+
+	<!-- <record id="board_can_alter_budgets" model="ir.rule">
+		<field name="name">Management Review/Approval</field>
+		<field name="model_id" ref="model_budget_management"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_approval_committee'))]"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="0"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">
+			[
+				('state', 'in', ['consolidate', 'review', 'validate', 'reject'])
+			]
+		</field>
+	</record> -->
+
+</odoo>

@@ -1,0 +1,36 @@
+<odoo>
+	<data>
+
+		<record id="action_p2p_config_settings" model="ir.actions.act_window">
+			<field name="name">Settings</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.config.settings</field>
+			<field name="view_mode">form</field>
+			<field name="target">inline</field>
+			<field name="context">{'module' : 'procure2pay'}</field>
+		</record>
+
+		<menuitem id="menu_p2p_config_settings" name="Configuration" parent="procure2pay_root_menu"
+			sequence="100"/>
+
+		<menuitem id="budget_config_menu" name="Budgets"
+			parent="menu_p2p_config_settings"
+			sequence="1"/>
+
+		<menuitem id="inventory_config_menu" name="Warehouse Management"
+			parent="menu_p2p_config_settings"
+			sequence="2"/>
+
+		<menuitem id="inventory_product_cat_menu" name="Products"
+			parent="menu_p2p_config_settings"
+			sequence="3"/>
+
+		<menuitem id="inventory_uom_menu" name="Units Of Measure"
+			parent="menu_p2p_config_settings"
+			sequence="4"/>
+
+		<menuitem
+			id="menu_p2p_general_settings" name="Settings" parent="menu_p2p_config_settings"
+			sequence="0" action="action_p2p_config_settings" groups="base.group_system"/>
+	</data>
+</odoo>

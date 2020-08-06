@@ -1,0 +1,78 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="man_power_projections_tree_id">
+			<field name="name">Man Power Projections</field>
+			<field name="model">manpower.forecasts</field>
+			<field name="arch" type="xml">
+				<tree string="description">
+					<field name="team_id"/>
+					<field name="job_id"/>
+					<field name="current_number"/>
+					<field name="proposed_number"/>
+					<field name="difference" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="man_power_projection_form_id">
+			<field name="name">Man Power Projections</field>
+			<field name="model">manpower.forecasts</field>
+			<field name="arch" type="xml">
+				<form string="description">
+					<sheet>
+						<group>
+							<group>
+								<field name="team_id"/>
+								<field name="months"/>
+								<field name="job_id"/>
+							</group>
+							<group>
+								<field name="proposed_number"/>
+								<field name="current_number"/>
+								<field name="difference"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="man_power_projection_filter" model="ir.ui.view">
+			<field name="name">Man Power Projection Search</field>
+			<field name="model">manpower.forecasts</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<filter name="team_id" string="By Branch" domain="[]" context="{'group_by' : 'team_id'}"/>
+					<separator/>
+					<filter name="job_id" string="Position" domain="[]" context="{'group_by': 'job_id'}"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="man_power_projections_action" model="ir.actions.act_window">
+			<field name="name">Man power Projections</field>
+			<field name="res_model">manpower.forecasts</field>
+			<field name="view_mode">tree,form,pivot,graph,activity</field>
+			<field name="context">{
+				'search_default_team_id':1,
+				'search_default_job_id':1
+				}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Annual man power projections/forecasts per branch
+				</p>
+				<p>
+					This window shows annual projections/forecasts for man power per branch
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="man_power_projections_menu"
+			name="Man Power Projections"
+			parent="budget_forecasts_menu"
+			action="man_power_projections_action"
+			sequence="4"/>
+	</data>
+</odoo>

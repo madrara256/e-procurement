@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<menuitem
+			name="Contracts" id="kolacontract_root_menu"
+			web_icon="kolacontract,static/img/icon.png"
+			sequence="7"/>
+
+		<menuitem
+			name="Vendor Management" id="kolacontract_configs_menu"
+			parent="kolacontract_root_menu"
+			groups="kolacontract.kola_contract_ict_admin"
+			sequence="8"/>
+
+		<!-- <menuitem
+			name="Configurations" id="kolacontract_configs_menu"
+			parent="kolacontract_root_menu"
+			groups="kolacontract.kola_contract_ict_admin"
+			sequence="10"/> -->
+
+
+		<record id="contract_sequence_by_code" model="ir.sequence">
+			<field name="name">Contract Sequence Code</field>
+			<field name="code">contract.sequence</field>
+			<field name="active">TRUE</field>
+			<field name="prefix">CO</field>
+			<field name="padding">6</field>
+			<field name="number_next">1</field>
+			<field name="number_increment">1</field>
+		</record>
+
+		<record id="action_kolacontract_files_all_contract" model="ir.actions.act_window">
+			<field name="name">Documents</field>
+			<field name="view_type">form</field>
+			<field name="res_model">kola.contract</field>
+			<field name="view_mode">tree,kanban,graph,pivot,form</field>
+			<field name="domain">
+				[
+					('id', '=', active_id),
+				]
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="kolacontract_form">
+			<field name="name">Contract</field>
+			<field name="model">kola.contract</field>
+			<field name="arch" type="xml">
+				<form>
+					<header>
+						<button string="Forward for Review" name="contract_review" type="object"
+							attrs="{'invisible':[('state', '!=', 'draft')]}" class="oe_highlight"/>
+
+						<button string="Appove Contract" name="contract_approval" type="object"
+							attrs="{'invisible': [('state', '!=', 'validate1')]}" class="oe_highlight"/>
+
+						<button string="Terminate Contract" name="contract_termination" type="object"
+							attrs="{'invisible': [('state', '!=', 'validate')]}" class="oe_highlight btn-danger"/>
+
+						<button string="Renew Contract" name="contract_renewal" type="object"
+							attrs="{'invisible': [('state', '!=', 'validate')]}"
+							class="oe_highlight"/>
+
+						<button string="Reject Contract" name="contract_rejection" type="object"
+							attrs="{'invisible': [('state', 'not in', ('draft', 'validate1'))]}" class="oe_highlight btn-danger"/>
+
+						<button name="reset_to_draft" states="state" string="Reset to Draft" type="object"
+							attrs="{'invisible': [('state', 'not in', ('reject', 'terminate'))]}" class="oe_highlight btn-warning"/>
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,validate1,validate2,validate" clickable="False"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button type="action" name="%(kolacontract.action_kolacontract_files_all_contract)d" class="statinfo"
+								icon="fa-file-text-o">
+								<field name="count_files" widget="statinfo"/>
+							</button>
+
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+								<field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+							</button>
+						</div>
+						<group>
+							<group>
+								<field name="product_id" options="{'no_create':True}" string="Product" invisible="1"/>
+								<field name="date_from" widget="date" attrs="{'invisible':[('state', 'not in',['validate','renew'])],'required':[('state', 'in', ['validate','renew'])]}"/>
+								<field name="date_to" widget="date" string="Expiry Date" attrs="{'invisible':[('state', 'not in',['validate','renew'])],'required':[('state', 'in', ['validate','renew'])]}"/>
+								<field name="currency_id" invisible="1"/>
+								<field name="contract_doc" widget="many2many_binary"/>
+							</group>
+							<group>
+								<field name="contractor_id" options="{'no_create':True}"/>
+								<field name="amount" widget="monetary" options="{'currency_field':'currency_id'}" invisible="1"/>
+								<field name="ratings" invisible="1"/>
+								<field name="duration" attrs="{'invisible': [('state', 'not in', ('validate','validate1'))], 'required': [('state', 'in', ('validate1'))]}"/>
+								<field name="number_of_days_due" attrs="{'invisible': [('state', 'not in', ('validate','validate1'))], 'required': [('state', 'in', ('validate1'))]}"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Contract line">
+								<field name="kolacontract_line_id" widget="one2many">
+									<tree string="Contract lines" editable="button">
+										<field name="currency_id" invisible="1"/>
+										<field name="product_id"/>
+										<field name="description"/>
+										<field name="product_category" invisible="0" options="{'o_create':True}"/>
+										<field name="total_qnty"/>
+										<field name="unit_cost" widget="monetary" options="{'currency_field':'currency_id'}"/>
+										<field name="total_amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+									</tree>
+									<form string="Contract line">
+										<group>
+											<group>
+												<field name="kolacontract_id" options="{'no_create':True}"/>
+												<field name="product_id" options="{'no_create':True}"/>
+												<field name="product_category" options="{'no_create':True}"/>
+											</group>
+											<group>
+												<field name="total_qnty"/>
+												<field name="unit_cost" widget="monetary" options="{'currency_field':'currency_id'}"/>
+												<field name="total_amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+											</group>
+										</group>
+									</form>
+								</field>
+								<group class="oe_subtotal_footer oe_right">
+									<div class="oe_subtotal_footer_separator oe_inline">
+										<label for="amount"/>
+									</div>
+									<field name="amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="kolacontract_tree">
+			<field name="name">Contracts</field>
+			<field name="model">kola.contract</field>
+			<field name="arch" type="xml">
+				<tree decoration-danger="past_deadline == True" decoration-info="past_deadline == False">
+					<field name="past_deadline" invisible="1"/>
+					<field name="state" invisible="1"/>
+					<field name="contractor_id"/>
+					<field name="product_id"/>
+					<field name="date_from" string="Start Date" widget="date" attrs="{'invisible':[('state', 'not in',['validate','renew'])]}"/>
+					<field name="date_to" string="Expiry Date" widget="date" attrs="{'invisible':[('state', 'not in', ['validate','renew'])]}"/>
+					<field name="amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+					<field name="number_of_days_due"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="kolacontract_kanban_view">
+			<field name="name">Contracts</field>
+			<field name="model">kola.contract</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" class="o_kanban_medium_column">
+					<field name="product_id"/>
+					<field name="date_from"/>
+					<field name="date_to"/>
+					<field name="duration"/>
+					<field name="user_id"/>
+					<field name="duration"/>
+					<field name="amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+					<field name="company_id"/>
+					<field name="number_of_days_due"/>
+					<field name="contract_doc"/>
+					<field name="contractor_id"/>
+					<field name="email_from"/>
+					<field name="email_cc"/>
+					<field name="partner_id"/>
+					<field name="approver_id"/>
+					<field name="color"/>
+					<field name="active"/>
+					<field name="alias_id"/>
+					<field name="state"/>
+					<progressbar field="state" colors='{"reject": "danger"}'/>
+					<templates>
+						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-pencil-square-o" />Edit</a></t>
+										<t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash-o" />Delete</a></t>
+										<t t-if="record.active.raw_value"><a role="menuitem" name="toggle_active" type="object" class="dropdown-item"><i class="fa fa-archive" /> Archive</a></t>
+										<t t-if="!record.active.raw_value"><a role="menuitem" name="toggle_active" type="object" class="dropdown-item"><i class="fa fa-archive" /> Unarchive</a></t>
+									</div>
+								</div>
+								<div class="oe_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="contractor_id"/></strong></div>
+														<!-- <div class="o_primary"><strong><field name="name"/></strong></div> -->
+													</a>
+												</span>
+											</div>
+											<div class="o_kanban_record_body">
+												<span style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<div class="o_primary"><field name="product_id"/>
+													</div>
+												</span>
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+
+														<t t-if="record.date_from.value and record.state.value !='validate'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Start Date <field name="date_from" widget="date"/><br/></span>
+														</t>
+
+														<t t-if="record.date_to.value and record.state.value !='validate'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">End date <field name="date_to" widget="date"/></span>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/><br/></span>
+														</t>
+
+														<t t-if="record.state.raw_value == 'renew'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/><br/></span>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
+														</t>
+
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+
+														<t t-if="record.state.raw_value == 'draft'">
+															<button class="btn btn-sm btn-block btn-primary" name="contract_review" type="object">Forward for Review</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'reject'">
+															<button class="btn btn-sm btn-block btn-primary" name="reset_to_draft" type="object">Reset to Draft</button>
+															<button class="btn btn-sm btn-block btn-warning" name="toggle_active" type="object">Archive</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'terminate'">
+															<button class="btn btn-sm btn-block btn-primary" name="reset_to_draft" type="object">Reset to Draft</button>
+															<button class="btn btn-sm btn-block btn-warning" name="toggle_active" type="object">Archive</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate1'">
+															<button class="btn btn-sm btn-block btn-primary" name="contract_negotiate" type="object">Proceed to Negotiate</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate'">
+															<button class="btn btn-sm btn-block btn-primary" name="contract_renewal" type="object">Renew Contract</button>
+															<button class="btn btn-sm btn-block btn-danger" name="contract_termination" type="object">Terminate Contract</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'renew'">
+															<button class="btn btn-sm btn-block btn-primary" name="contract_renewal" type="object">Renew Contract</button>
+															<button class="btn btn-sm btn-block btn-danger" name="contract_termination" type="object">Terminate Contract</button>
+														</t>
+													</div>
+												</div>
+											</div>
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+													<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="ratings" widget="priority"/></span>
+												</div>
+												<div class="oe_kanban_bottom_right">
+													<img t-att-src="kanban_image('kola.contract.', 'image_small', record.contractor_id.raw_value)" t-att-title="record.contractor_id.value" t-att-alt="record.contractor_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="oe_clear"></div>
+							</div>
+						</t>
+					</templates>
+					<searchpanel>
+						<field name="state"/>
+					</searchpanel>
+				</kanban>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="kolacontract_review_filter">
+			<field name="name">Contracts for Renewal</field>
+			<field name="model">kola.contract</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="state"/>
+					<field name="product_id"/>
+					<field name="contractor_id"/>
+					<field name="active"/>
+					<filter name="product_id" string="Services"/>
+					<field name="ratings"/>
+					<filter name="contractor_id" string="Suppliers"/>
+					<filter name="active" string="Active Contracts"/>
+					<filter name="state" string="Status"/>
+					<filter name="past_deadline" string="Contracts for Renewal" domain="[('past_deadline', '=',True)]"/>
+					<group expand="1">
+						<filter name="contractor_id" string="Suppliers" context="{'group_by':'contractor_id'}"/>
+						<filter name="product_id" string="Services" context="{'group_by':'product_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="kolacontract_action" model="ir.actions.act_window">
+			<field name="name">Contracts</field>
+			<field name="res_model">kola.contract</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to create a new contract draft
+				</p>
+				<p>
+					Manage your contracts with ease from Contract Request throughout the Approval/Rejection/termination stages
+					with ease
+				</p>
+			</field>
+		</record>
+
+		<record id="kolacontract_pivot_view" model="ir.ui.view">
+			<field name="name">Contracts Analysis</field>
+			<field name="model">kola.contract</field>
+			<field name="arch" type="xml">
+				<pivot string="Contracts Analysis">
+					<field name="past_deadline" type="measure" invisible="1"/>
+					<field name="ratings" type="measure" invisible="1"/>
+					<field name="approver_id" type="measure" invisible="1"/>
+					<field name="contract_file_name" type="measure" invisible="1"/>
+					<field name="number_of_days_due" type="measure"/>
+					<field name="contractor_id" type="col"/>
+					<field name="product_id" type="row"/>
+					<field name="amount" type="measure"/>
+				</pivot>
+			</field>
+		</record>
+
+		<record id="kolacontract_graph_view" model="ir.ui.view">
+			<field name="name">Contracts Analysis Graph</field>
+			<field name="model">kola.contract</field>
+			<field name="arch" type="xml">
+				<graph string="Contracts Analysis Graph">
+					<field name="number_of_days_due" type="measure"/>
+					<field name="contractor_id" type="col"/>
+					<field name="number_of_days_due" type="row"/>
+				</graph>
+			</field>
+		</record>
+
+		<record id="kolacontract_report_action" model="ir.actions.act_window">
+			<field name="name">Contracts</field>
+			<field name="res_model">kola.contract</field>
+			<field name="view_mode">graph,pivot,activity</field>
+		</record>
+
+		<menuitem
+			id="kolacontract_main_menu"
+			name="Contracts"
+			parent="kolacontract_root_menu"
+			sequence="1"/>
+
+		<menuitem
+			id="kolacontracts_submenu"
+			parent="kolacontract_main_menu"
+			action="kolacontract_action"
+			sequence="1"/>
+
+		<menuitem name="Reporting"
+			id="kolacontract_report_menu"
+			parent="kolacontract_root_menu"
+			sequence="9"/>
+
+
+
+		<menuitem name="Contracts Analysis"
+			id="kolacontract_report_analysis"
+			parent="kolacontract_report_menu"
+			action="kolacontract_report_action"
+			sequence="1"/>
+
+			<record id="auto_contract_status_manager_cron" model="ir.cron">
+				<field name="name">Contract status manager</field>
+				<field name="active" eval="True"/>
+				<field name="user_id" ref="base.user_root"/>
+				<field name="interval_number">1</field>
+				<field name="interval_type">hours</field>
+				<field name="numbercall">-1</field>
+				<field name="doall">0</field>
+				<field name="state">code</field>
+				<field name="model_id" ref="model_kola_contract"/>
+				<field name="code">model.auto_manage_contract_status()</field>
+			</record>
+
+	</data>
+</odoo>

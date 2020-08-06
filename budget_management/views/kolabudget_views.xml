@@ -1,0 +1,771 @@
+<odoo>
+	<data>
+		<record id="view_budget_line_search_filter" model="ir.ui.view">
+			<field name="name">Budget Lines Search filter</field>
+			<field name="model">bm.budget.lines</field>
+			<field name="arch" type="xml">
+				<search string="Budget lines">
+					<field name="name" string="Budget" domain="[]"/>
+					<field name="budget_management_id"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="view_budget_line_tree" model="ir.ui.view">
+			<field name="name">Budget line Items</field>
+			<field name="model">bm.budget.lines</field>
+			<field name="arch" type="xml">
+				<tree string="Budget line Items">
+					<field name="create_date" widget="date"/>
+					<field name="currency_id" invisible="1"/>
+					<field name="budget_management_id"/>
+					<field name="product_id"/>
+					<field name="total_qty" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="practical_amount" sum="Total Amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="date_from" widget="date"/>
+					<field name="date_to" widget="date"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="name_id_form">
+			<field name="name">Budget line item form</field>
+			<field name="model">bm.budget.lines</field>
+			<field name="arch" type="xml">
+				<form string="Budget lines form">
+					<sheet>
+						<group>
+							<group>
+								<field name="budget_management_id"/>
+								<field name="product_id" options="{'no_create':True}"/>
+								<field name="total_qty"/>
+							</group>
+							<group>
+								<field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								<field name="practical_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								<field name="date_from" widget="date"/>
+								<field name="date_to" widget="date"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="act_name" model="ir.actions.act_window">
+			<field name="name">Budget line Item</field>
+			<field name="res_model">bm.budget.lines</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<record id="act_budget_lines" model="ir.actions.act_window">
+			<field name="name">Budget Items</field>
+			<field name="res_model">bm.budget.lines</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+			<field name="search_view_id" ref="view_budget_line_search_filter"/>
+			<field name="context">{
+				'search_default_budget_management_id':[active_id],
+				'default_budget_management_id':active_id,
+				'tree':{'buttons':[{'name':'Approve','classes':'oe_link','action':'act_name'}]}
+				}
+			</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Add a new Item
+				</p>
+				<p>
+					With just a glance you find all the information on a budget,
+					etc
+				</p>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="budget_management_list">
+			<field name="name">Unit Budgets</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<tree decoration-danger="state == 'reject'">
+					<field name="name"/>
+					<field name="department_id"/>
+					<field name="budget_config_id"/>
+					<field name="total_budget_cost" sum="Total Budget" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="date_from" invisible="0" widget="date"/>
+					<field name="date_to" invisible="0" widget="date"/>
+					<field name="state"/>
+					<field name="total_used_budget" widget="progressbar" invisible="context.get('state') != 'validate'"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_order_calendar">
+			<field name="name">Unit Budget Calendar</field>
+			<field name="model">budget.management</field>
+			<field name="priority" eval="2"/>
+			<field name="arch" type="xml">
+				<calendar string="Calendar View" date_start="create_date" color="department_id">
+					<field name="department_id"/>
+					<field name="total_budget_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="budget_config_id" invisible="0"/>
+				</calendar>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="budget_management_form">
+			<field name="name">Unit Budgets</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<form>
+					<header>
+						<button name="action_propose_draft" states="draft" string="Submit Draft" type="object" class="oe_highlight"
+							groups="budget_management.bm_manager,budget_management.bm_reg_manager"/>
+						<button name="action_review_proposal" states="propose" string="Accept Budget Proposal" type="object" class="oe_highlight"/>
+						<button name="action_reject_proposal" states="propose" string="Reject Proposal" type="object" class="oe_highlight btn-danger"/>
+						<button name="action_consolidate_proposal" states="review1" string="Consolidate Budget" type="object" class="oe_highlight"/>
+						<button name="action_reject_consolidation" states="review1" string="Reject" type="object" class="oe_highlight btn-danger"/>
+						<button name="action_submit_for_mgt_review" states="consolidate" string="Submit To Management" type="object" class="oe_highlight"/>
+						<button name="action_reject_consolidation" states="consolidate" string="Review Again" type="object" class="oe_highlight"/>
+
+						<button name="action_mgt_approve" states="review" string="Approve" type="object" class="oe_highlight"/>
+						<button name="action_mgt_reject" states="review" string="Reject" type="object" class="oe_highlight btn-danger"/>
+
+						<button name="action_reset_draft" states="reject" string="Reset To Draft" type="object" class="oe_highlight btn-warning"/>
+
+						<button name="print_budget" states="draft,propose,review1,consolidate,review,validate,reject,reset" string="Print" type="object" class="oe_highlight"/>
+						<button name="action_budget_send" states="draft,propose,review1,consolidate,review,validate,reject,reset" string="Send by Email" type="object" class="oe_highlight"/>
+						<field name="state" widget="statusbar" readonly="True" statusbar_visible="draft,propose,review1,consolidate,review,validate,done"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+								<field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+							</button>
+						</div>
+						<div class="oe_title">
+							<h1><field name="display_name"/></h1>
+						</div>
+						<group>
+							<group>
+								<field name="name" invisible="1"/>
+								<field name="date_from" widget="date"/>
+								<field name="date_to" widget="date"/>
+								<field name="department_manager_id" invisible="0"/>
+								<field name="currency_id" groups="base.group_multi_currency" force_save="1" invisible="1"/>
+							</group>
+							<group>
+								<field name="department_id" invisible="0"/>
+								<field name="budget_config_id" options="{'no_create':True}" required="True"/>
+								<field name="total_budget_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								<field name="creating_user_id" invisible="1"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Budget Lines">
+								<field name="bm_budget_lines_id" widget="one2many">
+									<tree string="Budget line Details" editable="button" decoration-danger="budget_item_state == 'rejected'">
+										<field name="currency_id" invisible="True"/>
+										<field name="product_id"/>
+										<field name="source"/>
+										<field name="product_category" invisible="1"/>
+										<field name="budget_management_id" invisible="1"/>
+										<field name="total_qty"/>
+										<field name="status" invisible="1"/>
+										<field name="budget_cat_product"/>
+										<field name="unit_cost" widget="monetary" options="{'currency_field':'currency_id'}"/>
+										<field name="date_from" invisible="1" widget="date"/>
+										<field name="date_to" invisible="1" widget="date"/>
+										<field name="paid_date" groups="base.group_no_one" invisible="1"/>
+										<field name="practical_amount" sum="Subtotal Amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+										<field name="actual_amount" sum="Actual Amount" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="1"/>
+										<field name="planned_amount" sum="Planned Amount" invisible="1"/>
+										<button name="approve_budget_line_item" string="Approve" type="object" class="btn btn-sm btn-block btn-primary"
+											confirm="Confirm budget line approval"/>
+										<button name="reject_budget_line_item" string="Reject" type="object" class="btn btn-sm btn-block btn-warning"
+											confirm="Confirm budget line rejection"/>
+										<field name="percentage" widget="progressbar" invisible="1"/>
+										<field name="budget_item_state"/>
+									</tree>
+									<form string="Budget line Details">
+										<group>
+											<group>
+												<field name="product_id" options="{'no_create':True}"/>
+												<field name="product_category"/>
+											</group>
+											<group>
+												<field name="unit_cost" widget="monetary" options="{'currency_field':'currency_id'}"/>
+												<field name="practical_amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+												<field name="budget_item_state"/>
+											</group>
+										</group>
+									</form>
+								</field>
+								<group class="oe_subtotal_footer oe_right">
+									<div class="oe_subtotal_footer_separator oe_inline">
+										<label for="total_budget_cost"/>
+									</div>
+									<field name="total_budget_cost" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								</group>
+							</page>
+							<page string="Extra Information">
+							</page>
+						</notebook>
+
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="budget_kanban_view" model="ir.ui.view">
+			<field name="name">Budgets</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" class="o_kanban_medium_column">
+					<field name="name"/>
+					<field name="employee_id"/>
+					<field name="creating_user_id"/>
+					<field name="budget_config_id"/>
+					<field name="bm_budget_lines_id"/>
+					<field name="department_id"/>
+					<field name="department_manager_id"/>
+					<field name="date_from"/>
+					<field name="date_to"/>
+					<field name="comments"/>
+					<field name="year"/>
+					<field name="state" widget="progressbar"/>
+					<field name="total_budget_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="user_id"/>
+					<field name="total_used_budget"/>
+					<field name="total_actual_amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+					<field name="company_id"/>
+					<field name="currency_id"/>
+					<field name="activity_ids"/>
+					 <progressbar
+						field="state"
+						colors='{"reject": "danger"}' />
+					<templates>
+						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<a role="menuitem" type="open" class="dropdown-item">
+											<i class="fa fa-external-link" /> Open
+										</a>
+										<t t-if="widget.editable">
+											<a role="menuitem" type="edit" class="dropdown-item">
+												<i class="fa fa-pencil-square-o" /> Edit
+											</a>
+										</t>
+										<t t-if="widget.deletable">
+											<a role="menuitem" type="delete" class="dropdown-item">
+												<i class="fa fa-trash-o" /> Delete
+											</a>
+										</t>
+										<t t-if="record.active">
+											<a role="menuitem" name="toggle_active" type="object" class="dropdown-item">
+												<i class="fa fa-archive" /> Archive
+											</a>
+										</t>
+											<t t-if="!record.active"><a role="menuitem" name="toggle_active" type="object" class="dropdown-item"><i class="fa fa-archive" /> Unarchive</a>
+										</t>
+									</div>
+								</div>
+								<div class="o_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="department_id"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="oe_kanban_body">
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span style="font-size:12px;font-family:Arial;">Type:
+															<field name="budget_config_id" style="text-transform: lowercase;"/>
+														</span><br/>
+														<span style="font-size:12px;font-family:Arial;">Cost:
+															<field name="total_budget_cost" style="text-transform: lowercase;" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+														</span><br/>
+														<t t-if="record.state.raw_value == 'draft'">
+															<span style="font-size:12px;font-family:Arial;">Date:
+																<field name="create_date" widget="date"/><br/>
+															</span>
+														</t>
+														<t t-if="record.state.raw_value != 'draft'">
+															<span style="font-size:12px;font-family:Arial;">Date:
+																<field name="write_date" widget="date"/><br/>
+															</span>
+														</t>
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<button class="btn btn-sm btn-block btn-primary" type="open">View Details</button>
+														<t t-if="record.state.raw_value == 'draft'">
+															<button class="btn btn-sm btn-block btn-warning" name="action_propose_draft" type="object">Submit</button>
+														</t>
+														<t t-if="record.state.raw_value == 'propose'">
+															<button class="btn btn-sm btn-block btn-primary" name="action_review_proposal" type="object">Send for Review</button>
+															<button class="btn btn-sm btn-block btn-warning" name="action_reject_proposal" type="object">Reject Proposal</button>
+														</t>
+														<t t-if="record.state.raw_value == 'review1'">
+															<button class="btn btn-sm btn-block btn-primary" name="action_consolidate_proposal" type="object">Consolidate</button>
+															<button class="btn btn-sm btn-block btn-warning" name="action_reject_consolidation" type="object">Reject</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'consolidate'">
+															<button class="btn btn-sm btn-block btn-primary" name="action_submit_for_mgt_review" type="object">Send for Approval</button>
+															<button class="btn btn-sm btn-block btn-primary" name="action_reject_consolidation" type="object">Reject</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'review'">
+															<button class="btn btn-sm btn-block btn-primary" name="action_mgt_approve" type="object">Approve</button>
+															<button class="btn btn-sm btn-block btn-primary" name="action_mgt_reject" type="object">Reject</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'reject'">
+															<button class="btn btn-sm btn-block btn-primary" name="%(act_budget_lines)d" type="action">Reset to Draft</button>
+														</t>
+
+													</div>
+												</div>
+											</div>
+
+											<div class="oe_kanban_footer">
+												<div class="oe_kanban_footer_left">
+
+												</div>
+												<div class="oe_kanban_footer_right">
+													<field name="activity_ids" widget="kanban_activity"/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
+					</templates>
+				</kanban>
+			</field>
+		</record>
+
+		<record id="draft_budget_search_view" model="ir.ui.view">
+			<field name="name">draft.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Reference"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<filter name="state" string="Draft Budget" domain="[('state', '=', 'draft')]"/>
+					<filter name="name" string="Reference"/>
+					<filter name="budget_config_id" string="Budget Type"/>
+					<filter name="active" string="Active"/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="action_budget_management" model="ir.actions.act_window">
+			<field name="name">Budgets</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">kanban,tree,form,pivot,graph</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create a budget &amp; Manage your approvals
+				</p>
+				<p>
+					Manage your Budget Proposals through the stages in the budgets app
+				</p>
+			</field>
+		</record>
+
+		<record id="action_draft_budget" model="ir.actions.act_window">
+			<field name="name">Draft Budget</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="draft_budget_search_view"/>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to draft a budget
+				</p>
+				<p>
+					Create a budget draft that will be submitted for approval
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'draft')]</field>
+		</record>
+
+		<record id="proposed_budget_search_view" model="ir.ui.view">
+			<field name="name">proposed.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Draft Budget Proposal"/>
+					<field name="department_id" string="Unit"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<separator/>
+					<filter name="state" string="Draft Budget" domain="[('state', '=', 'propose')]"/>
+					<separator/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="action_proposed_budget" model="ir.actions.act_window">
+			<field name="name">Proposed Budget</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<!-- <field name="search_view_id" ref="proposed_budget_search_view"/> -->
+				<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to create a budget proposal
+				</p>
+				<p>
+					Submit the budget propsal for review by finance unit
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'propose')]</field>
+		</record>
+
+
+		<record id="proposed_budget_review_search_view" model="ir.ui.view">
+			<field name="name">proposed.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Draft Budget Review"/>
+					<field name="department_id" string="Unit"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<separator/>
+					<filter name="state" string="Draft Budget" domain="[('state', '=', 'review1')]"/>
+					<separator/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="action_proposed_budget_review" model="ir.actions.act_window">
+			<field name="name">Proposed Budget Review</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="proposed_budget_review_search_view"/>
+				<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> budget proposal
+				</p>
+				<p>
+					Proposal will be reviewed by the finance unit
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'review1')]</field>
+		</record>
+
+
+		<record id="consolidated_budget_review_search_view" model="ir.ui.view">
+			<field name="name">consolidated.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Consolidated Budget"/>
+					<field name="department_id" string="Unit"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<separator/>
+					<filter name="state" string="Draft Budget" domain="[('state', '=', 'consolidate')]"/>
+					<separator/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+		<record id="action_consolidated_budget_review" model="ir.actions.act_window">
+			<field name="name">Consolidated Budget</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="consolidated_budget_review_search_view"/>
+				<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to create a budget
+				</p>
+				<p>
+					Consolidated budget will be reviewed by management team before approval
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'consolidate')]</field>
+		</record>
+
+
+		<record id="mgt_budget_review_search_view" model="ir.ui.view">
+			<field name="name">mgt_review.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Consolidated for Management Review"/>
+					<field name="department_id" string="Unit"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<separator/>
+					<filter name="state" string="Draft Budget" domain="[('state', '=', 'review')]"/>
+					<separator/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+		<record id="action_mgt_budget_review" model="ir.actions.act_window">
+			<field name="name">Budget for Management Review</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="mgt_budget_review_search_view"/>
+				<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to create a budget for review by Management
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'review')]</field>
+		</record>
+
+		<record id="approved_budget_search_view" model="ir.ui.view">
+			<field name="name">approved.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Approved Budgets"/>
+					<field name="department_id" string="Unit"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<separator/>
+					<filter name="state" string="Draft Budget" domain="[('state', '=', 'review')]"/>
+					<separator/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+		<record id="action_approved_budget" model="ir.actions.act_window">
+			<field name="name">Approved Budgets</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="approved_budget_search_view"/>
+				<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to create a approved Budgets
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'validate')]</field>
+		</record>
+
+
+		<record id="reject_budget_search_view" model="ir.ui.view">
+			<field name="name">rejected.budget.search.filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="String">
+					<field name="name" string="Rejected Budgets"/>
+					<field name="department_id" string="Unit"/>
+					<separator/>
+					<filter name="department_id" string="Department"/>
+					<separator/>
+					<filter name="state" string="Rejected Budget" domain="[('state', '=', 'reject')]"/>
+					<separator/>
+					<field name="creating_user_id" string="Responsible"/>
+					<group expand="0" string="Group By">
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="action_rejected_budget" model="ir.actions.act_window">
+			<field name="name">Rejected Budgets</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">tree,form,kanban,pivot,graph,calendar</field>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="reject_budget_search_view"/>
+				<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Click <i>Create</i> to create a rejected Budgets
+				</p>
+			</field>
+			<field name="domain">[('state', '=', 'reject')]</field>
+		</record>
+
+		<record id="budget_type_action" model="ir.actions.act_window">
+			<field name="name">Budget Configurations</field>
+			<field name="res_model">budget.config</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<record model='ir.ui.view' id='budget_config_tree'>
+			<field name='name'>Budget Configurations</field>
+			<field name='model'>budget.config</field>
+			<field name='arch' type='xml'>
+				<tree string='description'>
+					<field name='name'/>
+					<field name="description"/>
+					<field name="active"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="budget_configuration_form">
+			<field name="name">Budget Configurations</field>
+			<field name="model">budget.config</field>
+			<field name="arch" type="xml">
+				<form string="description">
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<field name="description"/>
+							</group>
+							<group>
+								<field name="active"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<act_window
+			id="budget_products_action_window"
+			name="Products"
+			res_model="product.product"
+			view_mode="kanban,form"/>
+
+		<menuitem
+			name="Budget Types"
+			id="budget_configurations_menu"
+			parent="budgets_configs_menu"
+			action="budget_type_action"
+			sequence="2"/>
+
+
+		<record id="sequence_budget_code" model="ir.sequence">
+			<field name="name">Budget Sequence Code</field>
+			<field name="code">budget.sequence</field>
+			<field name="active">TRUE</field>
+			<field name="prefix">B</field>
+			<field name="padding">6</field>
+			<field name="number_next">1</field>
+			<field name="number_increment">1</field>
+		</record>
+
+		<record id="budget_analytics_pivot_view" model="ir.ui.view">
+			<field name="name">Budget Analysis</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<pivot string="Budgets Analysis">
+					<field name="name" type="measure"/>
+					<field name="department_id" type="measure"/>
+					<field name="state" type="measure"/>
+					<field name="total_used_budget" type="measure"/>
+					<field name="total_budget_cost" type="measure"/>
+				</pivot>
+			</field>
+		</record>
+
+		<record id="budget_analytics_graph_view" model="ir.ui.view">
+			<field name="name">Budget Analysis</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<graph string="Budgets Analysis">
+					<field name="total_budget_cost" type="measure"/>
+					<field name="department_id" type="col"/>
+					<field name="total_budget_cost" type="row"/>
+				</graph>
+			</field>
+		</record>
+
+		<record id="search_analysis_filter" model="ir.ui.view">
+			<field name="name">Budget Analysis Search filter</field>
+			<field name="model">budget.management</field>
+			<field name="arch" type="xml">
+				<search string="Budget Analysis">
+					<filter name="state" string="Status" domain="[]"/>
+					<separator/>
+					<filter name="department_id" string="Department" domain="[]"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="budget_analysis_action" model="ir.actions.act_window">
+			<field name="name">Budget Analysis</field>
+			<field name="res_model">budget.management</field>
+			<field name="view_mode">graph,pivot</field>
+			<field name="context">{
+				'search_default_state':1,
+				'search_default_department_id':1
+				}</field>
+			<field name="arch" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Budget Analysis Window
+				</p>
+				<p>
+					This window shows the budget analysis and generate reports
+				</p>
+			</field>
+			<field name="search_view_id" ref="search_analysis_filter"/>
+		</record>
+
+		<menuitem
+			name="Budgets"
+			id="budgets_main_menu"
+			parent="menu_root_budget"
+			action="action_budget_management"
+			sequence="1"/>
+
+		<menuitem
+			id="budget_analysis_menu"
+			name="Budget Analysis"
+			parent="budgets_analytics_menu"
+			action="budget_analysis_action"
+			sequence="1"/>
+
+	</data>
+</odoo>

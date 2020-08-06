@@ -1,0 +1,6 @@
+<odoo>
+	<template id="assets_backend" name="budget_management assets" inherit_id="web.assets_backend">
+		<xpath expr="." position="inside">
+		</xpath>
+	</template>
+</odoo>

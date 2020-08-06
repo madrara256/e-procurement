@@ -1,0 +1,27 @@
+<odoo>
+	<data>
+
+		<record id="action_budget_guidelines" model="ir.actions.act_window">
+			<field name="name">Guidelines</field>
+			<field name="res_model">budget.guidline</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Guidelines for current budget
+				</p>
+				<p>
+					This window shows the guidelines for coming up with the current budget
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="guidelines_menu"
+			name="Guidelines(Budget)"
+			parent="budgets_configs_menu"
+			action="action_budget_guidelines"
+			sequence="1"/>
+
+
+	</data>
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- ONBOARDING STEPS -->
+
+	<template id="onboarding_budget_step">
+		<t t-call="base.onboarding_step">
+			<t t-set="title">Budgets</t>
+			<t t-set="description">
+				Create a new Draft Budget.
+			</t>
+			<t t-set="btn_text">Create a Draft Budget</t>
+			<t t-set="model" t-value="'res.company'" />
+			<t t-set="method" t-value="'action_open_p2p_onboarding_budgets'" />
+			<t t-set="state" t-value="state.get('p2p_onboarding_budget_state')" />
+		</t>
+	</template>
+
+	<template id="onboarding_requisition_step">
+		<t t-call="base.onboarding_step">
+			<t t-set="title">Purchase Requisition</t>
+			<t t-set="description">
+				Create a new PR.
+			</t>
+			<t t-set="btn_text">Create a PR</t>
+			<t t-set="model" t-value="'res.company'" />
+			<t t-set="method" t-value="'action_open_p2p_onboarding_requisition'" />
+			<t t-set="state" t-value="state.get('p2p_onboarding_requisition_state')" />
+		</t>
+	</template>
+
+	<template id="onboarding_purchase_step">
+		<t t-call="base.onboarding_step">
+			<t t-set="title">Purchase</t>
+			<t t-set="description">
+				Create a new RFQ.
+			</t>
+			<t t-set="btn_text">Create a RFQ</t>
+			<t t-set="model" t-value="'res.company'" />
+			<t t-set="method" t-value="'action_open_p2p_onboarding_purchase'" />
+			<t t-set="state" t-value="state.get('p2p_onboarding_purchase_state')" />
+		</t>
+	</template>
+
+
+
+	<template id="procure2pay_onboarding_budgets_panel" name="document_onboarding_panel">
+		<t t-call="base.onboarding_container">
+			<t t-set="classes">o_onboarding_orange</t>
+			<t t-set="bg_image">/procure2pay/static/src/img/banner/documents_onboarding_directory.png</t>
+			<t t-set="close_method">action_close_documents_onboarding</t>
+			<t t-set="close_model">res.company</t>
+			<t t-set="text_completed">The configuration is done!</t>
+			<t t-call="procure2pay.onboarding_budget_step" name="p2p_onboarding_budget_state" />
+			<t t-call="procure2pay.onboarding_requisition_step" name="p2p_onboarding_requisition_state" />
+			<t t-call="procure2pay.onboarding_purchase_step" name="p2p_onboarding_purchase_state" />
+		</t>
+	</template>
+
+</odoo>

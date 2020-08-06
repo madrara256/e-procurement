@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="mt_request_drafted" model="mail.message.subtype">
+			<field name="name">New Contract Draft</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">New Contract Draft has been created</field>
+	</record>
+
+	<record id="mt_request_validate1" model="mail.message.subtype">
+			<field name="name">Contract for Review</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">Contract has been validated for Review and Evaluation</field>
+	</record>
+
+	<record id="mt_request_validate2" model="mail.message.subtype">
+			<field name="name">Contract for Negotiation</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">Contract has been validated for Negotiations</field>
+	</record>
+
+	<record id="mt_request_validate" model="mail.message.subtype">
+			<field name="name">Contract for validation</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">Contract has been approved and running</field>
+	</record>
+
+	<record id="mt_request_reject" model="mail.message.subtype">
+			<field name="name">Rejected contract</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">Contract has been rejected</field>
+	</record>
+
+	<record id="mt_request_renew" model="mail.message.subtype">
+			<field name="name">Contract for renew</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">Contract is running down and due for Renewal</field>
+	</record>
+
+	<record id="mt_request_terminated" model="mail.message.subtype">
+			<field name="name">Terminated contracts</field>
+			<field name="res_model">kola.contract</field>
+			<field name="description">Contract has been terminated</field>
+	</record>
+
+
+</odoo>

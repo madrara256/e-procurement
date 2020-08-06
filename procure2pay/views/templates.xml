@@ -1,0 +1,8 @@
+<odoo>
+	<template id="assets_backend" name="procure2pay assets" inherit_id="web.assets_backend">
+		<xpath expr="." position="inside">
+			<script type="text/javascript" src="/procure2pay/static/src/js/dashboard.js"></script>
+			<link rel="stylesheet" type="text/css" href="/procure2pay/static/src/css/procure2pay_dashboard.css"/>
+		</xpath>
+	</template>
+</odoo>

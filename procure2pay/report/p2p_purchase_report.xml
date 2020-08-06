@@ -1,0 +1,29 @@
+<odoo>
+	<data>
+
+	<menuitem
+		id="p2p_menu_valuation"
+		name="Inventory Report"
+		parent="p2p_reporting_menu"
+		sequence="1"
+		action="stock.action_stock_quantity_history"/>
+
+	<menuitem
+		id="p_inventory_valuation_menu"
+		parent="p2p_reporting_menu"
+		action="stock_account.product_valuation_action"
+		sequence="2"/>
+
+	<menuitem
+		action="stock.stock_move_action"
+		id="p2p_stock_move_menu"
+		parent="p2p_reporting_menu"
+		sequence="3"
+		groups="base.group_no_one"/>
+
+	<menuitem id="p_stock_line_move_menu"
+		parent="p2p_reporting_menu" action="stock.stock_move_line_action"
+		sequence="4"/>
+
+	</data>
+</odoo>

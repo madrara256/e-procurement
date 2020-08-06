@@ -1,0 +1,62 @@
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="kolacontract_stage_form">
+			<field name="name">Stage</field>
+			<field name="model">kola.stage</field>
+			<field name="arch" type="xml">
+				<form string="Contract Stage">
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<field name="active"/>
+							</group>
+							<group>
+								<field name="sequence"/>
+								<field name="fold"/>
+							</group>
+							<field name="description"/>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this stage to automatically"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="kolacontract_stage_tree">
+			<field name="name">Contract Stages</field>
+			<field name="model">kola.stage</field>
+			<field name="arch" type="xml">
+				<tree string="Stages">
+					<field name="name"/>
+					<field name="description"/>
+					<field name="sequence"/>
+					<field name="fold"/>
+					<field name="active"/>
+				</tree>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="kolacontract_stages_act_window">
+			<field name="name">Contract Stages</field>
+			<field name="res_model">kola.stage</field>
+			<field name="view_mode">tree,form,kanban</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+						<p class="o_view_nocontent_smiling_face">
+							Click <i>Create</i> to create contract stage.
+						</p><p>
+							Manage your contract processes/stages dynamically<br/>
+						</p>
+					</field>
+		</record>
+
+		<!-- <menuitem name="Stages"
+			id="kolacontract_stage_menu"
+			parent="kolacontract_configs_menu"
+			sequence="1" action="kolacontract_stages_act_window"/> -->
+	</data>
+</odoo>

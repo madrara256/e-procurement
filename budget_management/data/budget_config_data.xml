@@ -1,0 +1,8 @@
+<odoo>
+	<record model="budget.config" id="config1"><!--carpx budget -->
+		<field name="name">Capex Budget</field>
+	</record>
+	<record model="budget.config" id="config2"><!--opex budget -->
+		<field name="name">Opex Budget</field>
+	</record>
+</odoo>

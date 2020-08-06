@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!--Administrator -->
+
+	<record model="bm.budget.lines" id="budget_line_data1">
+		<field name="budget_management_id" ref="budget_demo1"/>
+		<field name="product_id">99</field>
+		<field name="unit_cost">540000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">administrattion</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">2160000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data2">
+		<field name="budget_management_id" ref="budget_demo1"/>
+		<field name="product_id">96</field>
+		<field name="unit_cost">485000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">administrattion</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">970000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data3">
+		<field name="budget_management_id" ref="budget_demo1"/>
+		<field name="product_id">95</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">administrattion</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data4">
+		<field name="budget_management_id" ref="budget_demo1"/>
+		<field name="product_id">47</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">administrattion</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data5">
+		<field name="budget_management_id" ref="budget_demo1"/>
+		<field name="product_id">43</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">administrattion</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!-- Human Resource -->
+
+	<record model="bm.budget.lines" id="budget_line_data6">
+		<field name="budget_management_id" ref="budget_demo2"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Human Reosurce</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data7">
+		<field name="budget_management_id" ref="budget_demo2"/>
+		<field name="product_id">44</field>
+		<field name="unit_cost">485000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Human Reosurce</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">970000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data8">
+		<field name="budget_management_id" ref="budget_demo2"/>
+		<field name="product_id">27</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data9">
+		<field name="budget_management_id" ref="budget_demo2"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Human Reosurce</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data10">
+		<field name="budget_management_id" ref="budget_demo2"/>
+		<field name="product_id">35</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Human Reosurce</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!--Finance -->
+
+	<record model="bm.budget.lines" id="budget_line_data11">
+		<field name="budget_management_id" ref="budget_demo3"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Finance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data12">
+		<field name="budget_management_id" ref="budget_demo3"/>
+		<field name="product_id">80</field>
+		<field name="unit_cost">485000000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Finance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">970000000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data13">
+		<field name="budget_management_id" ref="budget_demo3"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Finance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data14">
+		<field name="budget_management_id" ref="budget_demo3"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Finance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data15">
+		<field name="budget_management_id" ref="budget_demo3"/>
+		<field name="product_id">35</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Finance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!--ICT -->
+	<record model="bm.budget.lines" id="budget_line_data16">
+		<field name="budget_management_id" ref="budget_demo4"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">ICT</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data17">
+		<field name="budget_management_id" ref="budget_demo4"/>
+		<field name="product_id">55</field>
+		<field name="unit_cost">3410000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">ICT</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6820000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data18">
+		<field name="budget_management_id" ref="budget_demo4"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">ICT</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data19">
+		<field name="budget_management_id" ref="budget_demo4"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">ICT</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data10">
+		<field name="budget_management_id" ref="budget_demo4"/>
+		<field name="product_id">37</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">ICT</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!--Audit -->
+	<record model="bm.budget.lines" id="budget_line_data21">
+		<field name="budget_management_id" ref="budget_demo5"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Audit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data22">
+		<field name="budget_management_id" ref="budget_demo5"/>
+		<field name="product_id">55</field>
+		<field name="unit_cost">3410000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Audit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6820000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data23">
+		<field name="budget_management_id" ref="budget_demo5"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Audit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data24">
+		<field name="budget_management_id" ref="budget_demo5"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Audit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data25">
+		<field name="budget_management_id" ref="budget_demo5"/>
+		<field name="product_id">37</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Audit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!--Legal -->
+	<record model="bm.budget.lines" id="budget_line_data26">
+		<field name="budget_management_id" ref="budget_demo6"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Legal</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data27">
+		<field name="budget_management_id" ref="budget_demo6"/>
+		<field name="product_id">55</field>
+		<field name="unit_cost">3410000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Legal</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6820000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data28">
+		<field name="budget_management_id" ref="budget_demo6"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Legal</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data29">
+		<field name="budget_management_id" ref="budget_demo6"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data30">
+		<field name="budget_management_id" ref="budget_demo6"/>
+		<field name="product_id">37</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Legal</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+<!-- Business Development -->
+
+	<record model="bm.budget.lines" id="budget_line_data31">
+		<field name="budget_management_id" ref="budget_demo7"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Business Development</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data32">
+		<field name="budget_management_id" ref="budget_demo7"/>
+		<field name="product_id">55</field>
+		<field name="unit_cost">3410000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Business Development</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6820000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data33">
+		<field name="budget_management_id" ref="budget_demo7"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Business Development</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data34">
+		<field name="budget_management_id" ref="budget_demo7"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Business Development</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data35">
+		<field name="budget_management_id" ref="budget_demo7"/>
+		<field name="product_id">37</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Business Development</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!--Operations -->
+	<record model="bm.budget.lines" id="budget_line_data31">
+		<field name="budget_management_id" ref="budget_demo8"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Operations</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data32">
+		<field name="budget_management_id" ref="budget_demo8"/>
+		<field name="product_id">55</field>
+		<field name="unit_cost">3410000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Operations</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6820000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data33">
+		<field name="budget_management_id" ref="budget_demo8"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Operations</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data34">
+		<field name="budget_management_id" ref="budget_demo8"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Operations</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data35">
+		<field name="budget_management_id" ref="budget_demo8"/>
+		<field name="product_id">37</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Operations</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+	<!--Credit -->
+	<record model="bm.budget.lines" id="budget_line_data36">
+		<field name="budget_management_id" ref="budget_demo9"/>
+		<field name="product_id">99</field>
+		<field name="unit_cost">321000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Credit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data37">
+		<field name="budget_management_id" ref="budget_demo9"/>
+		<field name="product_id">95</field>
+		<field name="unit_cost">98000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Credit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data38">
+		<field name="budget_management_id" ref="budget_demo9"/>
+		<field name="product_id">99</field>
+		<field name="unit_cost">780000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Credit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data39">
+		<field name="budget_management_id" ref="budget_demo9"/>
+		<field name="product_id">35</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Credit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data40">
+		<field name="budget_management_id" ref="budget_demo9"/>
+		<field name="product_id">37</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Credit</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+
+	<!-- Risk -->
+	<record model="bm.budget.lines" id="budget_line_data41">
+		<field name="budget_management_id" ref="budget_demo10"/>
+		<field name="product_id">38</field>
+		<field name="unit_cost">420000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Risk</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1680000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data42">
+		<field name="budget_management_id" ref="budget_demo10"/>
+		<field name="product_id">49</field>
+		<field name="unit_cost">13400000</field>
+		<field name="total_qty">1</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Risk</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">134000000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data43">
+		<field name="budget_management_id" ref="budget_demo10"/>
+		<field name="product_id">27</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">1</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Risk</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">550000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data44">
+		<field name="budget_management_id" ref="budget_demo10"/>
+		<field name="product_id">34</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Risk</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1200000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data45">
+		<field name="budget_management_id" ref="budget_demo10"/>
+		<field name="product_id">46</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">13</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Risk</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">6240000.0</field>
+	</record>
+
+
+	<!--Compliance -->
+	<record model="bm.budget.lines" id="budget_line_data46">
+		<field name="budget_management_id" ref="budget_demo12"/>
+		<field name="product_id">31</field>
+		<field name="unit_cost">380000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Compliance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1520000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data47">
+		<field name="budget_management_id" ref="budget_demo12"/>
+		<field name="product_id">24</field>
+		<field name="unit_cost">3410000</field>
+		<field name="total_qty">10</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Compliance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">34100000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data48">
+		<field name="budget_management_id" ref="budget_demo12"/>
+		<field name="product_id">28</field>
+		<field name="unit_cost">550000</field>
+		<field name="total_qty">3</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Compliance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1650000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data49">
+		<field name="budget_management_id" ref="budget_demo5"/>
+		<field name="product_id">21</field>
+		<field name="unit_cost">120000</field>
+		<field name="total_qty">2</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Compliance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">2400000.0</field>
+	</record>
+
+	<record model="bm.budget.lines" id="budget_line_data50">
+		<field name="budget_management_id" ref="budget_demo12"/>
+		<field name="product_id">44</field>
+		<field name="unit_cost">480000</field>
+		<field name="total_qty">4</field>
+		<field name="source">6</field>
+		<field name="budget_cat_product">Compliance</field>
+		<field name="budget_item_state">draft</field>
+		<field name="status">draft</field>
+		<field name="practical_amount">1920000.0</field>
+	</record>
+
+</odoo>
