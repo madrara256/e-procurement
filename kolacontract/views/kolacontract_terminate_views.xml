@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="kolacontract_terminate_tree">
+			<field name="name">Contract Termination</field>
+			<field name="model">kolacontract.terminate</field>
+			<field name="arch" type="xml">
+				<tree string="description">
+					<field name="contract_id"/>
+					<field name="state"/>
+					<field name="active"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="kolacontract_terminate_form">
+			<field name="name">Contract Termination</field>
+			<field name="model">kolacontract.terminate</field>
+			<field name="arch" type="xml">
+				<form string="Contract Termination form">
+					<header>
+						<button string="Submit for Admin Review" name="confirm_terminate" type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
+
+						<button string="Submit for Procurement Review" name="review_by_procurement" type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'validate1')]}"/>
+
+						<button string="Submit for Sign Off" name="validate_terminate" type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'validate2')]}"/>
+
+						<button string="Send By Email" name="send_by_email" type="object"
+							class="oe_highlight"/>
+
+						<button string="Approve Contract Termination" name="sign_off_termination" type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'validate3')]}"/>
+
+						<button string="Reject" name="reject_terminate" type="object"
+							class="oe_highlight btn-danger"/>
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate1,validate2,validate" clickable="False"/>
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="contract_id" options="{'no_create':True}"/>
+								<field name="date_from" widget="date"/>
+								<field name="date_to" widget="date"/>
+							</group>
+							<group>
+								<field name="amount"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Contract line">
+								<field name="kolacontract_line_terminate_id" widget="one2many">
+									<tree string="Contract lines" editable="button">
+										<field name="product_id"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="kolacontract_terminate_kanban_view">
+			<field name="name">Contract Termination</field>
+			<field name="model">kolacontract.terminate</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" class="o_kanban_medium_column" create="false">
+					<field name="contract_id"/>
+					<field name="state"/>
+					<field name="active"/>
+					<field name="ratings"/>
+					<field name="image_medium"/>
+					<field name="kolacontract_line_terminate_id"/>
+					<progressbar field="state" colors='{"reject": "danger"}'/>
+					<templates>
+						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-pencil-square-o" />Edit</a></t>
+										<t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash-o" />Delete</a></t>
+										<t t-if="record.active.raw_value"><a role="menuitem" name="toggle_active" type="object" class="dropdown-item"><i class="fa fa-archive" /> Archive</a></t>
+										<t t-if="!record.active.raw_value"><a role="menuitem" name="toggle_active" type="object" class="dropdown-item"><i class="fa fa-archive" /> Unarchive</a></t>
+									</div>
+								</div>
+								<div class="oe_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="o_kanban_record_body">
+												<span style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<!-- <div class="o_primary"><field name=""/>
+													</div> -->
+												</span>
+											</div>
+											<div class="row">
+												<div class="col-xl-6 o_kanban_primary_left">
+													<t t-foreach="record.kolacontract_line_terminate_id.raw_value" t-as="o">
+														<div class="o_primary">
+															<t t-esc="o.product_id[1]"/>
+														</div>
+													</t>
+													<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Start Date <field name="date_from" widget="date"/><br/></span>
+													<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">End Date <field name="date_to" widget="date"/><br/></span>
+												</div>
+
+												<div class="col-xl-6 o_kanban_primary_right">
+													<t t-if="record.state.raw_value == 'draft'">
+														<button class="btn btn-sm btn-block btn-primary" name="confirm_terminate" type="object">Confirm</button>
+														<button class="btn btn-sm btn-block btn-danger" name="reject_terminate" type="object">Reject</button>
+													</t>
+
+													<t t-if="record.state.raw_value == 'validate'">
+														<button class="btn btn-sm btn-block btn-primary" name="confirm_terminate" type="object">Reset to Draft</button>
+													</t>
+
+													<t t-if="record.state.raw_value == 'confirm'">
+														<button class="btn btn-sm btn-block btn-primary" name="confirm_terminate" type="object">Approve</button>
+														<button class="btn btn-sm btn-block btn-danger" name="reject_terminate" type="object">Reject</button>
+													</t>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="o_kanban_record_bottom">
+									<div class="oe_kanban_bottom_left">
+										<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="ratings" widget="priority"/></span>
+									</div>
+									<div class="oe_kanban_bottom_right">
+										<img t-att-src="kanban_image('kolacontract.terminate.', 'image_small', record.contract_id.raw_value)" t-att-title="record.contract_id.value" t-att-alt="record.contract_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
+									</div>
+								</div>
+								<div class="oe_clear"></div>
+							</div>
+						</t>
+					</templates>
+					<searchpanel>
+						<field name="state"/>
+					</searchpanel>
+				</kanban>
+			</field>
+		</record>
+
+		<record id="action_contract_termination" model="ir.actions.act_window">
+			<field name="name">Terminate Contract</field>
+			<field name="res_model">kolacontract.terminate</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Contract termination, follow the steps required
+				</p>
+				<p>
+					Manage your contract termination process in a clear &amp; transparent way
+				</p>
+			</field>
+		</record>
+
+
+		<menuitem
+			id="kolacontract_termination"
+			parent="kolacontract_main_menu"
+			action="action_contract_termination"
+			sequence="2"/>
+	</data>
+</odoo>
