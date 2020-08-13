@@ -53,6 +53,7 @@ class KolaContractTerminate(models.Model):
 														'kolacontract_terminate_id',
 														string='Contract Terminate line')
 	active = fields.Boolean(string='Active', default=True)
+	department_id = fields.Many2one('hr.department', string='Department')
 
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]

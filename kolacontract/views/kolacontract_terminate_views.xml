@@ -49,6 +49,7 @@
 								<field name="contract_id" options="{'no_create':True}"/>
 								<field name="date_from" widget="date"/>
 								<field name="date_to" widget="date"/>
+								<field name="department_id"/>
 							</group>
 							<group>
 								<field name="amount"/>
@@ -160,6 +161,7 @@
 					</templates>
 					<searchpanel>
 						<field name="state"/>
+						<field name="department_id"/>
 					</searchpanel>
 				</kanban>
 			</field>

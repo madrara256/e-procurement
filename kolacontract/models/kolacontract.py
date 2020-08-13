@@ -103,8 +103,8 @@ class kolacontract(models.Model):
 
 	company_id = fields.Many2one('res.company',
 		default=lambda self: self.env['res.company']._company_default_get('kolacontract'))
-
 	count_files = fields.Integer(compute='compute_count_files', string='Document(s)')
+	department_id = fields.Many2one('hr.department', string='Department')
 
 
 
@@ -169,6 +169,48 @@ class kolacontract(models.Model):
 	#Override ORM methods
 	#---------------------------------------------------------------
 
+
+	#check notification receipients
+	def compute_notification_receipients(self):
+		pass
+
+	def send_email_notification(self, obj):
+		for record in self:
+			if record.state == 'draft':
+				template_id = self.env.ref('kolacontract.contract_draft_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate1':
+				template_id = self.env.ref('kolacontract.contract_review_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate2':
+				template_id = self.env.ref('kolacontract.contract_review_procurement_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate':
+				template_id = self.env.ref('kolacontract.contract_running_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'renew':
+				template_id = self.env.ref('kolacontract.contract_expire_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'reject':
+				template_id = self.env.ref('kolacontract.contract_expire_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'terminate':
+				template_id = self.env.ref('kolacontract.contract_terminate_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
 	def _compute_access_url(self):
 		super(kolacontract, self)._compute_access_url()
 		for contract in self:
@@ -193,13 +235,9 @@ class kolacontract(models.Model):
 		if values.get('name', 'New') == 'New':
 			values['name'] = self.env['ir.sequence'].next_by_code('contract.sequence') or 'New'
 		contract = super(kolacontract, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)).create(values)
-		contract.add_follower(user_id)
+		self.send_email_notification(contract)
 		return contract
 
-
-	def send_mail_notification(self):
-		template_id = self.env.ref('kolacontract.kolacontract_draft_create_template')
-		self.env['mail.template'].browse(template_id.id).send_mail(self.id, force_send=True)
 
 	@api.multi
 	def write(self, values):
@@ -211,7 +249,7 @@ class kolacontract(models.Model):
 				raise ValidationError(_('You don\'t have the rights to perform this actions \n'
 					'Please contact system administrator'))
 		result = super(kolacontract, self).write(values)
-		self.add_follower(user_id)
+		#self.add_follower(user_id)
 		return result
 
 	@api.multi
@@ -241,7 +279,6 @@ class kolacontract(models.Model):
 		if 'state' in init_values and self.state == 'terminate':
 			return 'kolacontract.mt_request_terminated'
 		return super(kolacontract, self)._track_subtype(init_values)
-
 
 
 	@api.multi
@@ -308,6 +345,7 @@ class kolacontract(models.Model):
 		self.write({
 			'state':'validate1'
 			})
+		self.send_email_notification(self)
 
 	@api.multi
 	def contract_approval(self, stage_id):
@@ -316,6 +354,7 @@ class kolacontract(models.Model):
 		self.write({
 			'state':'validate'
 			})
+		self.send_email_notification(self)
 
 	@api.multi
 	def contract_termination(self):
@@ -335,6 +374,7 @@ class kolacontract(models.Model):
 		self.write({
 			'active':False
 			})
+		self.send_email_notification(self)
 
 
 	@api.multi
@@ -344,6 +384,7 @@ class kolacontract(models.Model):
 		self.write({
 			'state':'renew'
 			})
+		self.send_email_notification(self)
 
 	@api.multi
 	def contract_rejection(self):
@@ -352,12 +393,14 @@ class kolacontract(models.Model):
 		self.write({
 				'state':'reject'
 				})
+		self.send_email_notification(self)
 
 	@api.multi
 	def reset_to_draft(self):
 		self.write({
 				'state':'draft'
 				})
+		self.send_email_notification(self)
 
 	@api.multi
 	def auto_manage_contract_status(self):
