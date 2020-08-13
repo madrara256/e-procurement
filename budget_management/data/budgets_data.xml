@@ -145,16 +145,6 @@
 			<field name="state">draft</field>
 		</record>
 
-		<!-- <record model="budget.management" id="budget_demo11">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">15</field> --><!--Financial Inclusion -->
-			<!-- <field name="budget_config_id">1</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-
 		<record model="budget.management" id="budget_demo12">
 			<field name="date_from">2020-01-11 09:01:57.735806</field>
 			<field name="date_to">2020-12-11 09:01:57.735806</field>
@@ -165,119 +155,7 @@
 			<field name="state">draft</field>
 		</record>
 
-		<!-- Operational Budget -->
 
-		<!-- <record model="budget.management" id="budget_demo13">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">5</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-
-		<!-- <record model="budget.management" id="budget_demo14">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">4</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-
-		<!-- <record model="budget.management" id="budget_demo15">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">7</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-
-		<!-- <record model="budget.management" id="budget_demo16">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">3</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-
-		<!-- <record model="budget.management" id="budget_demo17">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">10</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo18">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">11</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">1</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo19">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">6</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo20">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">12</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo21">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">13</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo22">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">14</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo23">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">15</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
-		<!-- <record model="budget.management" id="budget_demo24">
-			<field name="date_from">2020-01-11 09:01:57.735806</field>
-			<field name="date_to">2020-12-11 09:01:57.735806</field>
-			<field name="department_id">16</field> --><!--Administration -->
-			<!-- <field name="budget_config_id">2</field>
-			<field name="active">True</field>
-			<field name="total_budget_cost">185000000</field>
-			<field name="state">draft</field>
-		</record> -->
 
 	</data>
 </odoo>
