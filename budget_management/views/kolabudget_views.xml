@@ -90,7 +90,7 @@
 			<field name="name">Unit Budgets</field>
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
-				<tree decoration-danger="state == 'reject'">
+				<tree decoration-danger="state == 'reject'" import="0">
 					<field name="name"/>
 					<field name="department_id"/>
 					<field name="budget_config_id"/>
@@ -120,7 +120,7 @@
 			<field name="name">Unit Budgets</field>
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
-				<form>
+				<form import="0">
 					<header>
 						<button name="action_propose_draft" states="draft" string="Submit Draft" type="object" class="oe_highlight"
 							groups="budget_management.bm_manager,budget_management.bm_reg_manager"/>
@@ -228,7 +228,7 @@
 			<field name="name">Budgets</field>
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="state" class="o_kanban_medium_column">
+				<kanban default_group_by="state" class="o_kanban_medium_column" import="0">
 					<field name="name"/>
 					<field name="employee_id"/>
 					<field name="creating_user_id"/>

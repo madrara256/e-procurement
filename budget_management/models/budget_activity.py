@@ -22,3 +22,15 @@ class BudgetActivity(models.Model):
 
 	name = fields.Char(string='Budget Reference')
 	budget_id = fields.Many2one('budget.management', string='Budget Name')
+	department_id = fields.Many2one('hr.department', related='budget_id.department_id', string='Department')
+	budget_amount = fields.Float(string='Amount', related='budget_id.total_budget_cost')
+
+	color = fields.Integer(string='Color')
+	active = fields.Boolean(string='Active', default=True)
+
+
+	count_purchase_order = fields.Integer(string='Purchase Orders', compute='_compute_purchase_orders')
+
+	def _compute_purchase_orders(self):
+		pass
+

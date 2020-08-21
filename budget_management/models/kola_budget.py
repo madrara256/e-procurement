@@ -181,9 +181,6 @@ class BudgetManagement(models.Model):
 			lang = self.env.context.get('lang')
 		return result
 
-
-
-
 	@api.multi
 	def add_followers(self):
 		partner_ids = []
@@ -309,10 +306,6 @@ class BudgetManagement(models.Model):
 			]
 			print(email_list)
 			return ",".join(email_list)
-
-
-
-
 
 	@api.constrains('bm_budget_lines_id.budget_item_state')
 	def _check_budgetline_approvals(self):
