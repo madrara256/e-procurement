@@ -17,6 +17,8 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 CONTRACT_NOTIFY_THRESH = 90.0
 DAYS_IN_A_YEAR = 365.0
 
+receipients = []
+
 
 class kolacontract(models.Model):
 	_name = 'kola.contract'
@@ -44,13 +46,14 @@ class kolacontract(models.Model):
 		return vals.get('alias_model', 'kola.contract')
 
 	state = fields.Selection([
-		('draft', 'Contract Draft'),
-		('validate1', 'Revew & Evaluation(Admin)'),
-		('validate2', 'Procurement Revew'),
+		('draft', 'Draft'),
+		('validate1', 'Review By Admin'),
+		('validate2', 'Review By Procurement'),
 		('validate', 'Running Contracts'),
 		('renew', 'Contract Due To Expire'),
 		('reject', 'Rejected Contracts'),
-		('terminate', 'Terminated Contracts')], string='Status', group_expand='_expand_states',
+		('terminate', 'Terminated Contracts')]
+		, string='Status', group_expand='_expand_states',
 		track_visibility='onchange', help='Status of the contract',
 		default='draft')
 
@@ -103,9 +106,8 @@ class kolacontract(models.Model):
 
 	company_id = fields.Many2one('res.company',
 		default=lambda self: self.env['res.company']._company_default_get('kolacontract'))
-	count_files = fields.Integer(compute='compute_count_files', string='Document(s)')
+	count_files = fields.Integer(compute='compute_count_files', string='Document(s)', attachment=True)
 	department_id = fields.Many2one('hr.department', string='Department')
-
 
 
 	@api.depends('contract_doc')
@@ -169,10 +171,32 @@ class kolacontract(models.Model):
 	#Override ORM methods
 	#---------------------------------------------------------------
 
+	def compute_the_legal_team(self):
+		legal_team = self.env['hr.employee'].search([('active', '=', True), ('department_id.name', 'like', 'Legal')])
+		for record in legal_team:
+			receipients.append(record.work_email)
 
 	#check notification receipients
 	def compute_notification_receipients(self):
-		pass
+		for record in self:
+			if record.state == 'draft':
+				administration = self.env['hr.department'].search([('name', 'like', 'Administration')])
+				user_department = self.env['hr.department'].browse(record.department_id)
+				for record in administration:
+					receipients.append(record.manager_id.work_email)
+				for record in user_department:
+					receipients.append(record.manager_id.work_email)
+
+			elif record.state == 'validate1':
+				pass
+			elif record.state == 'validate':
+				pass
+			elif record.state == 'renew':
+				pass
+			elif record.state == 'reject':
+				pass
+			elif record.state == 'terminate':
+				pass
 
 	def send_email_notification(self, obj):
 		for record in self:
@@ -210,6 +234,7 @@ class kolacontract(models.Model):
 				template_id = self.env.ref('kolacontract.contract_terminate_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
 
 	def _compute_access_url(self):
 		super(kolacontract, self)._compute_access_url()
