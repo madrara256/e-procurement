@@ -10,7 +10,7 @@
 
 	<t t-name="P2PDashboardInventory">
 		<div class="row main-section">
-			<div class="col-md-2 col-sm-4  oh-payslip">
+			<div class="col-md-2 col-sm-4 proc_stock oh-payslip">
 				<div class="oh-card">
 					<div class="oh-card-body">
 						<div class="stat-widget-one">
@@ -22,7 +22,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2 col-sm-4 oh-payslip oh-timesheets">
+			<div class="col-md-2 col-sm-4 proc_contracts oh-payslip oh-timesheets">
 				<div class="oh-card">
 					<div class="oh-card-body">
 						<div class="stat-widget-one">
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2 col-sm-4 oh-payslip oh-contracts">
+			<div class="col-md-2 col-sm-4 oh-payslip oh-contracts proc_requests">
 				<div class="oh-card">
 					<div class="oh-card-body">
 						<div class="stat-widget-one">
@@ -61,7 +61,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2 col-sm-4 oh-payslip oh-broad-factor">
+			<div class="col-md-2 col-sm-4 oh-payslip oh-broad-factor proc_budgets">
 				<div class="oh-card">
 					<div class="oh-card-body">
 						<div class="stat-widget-one">
@@ -74,7 +74,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2 col-sm-4 proc_budgets oh-payslip oh-broad-factor">
+			<div class="col-md-2 col-sm-4 oh-payslip oh-broad-factor">
 				<div class="oh-card">
 					<div class="oh-card-body">
 						<div class="stat-widget-one">
@@ -91,13 +91,13 @@
 	</t>
 
 	<t t-name="P2PDashboardContracts">
-		<div class="row main-section proc_contracts">
+		<div class="row main-section">
 				<div class="col-sm-6 col-lg-6  monthly_leave_graph_view">
 					<div class="oh-card text-color">
 						<div class="oh-card-body pb-0">
 							<h4 class="mb-0">
 							</h4>
-							<p class="stat-head" style="padding : 0px;">Purchases Analysis</p>
+							<p class="stat-head" style="padding : 0px;">Budget Analysis</p>
 						</div>
 						<!-- <div class="budget_summary"/> -->
 					</div>
@@ -219,7 +219,7 @@
 							<div class="oh-card-body pb-0">
 								<p class="stat-title">Purchase Requests</p>
 								<h4 class="mb-0">
-									<!-- <p class="stat-count"><t t-esc="widget.login_employee.leaves_to_approve"/></p> -->
+									<p class="stat-count"><t t-esc="widget.requests"/></p>
 								</h4>
 							</div>
 						</div>
@@ -229,9 +229,9 @@
 						<div class="col-sm-12 col-lg-12 leaves_request_today">
 							<div class=" text-color">
 								<div class="oh-card-body">
-									 <p class="stat-title">Today</p>
+									 <p class="stat-title">New</p>
 									<h4 class="mb-0">
-										<!-- <p class="stat-count"><t t-esc="widget.login_employee.leaves_today"/></p> -->
+										<p class="stat-count"><t t-esc="widget.new_requests"/></p>
 									</h4>
 
 								</div>
@@ -241,10 +241,9 @@
 						<div class="col-sm-12 col-lg-12 leaves_request_month">
 							<div class=" text-color">
 								<div class="oh-card-body">
-									<p class="stat-title">This Month</p>
+									<p class="stat-title">Approved</p>
 									<h4 class="mb-0">
-
-									<!-- <p class="stat-count"><t t-esc="widget.login_employee.leaves_this_month"/></p> -->
+										<p class="stat-count"><t t-esc="widget.approved_requests"/></p>
 									</h4>
 
 								</div>
@@ -261,7 +260,7 @@
 							<div class="oh-card-body pb-0">
 								<p class="stat-title">Contracts Due to Expire</p>
 								 <h4 class="mb-0">
-									<!-- <p class="stat-count"><t t-esc="widget.login_employee.leaves_alloc_req"/></p> -->
+									<p class="stat-count"><t t-esc="widget.contracts_due_to_expire"/></p>
 								</h4>
 							</div>
 						</div>
@@ -271,7 +270,7 @@
 							<div class="oh-card-body pb-0">
 								<p class="stat-title">Running Budget</p>
 								<h4 class="mb-0">
-									<!-- <p class="stat-count"><t t-esc="widget.login_employee.job_applications"/></p> -->
+									<p class="stat-count"><t t-esc="widget.budgets"/></p>
 								</h4>
 
 							</div>
@@ -281,14 +280,14 @@
 				</div>
 				</div>
 				<div class="col-sm-9 col-lg-9">
-					<div class="col-sm-12 col-lg-12  graph_view" style="padding:0">
+					<div class="col-sm-12 col-lg-12  graph_view" style="padding:0px;">
 						<div class="text-color hr-chart-1">
 							<div class="oh-card-body pb-0">
 								<h4 class="mb-0">
 								</h4>
 								<div class="oh-ribbon"><span>Contracts Analysis</span></div>
 							</div>
-							<div class="emp_graph"/>
+							<div class="contracts_graph"/>
 						</div>
 					</div>
 				</div>
@@ -303,15 +302,15 @@
 	<t t-name="P2PDashboardPurchaseOrder">
 		<div class="employee_dashboard_main">
 			<div class="row main-section">
-				<div class="col-sm-12 col-lg-12" style="padding-right: 0;">
-					<div class="col-sm-12 col-lg-12  graph_view" style="padding:0">
+				<div class="col-sm-12 col-lg-12">
+					<div class="col-sm-12 col-lg-12  graph_view" style="padding:0px">
 						<div class="text-color hr-chart-1">
 							<div class="oh-card-body pb-0">
 								<h4 class="mb-0">
 								</h4>
-								<div class="stat-head"><span>Budget Analysis</span></div>
+								<div class="stat-head"><span>Purchase Analysis</span></div>
 							</div>
-							<div class="emp_graph"/>
+							<div class="purchase_analysis" style="padding-left: 120px;"/>
 						</div>
 					</div>
 				</div>

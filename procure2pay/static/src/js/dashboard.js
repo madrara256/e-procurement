@@ -1,4 +1,4 @@
-odoo.define('budget_management', function (require) {
+odoo.define('procure2pay', function (require) {
 "use strict";
 
 var AbstractAction = require('web.AbstractAction');
@@ -259,7 +259,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 			views: [[false, 'kanban'], [false, 'form']],
 			domain: [],
 			target: 'current',
-		},options)
+		}, options)
 	},
 
 	requests_trends: function(e){
@@ -557,45 +557,51 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 				pieDim.r = Math.min(pieDim.w, pieDim.h) / 2;
 
 				//console.log('creating svg for pieChart')
-				var piesvg = d3.select(id).append("svg")
+				var piesvg = d3.select(id)
+				.append("svg")
 					.attr("width", pieDim.w).attr("height", pieDim.h).append("g")
 					.attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
 
 				// create function to draw the arcs of the pie slices.
-				var arc = d3.svg.arc().outerRadius(pieDim.r - 10).innerRadius(0);
+				var arc = d3.svg.arc()
+					.outerRadius(pieDim.r - 70)
+					.innerRadius(pieDim.r);
 
 				//create a function to compute the pie slice angles.
-				var pie = d3.layout.pie().sort(null).value(function(d) {
-					return d['amount'];
+				var pie = d3.layout.pie()
+					.sort(null).value(function(d) {
+						return d['amount'];
 				});
 
 				// Draw the pie slices.
-				piesvg.selectAll("path").data(pie(fstate)).enter().append("path").attr("d", arc)
+				piesvg.selectAll("path")
+				.data(pie(fstate))
+				.enter().append("path").attr("d", arc)
 					.each(function(d) { this._current = d['amount']; })
 					.attr("fill", function(d, i){return color(i);});
 					// .on("mouseover",mouseover).on("mouseout",mouseout)
 
 				// create function to update pie-chart. This will be used by histogram.
-					pC.update = function(nD){
-						piesvg.selectAll("path").data(pie(nD)).transition().duration(500)
-							.attrTween("d", arcTween);
-						}
-					function mouseover(d, i){
-						// call the update function of histogram with new data.
-						//hG.update(fData.map(function(v){
-						//return [v.l_month,v.leave[d.data.type]];}),color(i));
+				pC.update = function(nD){
+					piesvg.selectAll("path").data(pie(nD)).transition().duration(500)
+						.attrTween("d", arcTween);
 					}
-					//Utility function to be called on mouseout a pie slice.
-					function mouseout(d){
-						// call the update function of histogram with all data.
-						//hG.update(fData.map(function(v){
-						//return [v.l_month,v.total];}), barColor);
-					}
-					function arcTween(a) {
-						var i = d3.interpolate(this._current, a);
-						this._current = i(0);
-						return function(t) { return arc(i(t));    };
-					}
+				function mouseover(d, i){
+					// call the update function of histogram with new data.
+					//hG.update(fData.map(function(v){
+					//return [v.l_month,v.leave[d.data.type]];}),color(i));
+				}
+				//Utility function to be called on mouseout a pie slice.
+				function mouseout(d){
+					// call the update function of histogram with all data.
+					//hG.update(fData.map(function(v){
+					//return [v.l_month,v.total];}), barColor);
+				}
+				function arcTween(a) {
+					var i = d3.interpolate(this._current, a);
+					this._current = i(0);
+					return function(t) { return arc(i(t));    };
+				}
 
 				return pC;
 			}
@@ -752,8 +758,8 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 	render_contract_trends: function(){
 		var self = this;
-		var w = 200;
-		var h = 200;
+		var w = 300;
+		var h = 300;
 		var r = h/2;
 		var elem = this.$('.contracts_graph');
 
@@ -767,10 +773,34 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 		}).then(function(data){
 			var segColor = {};
-			var vis =  d3.select(elem[0]).append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
-			var pie = d3.layout.pie().value(function(d){return d.value;});
-			var arc = d3.svg.arc().outerRadius(r);
-			var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+
+			var vis =  d3
+				.select(elem[0])
+				.append("svg:svg")
+				.data([data])
+				.attr("width", w)
+				.attr("height", h)
+				.append("svg:g")
+				.attr("transform", "translate(" + r + "," + r + ")");
+
+			var pie = d3.layout
+				.pie()
+				.value(function(d){
+					return d.value;
+				});
+
+			var arc = d3.svg.arc()
+				.outerRadius(r)
+				.innerRadius(r-100);
+
+			var arcs = vis.selectAll("g.slice")
+				.data(pie).enter()
+				.append("svg:g")
+				.attr("class", "slice")
+				.attr("stroke", "white")
+				.style("stroke-width", "2px")
+				.style("opacity", 0.7);
+
 			arcs.append("svg:path")
 				.attr("fill", function(d, i){
 					return color(i);
@@ -779,22 +809,30 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 					return arc(d);
 				});
 
-			var legend = d3.select(elem[0]).append("table").attr('class','legend');
+			arcs.append("text")
+				.append("transform", function(d){
+					return "translate("+label.centroid(d)+")";
+				})
+				.text(function(d){
+					return d.label
+				})
 
-			// create one row per segment.
-			var tr = legend.append("tbody").selectAll("tr").data(data).enter().append("tr");
+			// var legend = d3.select(elem[0]).append("table").attr('class','legend');
 
-			// create the first column for each segment.
-			tr.append("td").append("svg").attr("width", '16').attr("height", '16').append("rect")
-				.attr("width", '16').attr("height", '16')
-				.attr("fill",function(d, i){ return color(i) });
+			// // create one row per segment.
+			// var tr = legend.append("tbody").selectAll("tr").data(data).enter().append("tr");
 
-			// create the second column for each segment.
-			tr.append("td").text(function(d){ return d.label;});
+			// // create the first column for each segment.
+			// tr.append("td").append("svg").attr("width", '16').attr("height", '16').append("rect")
+			// 	.attr("width", '16').attr("height", '10')
+			// 	.attr("fill",function(d, i){ return color(i) });
 
-			// create the third column for each segment.
-			tr.append("td").attr("class",'legendFreq')
-				.text(function(d){ return d.value;});
+			// // create the second column for each segment.
+			// tr.append("td").text(function(d){ return d.label;});
+
+			// // create the third column for each segment.
+			// tr.append("td").attr("class",'legendFreq')
+			// 	.text(function(d){ return d.value;});
 		});
 	},
 

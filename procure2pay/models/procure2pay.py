@@ -118,14 +118,14 @@ class KolaContract(models.Model):
 			cr.execute("""
 			select kola_contract.state, count(*)
 			from kola_contract
-			group by kola_contract.state""")
-
+			group by kola_contract.state
+			""")
 			dat = cr.fetchall()
 			print(dat)
 			data = []
 			for i in range(0, len(dat)):
 				data.append({'label': dat[i][0], 'value':dat[i][1]})
-			#print(data)
+			print(data)
 			return data
 		else:
 			return False

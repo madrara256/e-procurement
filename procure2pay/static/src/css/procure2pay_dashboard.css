@@ -126,7 +126,7 @@ rect:hover {  fill:#934da5; }
 	overflow: scroll;
 	margin-left: 112px;
 	margin-top: 77px;
-	margin-bottom: -97px
+	margin-bottom: -50px
 
 }
 .legend td, .legend .legend_col{
@@ -535,17 +535,18 @@ h4 .stat-count {
 	color:#fff !important;
 }
 .graph_view .legend {
-	margin-bottom: -49px !important;
 	display: inline-block;
 	border-collapse: collapse;
 	border-spacing: 0px;
-	margin-left: 90px !important;
-	margin-top: 77px !important;
+	margin-left: 70px !important;
+	margin-top: 20px !important;
+
 }
 .hr-chart-1{
 	margin: 15px 0px;
 	background: #fff;
 	padding: 0px !important;
+	margin-bottom: -29px;
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
 	will-change: transform, box-shadow;
 	box-shadow: 0 10px 40px 0 rgba(62,57,107,0.07), 0 2px 9px 0 rgba(62,57,107,0.06);
@@ -567,6 +568,14 @@ h4 .stat-count {
 	height: auto;
 	padding-bottom: 65px;
 	text-align: center !important;
+}
+.contracts_graph {
+	padding-left: 15px;
+	padding-top: 15px;
+	height: auto;
+	margin-left: 100px;
+	padding-bottom: 15px;
+	text-align: left !important;
 }
 .hr_leave_allocations_approve p {
 	font-size: 14px;

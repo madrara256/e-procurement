@@ -1,6 +1,6 @@
 <odoo>
 	<data>
-		<menuitem name="Procurement System" id="procure2pay_root_menu"
+		<menuitem name="e-Procurement" id="procure2pay_root_menu"
 		web_icon="procure2pay,static/description/icon.png"/>
 
 		<menuitem
