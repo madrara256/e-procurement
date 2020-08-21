@@ -79,7 +79,7 @@ class StockMoveLine(models.Model):
 		in the default product UoM. This code has been added to raise an error if a write is made given a value
 		for `product_qty`, where the same write should set the `product_uom_qty` field instead, in order to
 		detect errors. """
-		raise UserError(_('The requested operation cannot be processed because of a programming error setting the `product_qty` field instead of the `product_uom_qty`.'))
+		raise UserError(_('The requested operations cannot be processed because of a programming error setting the `product_qty` field instead of the `product_uom_qty`.'))
 
 	@api.constrains('product_uom_qty')
 	def check_reserved_done_quantity(self):

@@ -33,7 +33,7 @@ class StockMove(models.Model):
 	date = fields.Datetime(
 		'Date', default=fields.Datetime.now, index=True, required=True,
 		states={'done': [('readonly', True)]},
-		help="Move date: scheduled date until move is done, then date of actual move processing")
+		help="Move date: scheduled date until move is done, then date of actual move processings")
 	company_id = fields.Many2one(
 		'res.company', 'Company',
 		default=lambda self: self.env['res.company']._company_default_get('stock.move'),

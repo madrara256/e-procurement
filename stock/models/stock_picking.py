@@ -238,7 +238,7 @@ class Picking(models.Model):
 	location_dest_id = fields.Many2one(
 		'stock.location', "Destination Location",
 		default=lambda self: self.env['stock.picking.type'].browse(self._context.get('default_picking_type_id')).default_location_dest_id,
-		readonly=True, required=True,
+		readonly=False, required=True,
 		states={'draft': [('readonly', False)]})
 	move_lines = fields.One2many('stock.move', 'picking_id', string="Stock Moves", copy=True)
 	move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Stock moves not in package", domain=['|',('package_level_id', '=', False), ('picking_type_entire_packs', '=', False)])

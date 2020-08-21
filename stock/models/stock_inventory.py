@@ -30,7 +30,7 @@ class Inventory(models.Model):
 		readonly=True, required=True,
 		default=fields.Datetime.now,
 		help="If the inventory adjustment is not validated, date at which the theoritical quantities have been checked.\n"
-			 "If the inventory adjustment is validated, date at which the inventory adjustment has been validated.")
+			 "If the inventory adjustment is validated, date at which the inventory adjustment has been validated watch.")
 	line_ids = fields.One2many(
 		'stock.inventory.line', 'inventory_id', string='Inventories',
 		copy=True, readonly=False,

@@ -73,7 +73,7 @@ class StockScrap(models.Model):
 
 	def unlink(self):
 		if 'done' in self.mapped('state'):
-			raise UserError(_('You cannot delete a scrap which is done.'))
+			raise UserError(_('You cannot delete a scrap which is in done state.'))
 		return super(StockScrap, self).unlink()
 
 	def _get_origin_moves(self):

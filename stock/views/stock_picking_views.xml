@@ -262,7 +262,7 @@
 							<field name="partner_id"/>
 							<field name="location_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '=', 'incoming')]}" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"/>
 							<field name="location_dest_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"/>
-							<field name="picking_type_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+							<field name="picking_type_id"/>
 							<field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
 						</group>
 						<group>
@@ -596,9 +596,6 @@
 			  <p class="o_view_nocontent_smiling_face">
 				Create a new stock operation
 			  </p><p>
-				Most operations are prepared automatically by Odoo according
-				to your preconfigured logistics rules, but you can also record
-				manual stock movements.
 			  </p>
 			</field>
 		</record>

@@ -24,7 +24,7 @@ class ProductionLot(models.Model):
 	product_qty = fields.Float('Quantity', compute='_product_qty')
 
 	_sql_constraints = [
-		('name_ref_uniq', 'unique (name, product_id)', 'The combination of serial number and product must be unique !'),
+		('name_ref_uniq', 'unique (name, product_id)', 'The combination of serial number and product must always be unique !'),
 	]
 
 	@api.model_create_multi
