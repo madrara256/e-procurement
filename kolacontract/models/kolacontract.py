@@ -5,6 +5,7 @@ from datetime import datetime,timedelta,date
 from odoo.exceptions import UserError, AccessError, ValidationError
 import math
 from odoo.http import request
+from werkzeug import url_encode
 
 AVAILABLE_RATINGS = [
 	('1', 'Poor'),
@@ -47,8 +48,9 @@ class kolacontract(models.Model):
 
 	state = fields.Selection([
 		('draft', 'Draft'),
-		('validate1', 'Review By Admin'),
-		('validate2', 'Review By Procurement'),
+		('validate1', 'To Procurement'),
+		('validate2', 'To Legal'),
+		('validate3', 'To Sign Off'),
 		('validate', 'Running Contracts'),
 		('renew', 'Contract Due To Expire'),
 		('reject', 'Rejected Contracts'),
@@ -62,10 +64,12 @@ class kolacontract(models.Model):
 
 	name  = fields.Char(string='Contract Reference', default='New', required=True, track_visibility='onchange')
 	product_id = fields.Many2one('product.product', string='Service', track_visibility='onchange')
-	date_from = fields.Datetime(string='Start Date', track_visibility='onchange')
+	date_from = fields.Datetime(string='Period', track_visibility='onchange')
 	date_to = fields.Datetime(string='End Date', track_visibility='onchange')
 	duration = fields.Float(string='Duration of Contract', compute='_compute_duration', track_visibility='onchange',store=True)
-	user_id = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user.id)
+
+	user_id = fields.Many2one('res.users','Current User', default=lambda self: self.env.user)
+
 	amount = fields.Float(string='Amount', compute='_compute_contract_total')
 	number_of_days_due = fields.Float(string='Number of Days Left', track_visibility='onchange', compute='_compute_days_left_to_expire', store=True,)
 
@@ -108,13 +112,32 @@ class kolacontract(models.Model):
 		default=lambda self: self.env['res.company']._company_default_get('kolacontract'))
 	count_files = fields.Integer(compute='compute_count_files', string='Document(s)', attachment=True)
 	department_id = fields.Many2one('hr.department', string='Department')
+	comments_admin = fields.Html(string='Comments')
+	comments_user_department = fields.Html(string='Comments')
+	procurement_minute_extracts = fields.Binary(string='Minute Extracts', attachment=True)
 
+	def _compute_access_url(self):
+		action = self.env.ref('kolacontract.kolacontract_action').id
+		form_view_id = self.env.ref('kolacontract.kolacontract_form').id
+		for record in self:
+			url_params = {
+				'view_type': 'form',
+				'model':'kolacontract.kola_contract',
+				'id':record.id,
+				'active_id':record.id,
+				'view_id': form_view_id,
+				'action': action
+			}
+			url = '/web?#%s' %url_encode(url_params)
+			record.contract_url = url
+	contract_url = fields.Char(string='Contract Url', compute='_compute_access_url')
+	digital_signature = fields.Binary(string='Signature',oldname="signature_image",
+						attachment=True)
 
 	@api.depends('contract_doc')
 	def compute_count_files(self):
 		for record in self:
 			record.count_files = len(record.contract_doc)
-
 
 	@api.onchange('user_id')
 	def _onchange_user_id(self):
@@ -206,27 +229,32 @@ class kolacontract(models.Model):
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			elif record.state == 'validate1':
-				template_id = self.env.ref('kolacontract.contract_review_mail_template')
+				template_id = self.env.ref('kolacontract.contract_proc_review_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			elif record.state == 'validate2':
-				template_id = self.env.ref('kolacontract.contract_review_procurement_mail_template')
+				template_id = self.env.ref('kolacontract.contract_legal_review_mail_template')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate3':
+				template_id = self.env.ref('kolacontract.contract_signoff_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			elif record.state == 'validate':
-				template_id = self.env.ref('kolacontract.contract_running_mail_template')
+				template_id = self.env.ref('kolacontract.contract_signed_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			elif record.state == 'renew':
-				template_id = self.env.ref('kolacontract.contract_expire_mail_template')
+				template_id = self.env.ref('kolacontract.contract_renew_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			elif record.state == 'reject':
-				template_id = self.env.ref('kolacontract.contract_expire_mail_template')
+				template_id = self.env.ref('kolacontract.contract_reject_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
@@ -259,10 +287,10 @@ class kolacontract(models.Model):
 		# 	raise AccessError(_('You do not have rights!'))
 		if values.get('name', 'New') == 'New':
 			values['name'] = self.env['ir.sequence'].next_by_code('contract.sequence') or 'New'
-		contract = super(kolacontract, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)).create(values)
-		self.send_email_notification(contract)
+		if len(values.get('kolacontract_line_id')) > 1:
+			raise ValidationError(_('Record limit Exceeded!'))
+		contract = super(kolacontract, self).create(values)
 		return contract
-
 
 	@api.multi
 	def write(self, values):
@@ -273,6 +301,13 @@ class kolacontract(models.Model):
 			if (new_state in ['draft']) and (not self.env.user.has_group('kolacontract.kola_contract_ict_admin')):
 				raise ValidationError(_('You don\'t have the rights to perform this actions \n'
 					'Please contact system administrator'))
+		for record in self:
+			if len(record.kolacontract_line_id) > 1:
+				raise ValidationError(_('Record limit Exceeded!'))
+		for record in self:
+			if record.state == 'validate2' and len(record.procurement_minute_extracts) > 0:
+				#trigger email to be sent/functionality to be completed
+				pass
 		result = super(kolacontract, self).write(values)
 		#self.add_follower(user_id)
 		return result
@@ -351,35 +386,79 @@ class kolacontract(models.Model):
 		for record in all_contracts:
 			if record.state == 'validate':
 				if self._compute_thresh_hold_for_notification():
-					template_obj = self.env['mail.mail']
-					template_data = {
-					'subject': 'Contracts Due to Expire '+ str(today_date),
-					'body_html': """<p>Dear Team</p>
-					<p>Contract by Company """+str(record.contractor_id.name)+"""</p>
-					<p>has """+str(record.duration)+" days to Expire"+"""</p>
-					<p>Best Regards</p>"""+"<p>Finance Trust Bank</p>",
-					'email_from': su_id.email,
-					'email_to': ", ".join(recipients)}
-					template_id = template_obj.create(template_data)
-					template_id.sudo().send()
+					#send mail when contracts are due to expire
+					pass
+
+
 
 	@api.multi
-	def contract_review(self):
+	def contract_review_by_procurement(self):
 		if any(contract.state != 'draft' for contract  in self):
-			raise ValidationError(_('Contract must be drafted first before Review & Evaluation'))
+			raise ValidationError(_('Contract must be Reviewed by Administration'))
 		self.write({
 			'state':'validate1'
 			})
 		self.send_email_notification(self)
 
 	@api.multi
-	def contract_approval(self, stage_id):
+	def contract_share(self):
+		self.ensure_one()
+		ir_model_data = self.env['ir.model.data']
+		try:
+			template_id = ir_model_data.get_object_reference('kolacontract', 'contract_share_mail_template')[1]
+		except ValueError:
+			template_id = False
+		try:
+			compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
+		except ValueError:
+			compose_form_id = False
+		ctx = {
+			'default_model':'kola.contract',
+			'default_res_id':self.ids[0],
+			'default_use_template':bool(template_id),
+			'default_template_id': template_id,
+			'default_composition_mode': 'comment',
+			'mark_so_as_sent':True,
+			'force_email': True
+		}
+
+		return {
+			'type': 'ir.actions.act_window',
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'mail.compose.message',
+			'views':[(compose_form_id, 'form')],
+			'view_id': compose_form_id,
+			'target': 'new',
+			'context': ctx,
+		}
+
+
+	@api.multi
+	def contract_review_by_legal(self):
 		if any(contract.state != 'validate1' for contract in self):
-			raise ValidationError(_('Contract must be Negotiated first before Approval is done'))
-		self.write({
-			'state':'validate'
-			})
-		self.send_email_notification(self)
+			raise ValidationError(_('Contract must be Reviewed by Procure before Legal Reviews'))
+		else:
+			self.write({'state': 'validate2'})
+			self.send_email_notification(self)
+
+	#this sign off is either by the MD/ED with the rights
+	@api.multi
+	def contract_signoff(self):
+		if any(contract.state != 'validate2' for contract in self):
+			raise ValidationError(_('Contract must be Reviewed by Legal before Sign Off'))
+		else:
+			self.write({'state': 'validate3'})
+			self.send_email_notification(self)
+
+	@api.multi
+	def contract_validattion(self):
+		if any(contract.state != 'validate3' for contract in self):
+			raise ValidationError(_('Contract must signed off before it is set to Running'))
+		else:
+			self.write({'state':'validate'})
+			self.send_email_notification(self)
+
 
 	@api.multi
 	def contract_termination(self):
@@ -404,7 +483,7 @@ class kolacontract(models.Model):
 
 	@api.multi
 	def contract_renewal(self):
-		if any(contract.state not in ['running','terminate'] for contract in self):
+		if any(contract.state not in ['validate',] for contract in self):
 			raise ValidationError(_('Contract must be either running or terminated before it can be renewed'))
 		self.write({
 			'state':'renew'
@@ -413,7 +492,7 @@ class kolacontract(models.Model):
 
 	@api.multi
 	def contract_rejection(self):
-		if any(contract.state not in ['draft', 'validate1'] for contract in self):
+		if any(contract.state not in ['draft', 'validate1', 'validate2', 'validate3'] for contract in self):
 			raise ValidationError(_('Contract must be either drafted, Reviewed or Negotiated before it can be rejected'))
 		self.write({
 				'state':'reject'

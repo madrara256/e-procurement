@@ -18,42 +18,63 @@ class KolaContractTerminate(models.Model):
 	#----------------------------------------------------------
 
 	contract_id = fields.Many2one(
-									'kola.contract',
-									string='Contract', domain=[('state', 'in', ('validate', 'renew'))])
+		'kola.contract',
+		string='Contract', domain=[('state', 'in', ('validate', 'renew'))])
 	date_from = fields.Datetime(
-								string='Start Date',
-								related='contract_id.date_from',
-								readonly=True, store=True,)
+		string='Period',
+		related='contract_id.date_from', readonly=True, store=True,)
 	date_to = fields.Datetime(
-								string='End Date',
-								related='contract_id.date_to',
-								readonly=True, store=True,)
+		string='End Date',related='contract_id.date_to',readonly=True, store=True,)
 	amount = fields.Float(
-							string='Amount',
-							related='contract_id.amount', readonly=True, store=True,)
+		string='Amount',
+		related='contract_id.amount', readonly=True, store=True,)
 	ratings = fields.Selection('Rating', related='contract_id.ratings', readonly=True, store=True,)
 	image_medium = fields.Binary(string='Photo', related='contract_id.image_medium', readonly=True, store=True,)
 	state = fields.Selection(
-								[
-									('draft', 'Draft'),
-									('confirm', 'Review By Admin'),
-									('validate1', 'Review By Procurement'),
-									('validate2', 'Legal'),
-									('validate3', 'Sign Off'),
-									('validate', 'Signed'),
-									('reject', 'Rejected')
-								],
-								string='States',
-								group_expand='_expand_states',
-								track_visibility='onchange',
-								help='Help track contract termination process',
-								default='draft')
-	kolacontract_line_terminate_id = fields.One2many(
-														'kolacontract.terminate.line',
-														'kolacontract_terminate_id',
-														string='Contract Terminate line')
+		[
+			('draft', 'Draft'),
+			('confirm', 'To Admin'),
+			('validate1', 'To Procurement'),
+			('validate2', 'To Legal'),
+			('validate3', 'To Sign Off'),
+			('validate', 'Signed'),
+			('reject', 'Rejected')
+		],
+		string='States',
+		group_expand='_expand_states',
+		track_visibility='onchange',
+		help='Help track contract termination process',
+		default='draft')
+	kolacontract_line_terminate_id = fields.One2many('kolacontract.terminate.line',
+		'kolacontract_terminate_id',
+		string='Contract Terminate line')
 	active = fields.Boolean(string='Active', default=True)
 	department_id = fields.Many2one('hr.department', string='Department')
+	contract_doc = fields.Many2many('ir.attachment',string='Attach a file(s)')
+	count_files = fields.Integer(compute='compute_count_files', string='Document(s)', attachment=True)
+
+	def _compute_access_url(self):
+		action = self.env.ref('kolacontract.kolacontract_action').id
+		form_view_id = self.env.ref('kolacontract.kolacontract_form').id
+		for record in self:
+			url_params = {
+				'view_type': 'form',
+				'model':'kolacontract.kola_contract',
+				'id':record.id,
+				'active_id':record.id,
+				'view_id': form_view_id,
+				'action': action
+			}
+			url = '/web?#%s' %url_encode(url_params)
+			record.contract_url = url
+	contract_url = fields.Char(string='Contract Url', compute='_compute_access_url')
+
+
+	@api.depends('contract_doc')
+	def compute_count_files(self):
+		for record in self:
+			record.count_files = len(record.contract_doc)
+
 
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]
@@ -62,11 +83,41 @@ class KolaContractTerminate(models.Model):
 		#check the department raising the request,legal & administration head/supervisor
 		pass
 
+	def send_email_notification(self, obj):
+		for record in self:
+			if record.state == 'draft':
+				template_id = self.env.ref('kolacontract.con_terminate_draft')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
-	@api.multi
-	def send_by_email(self):
-		pass
+			elif record.state == 'confirm':
+				template_id = self.env.ref('kolacontract.con_terminate_confirm')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
+			elif record.state == 'validate1':
+				template_id = self.env.ref('kolacontract.con_terminate_proc_review')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate2':
+				template_id = self.env.ref('kolacontract.con_terminate_legal_review')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate3':
+				template_id = self.env.ref('kolacontract.con_terminate_signoff')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			elif record.state == 'validate':
+				template_id = self.env.ref('kolacontract.con_terminate_signoff_confirm')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+			elif record.state == 'reject':
+				template_id = self.env.ref('kolacontract.con_terminate_signoff_rejected')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 	#--------------------------------------------------------
 	#Override CRUD
@@ -96,37 +147,38 @@ class KolaContractTerminate(models.Model):
 	@api.multi
 	def confirm_terminate(self):
 		if any(contract.state != 'draft' for contract in self):
-			raise ValidationError('Contract must be raised by user department before it can be reviewed by Administration \n'+
+			raise ValidationError('Contract termination draft must be raised by user department \n'+
 			'Please Contact your System Administrator')
 		self.write({'state':'confirm'})
 
 	@api.multi
 	def review_termination_by_admin(self):
 		if any(contract.state != 'confirm' for contract in self):
-			raise ValidationError('Contract must be reviewed by Administration before it can be reviewed by Procurement \n'+
+			raise ValidationError('Contract termnation must be drafted first before it can be Reviewed by Administration \n'+
 			'Please contact your System Administrator')
 		self.write({'state':'validate1'})
 
 	@api.multi
 	def review_by_procurement(self):
 		if any(contract.state != 'validate1' for contract in self):
-			raise ValidationError('Contract must be Reviewed by Procurement before Legal \n'+
-			'Please Contact your System Administrator')
+			raise ValidationError(_('Contract must be Reviewed by Procurement before Legal \n'+
+			'Please Contact your System Administrator'))
 		self.write({'state': 'validate2'})
 
 	@api.multi
-	def validate_terminate(self):
+	def review_by_legal(self):
 		if any(contract.state != 'validate2' for contract in self):
-			raise ValidationError('Contract must be Reviewed by Legal before it can be Signed Off \n'+
-			'Please Contact your System Administrator')
+			raise ValidationError(_('Contract must be Reviewed by Procurement before Legal Review \n'+
+			'Please Contact your System Administrator'))
 		self.write({'state':'validate3'})
 
 	@api.multi
 	def sign_off_termination(self):
 		if any(contract.state != 'validate2' for contract in self):
-			raise ValidationError('Contract termination must be drafted by Legal before it can be Signed Off \n'+
-			'Please Contact Your System Administrator')
+			raise ValidationError(_('Contract termination must be drafted by Legal before it can be Signed Off \n'+
+			'Please Contact Your System Administrator'))
 		self.write({'state':'validate'})
+
 
 	@api.multi
 	def reject_terminate(self):
