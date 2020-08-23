@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="expiry_mail_template" model="mail.template">
+			<field name="name">Contract Expiry</field>
+			<field name="model_id" ref="kolacontract.model_kola_contract"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Contract Expiry</field>
+			<field name="body_html"><![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Expiry</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Contract Expiry
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract for ${object.department_id.name} Department <br/>
+															by Contractor ${object.contractor_id.name} is set to expire<br/>
+															with ${object.number_of_days_due} days left to the expiry date<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+	</data>
+</odoo>

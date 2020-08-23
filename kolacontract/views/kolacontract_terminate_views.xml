@@ -21,25 +21,39 @@
 					<header>
 						<button string="Submit to Admin" name="confirm_terminate" type="object"
 							class="oe_highlight"
-							attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
+							attrs="{'invisible':[('state', '!=', 'draft')]}"/>
 
 						<button string="Submit to Procurement" name="review_by_procurement" type="object"
 							class="oe_highlight"
-							attrs="{'invisible': [('state', '!=', 'validate1')]}"/>
+							attrs="{'invisible': [('state', '!=', 'confirm')]}"/>
 
-						<button string="Submit for Sign Off" name="review_by_legal" type="object"
+						<button string="Submit to Legal" name="review_by_legal" type="object"
 							class="oe_highlight"
-							attrs="{'invisible':[('state', '!=', 'validate2')]}"/>
+							attrs="{'invisible':[('state', '!=', 'validate1')]}"/>
 
-						<button string="Approve Termination" name="sign_off_termination" type="object"
+						<button name="send_for_termination" states="state" string="Send for Sign Off" type="object"
+							class="oe_highlight"
+							attrs="{'invisible': [('state', '!=', 'validate2')]}"/>
+
+						<button string="Approve Termination" name="approve_termination" type="object"
 							class="oe_highlight"
 							attrs="{'invisible':[('state', '!=', 'validate3')]}"/>
 
-						<button string="Send By Email" name="send_by_email" type="object"
-							class="oe_highlight"/>
+						<button name="contract_termination_share" states="state" string="Share with Admin/Department" type="object"
+							class="oe_highlight"
+							attrs="{'invisible': [('state', '!=', 'validate2')]}"
+							groups="kolacontract.kola_contract_legal"/>
 
-						<button string="Reject" name="reject_terminate" type="object"
-							class="oe_highlight btn-danger"/>
+						<button name="send_contract_back_astep" string="Send Back" type="object" class="oe_highlight"
+							attrs="{'invisible': [('state', '=', 'draft')]}"/>
+
+						<!-- <button string="Send By Email" name="send_by_email" type="object"
+							class="oe_highlight"/> -->
+
+						<button string="Refuse Termination" name="reject_terminate" type="object"
+							class="oe_highlight btn-danger"
+							attrs="{'invisible':[('state', '!=', 'validate3')]}"
+							groups="kolacontract.kola_contract_legal"/>
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate1,validate2,validate3,validate" clickable="False"/>
 					</header>
@@ -73,9 +87,33 @@
 							<page string="Contract line">
 								<field name="kolacontract_line_terminate_id" widget="one2many">
 									<tree string="Contract lines" editable="button">
+										<field name="currency_id" invisible="1"/>
 										<field name="product_id"/>
+										<field name="description"/>
+										<field name="product_category" invisible="0" options="{'o_create':True}"/>
+										<field name="total_qnty"/>
+										<field name="unit_cost" widget="monetary" options="{'currency_field':'currency_id'}"/>
+										<field name="total_amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
 									</tree>
 								</field>
+							</page>
+							<page string="Terms &amp; Conditions">
+								<group>
+									<group>
+										<field name="procurement_minute_extracts" groups="kolacontract.kola_contract_legal"/>
+									</group>
+									<group>
+										<field name="digital_signature" widget="signature"/>
+									</group>
+								</group>
+							</page>
+							<page string="Comments">
+								<group attrs="{'invisible':[('state', '!=', 'validate2')], 'required':[('state', '=', 'validate3')]}" groups="kolacontract.kola_contract_administration,kolacontract.kola_contract_legal">
+									<field name="comments_admin" string="Admin Comments"/>
+								</group>
+								<group attrs="{'invisible':[('state', '!=', 'validate2')], 'required':[('state', '=', 'validate3')]}" groups="kolacontract.kola_contract_user,kolacontract.kola_contract_legal">
+									<field name="comments_user_department" string="User Department"/>
+								</group>
 							</page>
 						</notebook>
 					</sheet>
@@ -126,8 +164,6 @@
 											</div>
 											<div class="o_kanban_record_body">
 												<span style="font-size:14px;font-weight:normal; font-family:Arial;">
-													<!-- <div class="o_primary"><field name=""/>
-													</div> -->
 												</span>
 											</div>
 											<div class="row">
@@ -146,24 +182,21 @@
 												<div class="col-xl-6 o_kanban_primary_right">
 													<t t-if="record.state.raw_value == 'draft'">
 														<button class="btn btn-sm btn-block btn-primary" name="confirm_terminate" type="object">Submit to Admin</button>
-														<button class="btn btn-sm btn-block btn-danger" name="reject_terminate" type="object">Reject</button>
 													</t>
 
 													<t t-if="record.state.raw_value == 'confirm'">
 														<button class="btn btn-sm btn-block btn-primary" name="review_termination_by_admin" type="object">Submit to Procurement</button>
-														<button class="btn btn-sm btn-block btn-danger" name="reject_terminate" type="object">Reject</button>
+														<button class="btn btn-sm btn-block btn-primary" name="send_contract_back_astep" type="object">Send Back</button>
 													</t>
 
 													<t t-if="record.state.raw_value == 'validate1'">
 														<button class="btn btn-sm btn-block btn-primary" name="review_by_procurement" type="object">Submit to Legal</button>
-														<button class="btn btn-sm btn-block btn-danger" name="reject_terminate" type="object">Reject</button>
-														<button class="btn btn-sm btn-block btn-primary" name="confirm_terminate" type="object">Reset to Draft</button>
+														<button class="btn btn-sm btn-block btn-primary" name="send_contract_back_astep" type="object">Send Back</button>
 													</t>
 
 													<t t-if="record.state.raw_value == 'validate2'">
 														<button class="btn btn-sm btn-block btn-primary" name="review_by_legal" type="object">Submit for Sign Off</button>
-														<button class="btn btn-sm btn-block btn-danger" name="reject_terminate" type="object">Reject</button>
-														<button class="btn btn-sm btn-block btn-primary" name="confirm_terminate" type="object">Reset to Draft</button>
+														<button class="btn btn-sm btn-block btn-primary" name="send_contract_back_astep" type="object">Send Back</button>
 													</t>
 
 													<t t-if="record.state.raw_value == 'validate3'">

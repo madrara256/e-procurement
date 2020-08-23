@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="contract_evaluate_tree">
+			<field name="name">contract.evaluate.tree</field>
+			<field name="model">kolacontract.evaluate</field>
+			<field name="arch" type="xml">
+				<tree string="Contract Evaluation">
+					<field name="contract_id"/>
+					<field name="department_id"/>
+					<field name="evaluation_date" widget="date"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="contract_evaluate_form">
+			<field name="name">contract.evaluate.form</field>
+			<field name="model">kolacontract.evaluate</field>
+			<field name="arch" type="xml">
+				<form string="Contract Evaluation">
+					<sheet>
+						<group>
+							<group>
+								<field name="contract_id" options="{'no_create':True}"/>
+								<field name="department_id" options="{'no_create':True}"/>
+							</group>
+							<group>
+								<field name="evaluation_date" widget="date"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="contract_evaluate_kanban">
+			<field name="name">contract.evaluate.kanban</field>
+			<field name="model">kolacontract.evaluate</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
+					<field name="contract_id"/>
+					<field name="department_id"/>
+					<field name="evaluation_date"/>
+					<field name="state"/>
+					<templates>
+						<t t-name="kanban-box">
+						</t>
+					</templates>
+					<searchpanel>
+						<field name="state"/>
+						<field name="department_id"/>
+					</searchpanel>
+				</kanban>
+			</field>
+		</record>
+
+		<record id="kolaevaluate_action" model="ir.actions.act_window">
+			<field name="name">Evaluate Contract</field>
+			<field name="res_model">kolacontract.evaluate</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form,graph,pivot</field>
+			<field name="help" type="xml">
+				<p class="o_view_nocontent_smiling_face">
+					Contract Evaluations Process
+				</p>
+				<p>
+					Generate Evaluation templates for a contracts to renew/running contracts
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="contract_evaluate_menu"
+			name="Evaluate Contract"
+			parent="kolacontract_report_menu"
+			action="kolaevaluate_action"
+			sequence="0"/>
+	</data>
+</odoo>

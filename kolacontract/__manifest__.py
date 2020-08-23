@@ -3,11 +3,12 @@
 	'name': "kolacontract",
 
 	'summary': """
-		Short (1 phrase/line) summary of the module's purpose, used as
-		subtitle on modules listing or apps.openerp.com""",
+		Contracts Management""",
 
 	'description': """
-		Long description of module's purpose
+		Contracts Management is tailored to meet all your company
+		Contracts Management Processes from Contract Drafting to Renewal and finally
+		Termination in a Simple Systematic and Precise Workflows
 	""",
 
 	'author': "kola Automation Systems",
@@ -21,9 +22,9 @@
 
 	# any module necessary for this one to work correctly
 	'depends': [
-	'base',
-	'mail',
-	'portal',
+		'base',
+		'mail',
+		'portal',
 	],
 
 	# always loaded
@@ -36,10 +37,14 @@
 		'views/res_partner_views.xml',
 		'views/res_config_settings_views.xml',
 		'views/kolacontract_terminate_views.xml',
+		'views/kolaevaluate_views.xml',
 		'data/kolacontract_terminate_data.xml',
-
 		'data/kolacontract_data.xml',
-		#'data/mail_template.xml',
+		'data/mail_template.xml',
+		'data/terminate_mail_template.xml',
+
+		'crons/cron_mail_template.xml',
+		'crons/expiry_reminders_views.xml',
 	],
 	# only loaded in demonstration mode
 	'demo': [

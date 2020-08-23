@@ -35,6 +35,12 @@
 		<field name="comment">These will be able to read,write,no create,no unlink (vague description)</field>
 	</record>
 
+	<record id="kola_contract_legal" model="res.groups">
+		<field name="name"> Legal Department</field>
+		<field name="category_id" ref="kola_contract_category"/>
+		<field name="comment">This group will be able to share contract details with other users</field>
+	</record>
+
 	<record id="kola_contract_ict_admin" model="res.groups">
 		<field name="name">ICT Administrator</field>
 		<field name="category_id" ref="kola_contract_category"/>

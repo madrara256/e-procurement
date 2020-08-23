@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<data noupdate="1">
-
-		<record id="contract_share_mail_template" model="mail.template">
+	<data>
+		<!-- contract termination draft -->
+		<record id="contract_terminate_share_mail_template" model="mail.template">
 			<field name="name">Share Template</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
-			<field name="subject">Contract Review</field>
+			<field name="subject">Contract Termination Review</field>
 			<field name="body_html"><![CDATA[
 				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
 					<tr>
@@ -21,9 +21,9 @@
 											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
 												<tr>
 													<td valign="middle">
-														<span style="font-size: 10px;">Contract Review</span><br/>
+														<span style="font-size: 10px;">Contract Termination</span><br/>
 														<span style="font-size: 20px; font-weight: bold;">
-															Contract Review
+															Contract Termination
 														</span>
 													</td>
 													<td valign="middle" align="right">
@@ -46,8 +46,8 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.department_id.name} Department<br/>
-															by Contractor ${object.contractor_id.name} has been drafted by Legal<br/>
+															A Contract for ${object.department_id.name} Department <br/>
+															by Contractor ${object.contractor_id.name} has been set for termination by Legal<br/>
 															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
 															You are required to Review the Draft details and Add Comments in the Comments Section<br/>
 														</div>
@@ -91,635 +91,19 @@
 			</field>
 		</record>
 
-		<!--contract creation -->
-		<record id="contract_draft_mail_template" model="mail.template">
-			<field name="name">CONTRACT DRAFT</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
+		<record id="con_terminate_draft" model="mail.template">
+			<field name="name">Contract Termination Draft</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
-			<field name="subject">CONTRACT DRAFT(ADMINISTRATION REVIEW)</field>
+			<field name="subject">Contract Termination</field>
 			<field name="body_html"><![CDATA[
 				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
 					<tr>
 						<td align="center">
 							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
 								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Draft</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract Draft
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear Team,<br/> <br/>
-															A Contract draft has been created for ${object.department_id.name} Department<br/>
-															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
-															You are required to Review the Draft details and submit to Procurement Committee
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contracts Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-		<!-- contract review by admin-->
-		<record id="contract_proc_review_mail_template" model="mail.template">
-			<field name="name">CONTRACT REVIEW</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="email_from">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">PROCUREMENT REVIEW</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Draft</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract Draft
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear Team,<br/> <br/>
-															A Contract Draft has been Submitted by ${object.user_id} from ${object.department_id}<br/>
-															for Review by the Procurement Team<br/>
-															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
-															You are required to Review this Contract Draft and Submit to Legal
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contracts Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-		<!--contract review by procurement -->
-		<record id="contract_legal_review_mail_template" model="mail.template">
-			<field name="name">CONTRACT REVIEW</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">LEGAL REVIEW</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Proposal</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract Review
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear Team,<br/> <br/>
-															A Contract Proposal has been Submitted to your team for Review
-															To Access the Record use the link <a href="${object.contract_url}">Contract Proposal</a><br/>
-															You are Required to Review the Record and Attach Documents where Necessary and <br/>
-															forward it to be signed off.<br/>
-															For any reservations send the document back, with a reason
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contracts Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-		<!--running contracts -->
-		<record id="contract_signoff_mail_template" model="mail.template">
-			<field name="name">CONTRACT SIGN OFF</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">SIGN OFF</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Sign Off</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract Sign Off
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear MD/ED<br/> <br/>
-															A Contract Proposal has been submitted to you pending Sign Off<br/>
-															To Access the Record use link<a href="${object.contract_url}">Contract Proposal</a><br/>
-															You are required to Approved the Contract to have it officially Effected
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contracts Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-		<!--contracts due to expire -->
-		<record id="contract_signed_mail_template" model="mail.template">
-			<field name="name">SIGNED CONTRACTS</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">RUNNING CONTRACTS</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Signed</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract Signed
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear Team,<br/> <br/>
-															A Contract for ${object.contractor_id.name} has been signed and is Effective Today
-															To Access Details, use link <a href="${object.contract_url}">Contract Signed</a><br/>
-															Notifications as when the contract Expires will be sent to Respective individuals timely
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contracts Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-
-		<record id="contract_renew_mail_template" model="mail.template">
-			<field name="name">CONTRACT RENEWAL</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">CONTRACT RENEWAL</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Renewal</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract to be Renewed
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear Team,<br/> <br/>
-															The Contract for ${object.contractor_id.name} has been scheduled for Renewal
-															To Access the details use link <a href="${object.contract_url}">Contract Renewal</a>
-															You are required to use the Renewal Procedure for the Contract Renewal
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contract Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-
-		<record id="contract_reject_mail_template" model="mail.template">
-			<field name="name">CONTRACT REJECTION</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">CONTRACT REJECTION</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="middle">
-														<span style="font-size: 10px;">Contract Proposal</span><br/>
-														<span style="font-size: 20px; font-weight: bold;">
-															Contract Rejection
-														</span>
-													</td>
-													<td valign="middle" align="right">
-														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-									<tr>
-										<td align="center" style="min-width: 590px;">
-											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-												<tr>
-													<td valign="top" style="font-size: 13px;">
-														<div>
-															Dear Team,<br/> <br/>
-															A Proposal for contract for ${object.contractor_id.name} has been rejected <br/>
-															To Access details use link <a href="${object.contract_url}">Contract Proposal</a><br/>
-
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:center;">
-														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-													</td>
-												</tr>
-												<tr>
-													<td style="text-align:left">
-														<p>
-															Kind Regards,<br/>
-															Contracts Management System
-														</p>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="center" style="min-width: 590px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-								<tr>
-									<td style="text-align: center; font-size: 13px;">
-										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</tr>
-				</table>
-				 ]]>
-			</field>
-		</record>
-
-
-		<record id="contract_terminate_mail_template" model="mail.template">
-			<field name="name">CONTRACT TERMINATION</field>
-			<field name="model_id" ref="kolacontract.model_kola_contract"/>
-			<field name="auto_delete" eval="True"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
-			<field name="subject">CONTRACT TERMINATION</field>
-			<field name="body_html"><![CDATA[
-				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-					<tr>
-						<td align="center">
-							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-								<tbody>
-
 									<tr>
 										<td align="center" style="min-width: 590px;">
 											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
@@ -727,7 +111,7 @@
 													<td valign="middle">
 														<span style="font-size: 10px;">Contract Termination</span><br/>
 														<span style="font-size: 20px; font-weight: bold;">
-															Contract Terminated
+															Termination Draft
 														</span>
 													</td>
 													<td valign="middle" align="right">
@@ -750,8 +134,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															The Contract for ${object.contractor_id.name} has been terminated hence forth<br/>
-															To Access Details use link <a href="${object.contract_url}">Contract Termination</a><br/>
+															A Contract for ${object.contract_id} has been drafted for temination<br/>
+															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
+															You are required to confirm and review then submit to the Procurement Team
 														</div>
 													</td>
 												</tr>
@@ -763,7 +148,531 @@
 												<tr>
 													<td style="text-align:left">
 														<p>
-															Kind Regards,
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+		<record id="con_terminate_confirm" model="mail.template">
+			<field name="name">Contract Termination Confirmation</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Termination Confirmation</field>
+			<field name="body_html"><![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Termination</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Termination Confirmation
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract for ${object.contract_id} has been confirmed and reviewed by the Administration Team<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
+															You are required to Review the Draft details and submit to the Procurement Team
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+
+
+		<record id="con_terminate_proc_review" model="mail.template">
+			<field name="name">Contract Termination Procurement Review</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Contract Termination Review</field>
+			<field name="body_html"><![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Termination</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Termination Review
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract termination for ${object.contract_id} has been confirmed by Administration<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
+															You are required to Review the Draft details and submit to the Legal Team
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+
+		<record id="con_terminate_legal_review" model="mail.template">
+			<field name="name">Contract Termination Legal Review</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Contract Termination</field>
+			<field name="body_html"><![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Termination</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Termination Review
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract for ${object.contract_id} has been reviewed by Legal<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
+															You are required to Review the Draft details and submit for Sign Off
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+
+		<record id="con_terminate_signoff" model="mail.template">
+			<field name="name">Contract Termination for Sign Off</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Termination Sign Off</field>
+			<field name="body_html">
+				<![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Termination</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Termination Sign Off
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract for ${object.contract_id} is pending Sign Off<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
+															You are required to Review and Proceed to Approve Sign Off to Terminate Contract
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+
+		<record id="con_terminate_signoff_confirm" model="mail.template">
+			<field name="name">Contract Termination Approved</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Termination Approval</field>
+			<field name="body_html"><![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Termination</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Termination Approval
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract for ${object.contract_id} has been Signed Off<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Draft</a> <br/>
+
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
+															Contracts Management System
+														</p>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="center" style="min-width: 590px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+								<tr>
+									<td style="text-align: center; font-size: 13px;">
+										Powered by <a target="_blank" href="https://www.financetrust.co.ug" style="color: #875A7B;">Finance Trust Bank Limited</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+						</tr>
+				</table>
+				 ]]>
+			</field>
+		</record>
+
+
+		<record id="con_terminate_signoff_rejected" model="mail.template">
+			<field name="name">Contract Termination Rejected</field>
+			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
+			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="auto_delete" eval="True"/>
+			<field name="lang">${object.lang}</field>
+			<field name="subject">Termination Rejection</field>
+			<field name="body_html"><![CDATA[
+				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+					<tr>
+						<td align="center">
+							<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+								<tbody>
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="middle">
+														<span style="font-size: 10px;">Contract Termination</span><br/>
+														<span style="font-size: 20px; font-weight: bold;">
+															Termination Rejection
+														</span>
+													</td>
+													<td valign="middle" align="right">
+														<img src="/logo.png?company=${object.user_id.company_id.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.user_id.company_id.name}"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td align="center" style="min-width: 590px;">
+											<table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+												<tr>
+													<td valign="top" style="font-size: 13px;">
+														<div>
+															Dear Team,<br/> <br/>
+															A Contract termination for ${object.contract_id} has been rejected<br/>
+															To Access Record use the link <a href="${object.contract_url}">Contract Details</a> <br/>
+															You can access the documents attached for reasons
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:center;">
+														<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+													</td>
+												</tr>
+												<tr>
+													<td style="text-align:left">
+														<p>
+															Kind Regards,<br/>
 															Contracts Management System
 														</p>
 													</td>

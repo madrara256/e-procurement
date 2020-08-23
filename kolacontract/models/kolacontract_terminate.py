@@ -30,6 +30,9 @@ class KolaContractTerminate(models.Model):
 		related='contract_id.amount', readonly=True, store=True,)
 	ratings = fields.Selection('Rating', related='contract_id.ratings', readonly=True, store=True,)
 	image_medium = fields.Binary(string='Photo', related='contract_id.image_medium', readonly=True, store=True,)
+	company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.user.company_id.id)
+	currency_id = fields.Many2one('res.currency', 'Currency', required=True,
+		default=lambda self: self.env.user.company_id.currency_id.id)
 	state = fields.Selection(
 		[
 			('draft', 'Draft'),
@@ -39,19 +42,21 @@ class KolaContractTerminate(models.Model):
 			('validate3', 'To Sign Off'),
 			('validate', 'Signed'),
 			('reject', 'Rejected')
-		],
-		string='States',
-		group_expand='_expand_states',
-		track_visibility='onchange',
-		help='Help track contract termination process',
-		default='draft')
+		],string='States',group_expand='_expand_states', track_visibility='onchange',help='Help track contract termination process',
+			default='draft')
 	kolacontract_line_terminate_id = fields.One2many('kolacontract.terminate.line',
 		'kolacontract_terminate_id',
 		string='Contract Terminate line')
+	user_id = fields.Many2one('res.users','Current User', default=lambda self: self.env.user)
 	active = fields.Boolean(string='Active', default=True)
 	department_id = fields.Many2one('hr.department', string='Department')
 	contract_doc = fields.Many2many('ir.attachment',string='Attach a file(s)')
 	count_files = fields.Integer(compute='compute_count_files', string='Document(s)', attachment=True)
+
+	comments_admin = fields.Html(string='Comments')
+	comments_user_department = fields.Html(string='Comments')
+	procurement_minute_extracts = fields.Binary(string='Minute Extracts', attachment=True)
+
 
 	def _compute_access_url(self):
 		action = self.env.ref('kolacontract.kolacontract_action').id
@@ -68,6 +73,8 @@ class KolaContractTerminate(models.Model):
 			url = '/web?#%s' %url_encode(url_params)
 			record.contract_url = url
 	contract_url = fields.Char(string='Contract Url', compute='_compute_access_url')
+	digital_signature = fields.Binary(string='Signature',oldname="signature_image",
+						attachment=True)
 
 
 	@api.depends('contract_doc')
@@ -124,11 +131,16 @@ class KolaContractTerminate(models.Model):
 	#---------------------------------------------------------
 	@api.model
 	def create(self, values):
-		rec = super(KolaContractTerminate, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)).create(values)
+		if len(values.get('kolacontract_line_terminate_id')) > 1:
+			raise ValidationError(_('Record limit Exceeded!'))
+		rec = super(KolaContractTerminate, self).create(values)
 		return rec
 
 	@api.multi
 	def write(self, values):
+		for record in self:
+			if len(record.kolacontract_line_terminate_id) > 1:
+				raise ValidationError(_('Record limit Exceeded!'))
 		rec = super(KolaContractTerminate, self).write(values)
 		return rec
 
@@ -145,6 +157,38 @@ class KolaContractTerminate(models.Model):
 	#--------------------------------------------------------
 
 	@api.multi
+	def contract_termination_share(self):
+		self.ensure_one()
+		ir_model_data = self.env['ir.model.data']
+		try:
+			template_id = ir_model_data.get_object_reference('kolacontract', 'contract_terminate_share_mail_template')[1]
+		except ValueError:
+			template_id = False
+		try:
+			compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
+		except ValueError:
+			compose_form_id = False
+		ctx = {
+			'default_model':'kolacontract.terminate',
+			'default_res_id':self.ids[0],
+			'default_use_template':bool(template_id),
+			'default_template_id': template_id,
+			'default_composition_mode': 'comment',
+			'mark_so_as_sent':True,
+			'force_email': True
+		}
+		return {
+			'type': 'ir.actions.act_window',
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'mail.compose.message',
+			'views':[(compose_form_id, 'form')],
+			'view_id': compose_form_id,
+			'target': 'new',
+			'context': ctx,
+		}
+
+	@api.multi
 	def confirm_terminate(self):
 		if any(contract.state != 'draft' for contract in self):
 			raise ValidationError('Contract termination draft must be raised by user department \n'+
@@ -152,29 +196,31 @@ class KolaContractTerminate(models.Model):
 		self.write({'state':'confirm'})
 
 	@api.multi
-	def review_termination_by_admin(self):
-		if any(contract.state != 'confirm' for contract in self):
-			raise ValidationError('Contract termnation must be drafted first before it can be Reviewed by Administration \n'+
-			'Please contact your System Administrator')
-		self.write({'state':'validate1'})
-
-	@api.multi
 	def review_by_procurement(self):
-		if any(contract.state != 'validate1' for contract in self):
+		if any(contract.state != 'confirm' for contract in self):
 			raise ValidationError(_('Contract must be Reviewed by Procurement before Legal \n'+
 			'Please Contact your System Administrator'))
-		self.write({'state': 'validate2'})
+		self.write({'state': 'validate1'})
 
 	@api.multi
 	def review_by_legal(self):
-		if any(contract.state != 'validate2' for contract in self):
+		if any(contract.state != 'validate1' for contract in self):
 			raise ValidationError(_('Contract must be Reviewed by Procurement before Legal Review \n'+
 			'Please Contact your System Administrator'))
-		self.write({'state':'validate3'})
+		self.write({'state':'validate2'})
+
 
 	@api.multi
-	def sign_off_termination(self):
+	def send_for_termination(self):
 		if any(contract.state != 'validate2' for contract in self):
+			raise ValidationError('Contract termnation must be drafted first before it can be Reviewed by Administration \n'+
+			'Please contact your System Administrator')
+		self.write({'state':'validate3'})
+
+
+	@api.multi
+	def approve_termination(self):
+		if any(contract.state != 'validate3' for contract in self):
 			raise ValidationError(_('Contract termination must be drafted by Legal before it can be Signed Off \n'+
 			'Please Contact Your System Administrator'))
 		self.write({'state':'validate'})
@@ -186,6 +232,20 @@ class KolaContractTerminate(models.Model):
 		contracts = self.env['kola.contract'].browse(self.contract_id)
 		for contract in contracts:
 			contract.sudo().write({'active':True})
+
+	@api.multi
+	def send_contract_back_astep(self):
+		for record in self:
+			if record.state == 'confirm':
+				record.write({'state': 'draft'})
+			if record.state == 'validate1':
+				record.write({'state': 'confirm'})
+			elif record.state == 'validate2':
+				record.write({'state': 'validate1'})
+			elif record.state == 'validate3':
+				record.write({'state':'validate2'})
+			elif record.state == 'validate':
+				record.write({'state': 'validate3'})
 
 	#---------------------------------------------------------
 	#Messaging methods
@@ -211,6 +271,19 @@ class KolacontractTerminateLine(models.Model):
 	name = fields.Char(string='Reference')
 	product_id = fields.Many2one('product.product', string='Product')
 	kolacontract_terminate_id = fields.Many2one('kolacontract.terminate', string="Contract Reference", ondelete='cascade')
+	currency_id = fields.Many2one(related='kolacontract_terminate_id.currency_id', string='Currency', store=True, track_visibility='onchange')
+	date_from = fields.Datetime(string='Start Date')
+	date_to = fields.Datetime(string='End Date')
+	total_qnty = fields.Float(string='Quantity', track_visibility='onchange', store=True)
+	unit_cost = fields.Float(string='Unit Cost', track_visibility='onchange')
+	total_amount = fields.Float(string='Subtotal Amount', track_visibility='onchange', compute='_compute_total_amount')
+	product_category = fields.Many2one('product.category', string='Product Category', track_visibility='onchange', store=True)
+	description = fields.Char(string='Specifications')
+
+	@api.onchange('unit_cost', 'total_qnty')
+	def _compute_total_amount(self):
+		self.total_amount = self.total_qnty * self.unit_cost
+
 
 	@api.model
 	def create(self,values):

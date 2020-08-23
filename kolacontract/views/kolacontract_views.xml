@@ -66,6 +66,9 @@
 							attrs="{'invisible': [('state', 'not in', ['validate', 'renew'])]}"
 							class="oe_highlight"/>
 
+						<button name="send_contract_back_astep" string="Send Back" type="object" class="oe_highlight"
+							attrs="{'invisible': [('state', '=', 'draft')]}"/>
+
 						<button string="Reject Contract" name="contract_rejection" type="object"
 							attrs="{'invisible': [('state', 'not in', ('draft', 'validate1'))]}"
 							class="oe_highlight btn-danger"/>
@@ -73,6 +76,7 @@
 						<button name="reset_to_draft" states="state" string="Reset to Draft" type="object"
 							attrs="{'invisible': [('state', 'not in', ('reject', 'terminate'))]}"
 							class="oe_highlight btn-warning"/>
+
 
 						<button string="Terminate Contract" name="contract_termination" type="object"
 							attrs="{'invisible': [('state', 'not in', ['validate', 'renew'])]}"
@@ -158,10 +162,10 @@
 								</group>
 							</page>
 							<page string="Comments">
-								<group attrs="{'invisible':[('state', '!=', 'validate2')]}" groups="kolacontract.kola_contract_administration,kolacontract.kola_contract_legal">
+								<group attrs="{'invisible':[('state', '!=', 'validate2')], 'required':[('state', '=', 'validate3')]}" groups="kolacontract.kola_contract_administration,kolacontract.kola_contract_legal">
 									<field name="comments_admin" string="Admin Comments"/>
 								</group>
-								<group attrs="{'invisible':[('state', '!=', 'validate2')]}" groups="kolacontract.kola_contract_user,kolacontract.kola_contract_legal">
+								<group attrs="{'invisible':[('state', '!=', 'validate2')], 'required':[('state', '=', 'validate3')]}" groups="kolacontract.kola_contract_user,kolacontract.kola_contract_legal">
 									<field name="comments_user_department" string="User Department"/>
 								</group>
 							</page>

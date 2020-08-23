@@ -304,10 +304,6 @@ class kolacontract(models.Model):
 		for record in self:
 			if len(record.kolacontract_line_id) > 1:
 				raise ValidationError(_('Record limit Exceeded!'))
-		for record in self:
-			if record.state == 'validate2' and len(record.procurement_minute_extracts) > 0:
-				#trigger email to be sent/functionality to be completed
-				pass
 		result = super(kolacontract, self).write(values)
 		#self.add_follower(user_id)
 		return result
@@ -379,19 +375,6 @@ class kolacontract(models.Model):
 	#---------------------------------------------------------------------
 
 	@api.multi
-	def contract_expiry_notification(self):
-		su_id = self.env['res.partner'].browse(SUPERUSER_ID)
-		recipients = ['herbert.ichama@financetrust.co.ug']
-		all_contracts = self.env['kola.contract'].search([])
-		for record in all_contracts:
-			if record.state == 'validate':
-				if self._compute_thresh_hold_for_notification():
-					#send mail when contracts are due to expire
-					pass
-
-
-
-	@api.multi
 	def contract_review_by_procurement(self):
 		if any(contract.state != 'draft' for contract  in self):
 			raise ValidationError(_('Contract must be Reviewed by Administration'))
@@ -421,7 +404,6 @@ class kolacontract(models.Model):
 			'mark_so_as_sent':True,
 			'force_email': True
 		}
-
 		return {
 			'type': 'ir.actions.act_window',
 			'view_type': 'form',
@@ -467,14 +449,14 @@ class kolacontract(models.Model):
 		contract_lines = self.env['kola.contract.line'].search([('kolacontract_id.id', '=',self.id)])
 		for contract_line in contract_lines:
 			rec = self.env['kolacontract.terminate'].sudo().create({
-															'contract_id':self.id,
-															'date_from':self.date_from,
-															'date_to':self.date_to,
-															})
+				'contract_id':self.id,
+				'date_from':self.date_from,
+				'date_to':self.date_to,
+			})
 			self.env['kolacontract.terminate.line'].sudo().create({
-																'kolacontract_terminate_id':rec['id'],
-																'product_id':contract_line.product_id.id
-																})
+				'kolacontract_terminate_id':rec['id'],
+				'product_id':contract_line.product_id.id
+			})
 		self.write({
 			'active':False
 			})
@@ -512,6 +494,17 @@ class kolacontract(models.Model):
 		for contract in contracts:
 			if contract.state == 'validate' and contract.number_of_days_due < CONTRACT_NOTIFY_THRESH:
 				contract.sudo().write({'state':'renew'})
+
+
+	@api.multi
+	def send_contract_back_astep(self):
+		for record in self:
+			if record.state == 'validate1':
+				record.write({'state': 'draft'})
+			elif record.state == 'validate2':
+				record.write({'state': 'validate1'})
+			elif record.state == 'validate3':
+				record.write({'state':'validate2'})
 
 class KolaContractLine(models.Model):
 	_name = 'kola.contract.line'
