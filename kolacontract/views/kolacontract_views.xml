@@ -12,13 +12,6 @@
 			groups="kolacontract.kola_contract_ict_admin"
 			sequence="8"/>
 
-		<!-- <menuitem
-			name="Configurations" id="kolacontract_configs_menu"
-			parent="kolacontract_root_menu"
-			groups="kolacontract.kola_contract_ict_admin"
-			sequence="10"/> -->
-
-
 		<record id="contract_sequence_by_code" model="ir.sequence">
 			<field name="name">Contract Sequence Code</field>
 			<field name="code">contract.sequence</field>
@@ -47,26 +40,45 @@
 			<field name="arch" type="xml">
 				<form>
 					<header>
-						<button string="Forward for Review" name="contract_review" type="object"
-							attrs="{'invisible':[('state', '!=', 'draft')]}" class="oe_highlight"/>
+						<button name="contract_review_by_procurement" states="state" string="Send to Procurement " type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'draft')]}"/>
 
-						<button string="Appove Contract" name="contract_approval" type="object"
-							attrs="{'invisible': [('state', '!=', 'validate1')]}" class="oe_highlight"/>
+						<button name="contract_review_by_legal" state="state" string="Send to Legal" type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'validate1')]}"/>
 
-						<button string="Terminate Contract" name="contract_termination" type="object"
-							attrs="{'invisible': [('state', '!=', 'validate')]}" class="oe_highlight btn-danger"/>
+						<button name="contract_signoff" state="state" string="Send for Sign Off" type="object"
+							class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'validate2')]}"/>
+
+						<button name="contract_share" states="state" string="Share with Admin/Department" type="object"
+							class="oe_highlight"
+							attrs="{'invisible': [('state', '!=', 'validate2')]}"
+							groups="kolacontract.kola_contract_legal"/>
+
+						<button name="contract_validattion" states="state" string="Approve Contract" type="object"
+							class="oe_highlight"
+							groups="kolacontract.kola_contract_legal"
+							attrs="{'invisible': [('state', '!=', 'validate3')]}"/>
 
 						<button string="Renew Contract" name="contract_renewal" type="object"
-							attrs="{'invisible': [('state', '!=', 'validate')]}"
+							attrs="{'invisible': [('state', 'not in', ['validate', 'renew'])]}"
 							class="oe_highlight"/>
 
 						<button string="Reject Contract" name="contract_rejection" type="object"
-							attrs="{'invisible': [('state', 'not in', ('draft', 'validate1'))]}" class="oe_highlight btn-danger"/>
+							attrs="{'invisible': [('state', 'not in', ('draft', 'validate1'))]}"
+							class="oe_highlight btn-danger"/>
 
 						<button name="reset_to_draft" states="state" string="Reset to Draft" type="object"
-							attrs="{'invisible': [('state', 'not in', ('reject', 'terminate'))]}" class="oe_highlight btn-warning"/>
+							attrs="{'invisible': [('state', 'not in', ('reject', 'terminate'))]}"
+							class="oe_highlight btn-warning"/>
 
-						<field name="state" widget="statusbar" statusbar_visible="draft,validate1,validate2,validate" clickable="False"/>
+						<button string="Terminate Contract" name="contract_termination" type="object"
+							attrs="{'invisible': [('state', 'not in', ['validate', 'renew'])]}"
+							class="oe_highlight btn-danger"/>
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,validate1,validate2,validate3,validate,renew,reject,terminate"/>
 					</header>
 					<sheet>
 						<div class="oe_button_box" name="button_box">
@@ -81,12 +93,17 @@
 						</div>
 						<group>
 							<group>
+								<field name="department_id"/>
 								<field name="product_id" options="{'no_create':True}" string="Product" invisible="1"/>
-								<field name="date_from" widget="date" attrs="{'invisible':[('state', 'not in',['validate','renew'])],'required':[('state', 'in', ['validate','renew'])]}"/>
-								<field name="date_to" widget="date" string="Expiry Date" attrs="{'invisible':[('state', 'not in',['validate','renew'])],'required':[('state', 'in', ['validate','renew'])]}"/>
+								<label for="date_from" attrs="{'invisible':[('state', 'in', ['draft'])]}"/>
+								<div attrs="{'invisible':[('state', 'in', ['draft'])]}">
+									<field name="date_from" widget="date"
+										class="oe_inline"/> --
+									<field name="date_to" widget="date" string="Expiry Date"
+										class="oe_inline"/>
+								</div>
 								<field name="currency_id" invisible="1"/>
 								<field name="contract_doc" widget="many2many_binary"/>
-								<field name="department_id"/>
 							</group>
 							<group>
 								<field name="contractor_id" options="{'no_create':True}"/>
@@ -130,6 +147,24 @@
 									<field name="amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 								</group>
 							</page>
+							<page string="Terms &amp; Conditions">
+								<group>
+									<group>
+										<field name="procurement_minute_extracts" groups="kolacontract.kola_contract_legal"/>
+									</group>
+									<group>
+										<field name="digital_signature" widget="signature"/>
+									</group>
+								</group>
+							</page>
+							<page string="Comments">
+								<group attrs="{'invisible':[('state', '!=', 'validate2')]}" groups="kolacontract.kola_contract_administration,kolacontract.kola_contract_legal">
+									<field name="comments_admin" string="Admin Comments"/>
+								</group>
+								<group attrs="{'invisible':[('state', '!=', 'validate2')]}" groups="kolacontract.kola_contract_user,kolacontract.kola_contract_legal">
+									<field name="comments_user_department" string="User Department"/>
+								</group>
+							</page>
 						</notebook>
 					</sheet>
 					<div class="oe_chatter">
@@ -148,11 +183,12 @@
 					<field name="past_deadline" invisible="1"/>
 					<field name="state" invisible="1"/>
 					<field name="contractor_id"/>
-					<field name="product_id"/>
-					<field name="date_from" string="Start Date" widget="date" attrs="{'invisible':[('state', 'not in',['validate','renew'])]}"/>
-					<field name="date_to" string="Expiry Date" widget="date" attrs="{'invisible':[('state', 'not in', ['validate','renew'])]}"/>
-					<field name="amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
-					<field name="number_of_days_due"/>
+					<field name="product_id" invisible="1"/>
+					<field name="date_from" string="Start Date" widget="date" attrs="{'invisible':[('state', 'not in',['validate','renew'])]}" invisible="1"/>
+					<field name="date_to" string="Expiry Date" widget="date" attrs="{'invisible':[('state', 'not in', ['validate','renew'])]}" invisible="1"/>
+					<field name="amount" widget="monetary" options="{'currency_field':'currency_id'}" invisible="1"/>
+					<field name="number_of_days_due" invisible="1"/>
+					<field name="contract_doc"/>
 				</tree>
 			</field>
 		</record>
@@ -161,7 +197,7 @@
 			<field name="name">Contracts</field>
 			<field name="model">kola.contract</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="state" class="o_kanban_medium_column">
+				<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
 					<field name="product_id"/>
 					<field name="date_from"/>
 					<field name="date_to"/>
@@ -203,35 +239,42 @@
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
 														<div class="o_primary"><strong><field name="contractor_id"/></strong></div>
-														<!-- <div class="o_primary"><strong><field name="name"/></strong></div> -->
 													</a>
 												</span>
 											</div>
 											<div class="o_kanban_record_body">
-												<span style="font-size:14px;font-weight:normal; font-family:Arial;">
-													<div class="o_primary"><field name="product_id"/>
-													</div>
-												</span>
 												<div class="row">
 													<div class="col-xl-6 o_kanban_primary_left">
 
-														<t t-if="record.date_from.value and record.state.value !='validate'">
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Start Date <field name="date_from" widget="date"/><br/></span>
-														</t>
-
-														<t t-if="record.date_to.value and record.state.value !='validate'">
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">End date <field name="date_to" widget="date"/></span>
-														</t>
-
 														<t t-if="record.state.raw_value == 'validate'">
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/><br/></span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate2'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
 														</t>
 
 														<t t-if="record.state.raw_value == 'renew'">
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/><br/></span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh<br/></span>
 														</t>
 
-														<t t-if="record.state.raw_value == 'validate'">
+														<t t-if="record.state.raw_value == 'reject'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/>USh</span>
+														</t>
+
+														<t t-if="record.state.raw_value == 'terminate'">
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
 														</t>
 
@@ -239,7 +282,7 @@
 													<div class="col-xl-6 o_kanban_primary_right">
 
 														<t t-if="record.state.raw_value == 'draft'">
-															<button class="btn btn-sm btn-block btn-primary" name="contract_review" type="object">Forward for Review</button>
+															<button class="btn btn-sm btn-block btn-primary" name="contract_review_by_procurement" type="object">Submit to Procurement</button>
 															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
 														</t>
 
@@ -254,7 +297,17 @@
 														</t>
 
 														<t t-if="record.state.raw_value == 'validate1'">
-															<button class="btn btn-sm btn-block btn-primary" name="contract_negotiate" type="object">Proceed to Negotiate</button>
+															<button class="btn btn-sm btn-block btn-primary" name="contract_review_by_legal" type="object">Submit to Legal</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate2'">
+															<button class="btn btn-sm btn-block btn-primary" name="contract_signoff" type="object">Submit for Sign Off</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate3'">
+															<button class="btn btn-sm btn-block btn-primary" name="contract_validattion" type="object">Approve Contract</button>
 															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
 														</t>
 
@@ -380,7 +433,7 @@
 			action="kolacontract_action"
 			sequence="1"/>
 
-		<menuitem name="Reporting"
+		<menuitem name="Contract Analysis"
 			id="kolacontract_report_menu"
 			parent="kolacontract_root_menu"
 			sequence="9"/>

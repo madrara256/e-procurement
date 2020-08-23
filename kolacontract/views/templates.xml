@@ -1,11 +1,7 @@
 <odoo>
-	<data>
-		<template id="assets_backend" name="listview" inherit_id="web.assets_backend">
+	<template id="assets_backend" name="kolacontract assets" inherit_id="web.assets_backend">
 		<xpath expr="." position="inside">
-		<style>
-		div.table-responsive{overflow-y:auto;height:100%;} table.o_list_view.table th{top:0;position:sticky;z-index:5;background-color:#dddddd}
-		</style>
+			<script type="text/javascript" src="/kolacontract/static/src/js/kanban_renderer.js"></script>
 		</xpath>
-		</template>
-	</data>
+	</template>
 </odoo>
