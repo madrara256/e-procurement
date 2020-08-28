@@ -45,12 +45,24 @@
 						<group>
 							<group>
 								<field name="contract_id" options="{'no_create':True}"/>
-								<field name="department_id" options="{'no_create':True}"/>
+								<field name="department_id"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date"/>
 							</group>
 						</group>
+						<notebook>
+							<page string="Ratings">
+								<field name="goods_line_ratings_id" widget="one2many">
+									<tree string="Ratings" editable="button">
+										<field name="rating_params" options="{'no_create': True}"/>
+										<field name="ratings"/>
+										<field name="score"/>
+										<field name="comments"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
@@ -80,12 +92,24 @@
 						<group>
 							<group>
 								<field name="contract_id" options="{'no_create':True}"/>
-								<field name="department_id" options="{'no_create':True}"/>
+								<field name="department_id"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date" invisible="1"/>
 							</group>
 						</group>
+						<notebook>
+							<page string="Ratings">
+								<field name="service_line_ratings_id" widget="one2many">
+									<tree string="Ratings" editable="button">
+										<field name="rating_params" options="{'no_create': True}"/>
+										<field name="ratings"/>
+										<field name="score"/>
+										<field name="comments"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
@@ -141,7 +165,7 @@
 
 		<!-- Action for goods -->
 		<record id="kolaevaluate_action_goods" model="ir.actions.act_window">
-			<field name="name"> For Goods</field>
+			<field name="name">Supplier Performance Evaluation</field>
 			<field name="res_model">kolacontract.evaluate</field>
 			<field name="view_type">form</field>
 			<field name="view_ids" eval="[(5,0,0),
@@ -161,7 +185,7 @@
 
 		<!-- Action for services -->
 		<record id="kolaevaluate_action_services" model="ir.actions.act_window">
-			<field name="name"> For Services</field>
+			<field name="name">Service Provider Performance Evaluation</field>
 			<field name="res_model">kolacontract.evaluate</field>
 			<field name="view_type">form</field>
 			<field name="view_ids" eval="[(5,0,0),
@@ -189,12 +213,14 @@
 
 		<menuitem
 			id="evaluate_for_goods_menu"
+			name="For Goods"
 			parent="kolacontract_report_menu"
 			action="kolaevaluate_action_goods"
 			sequence="1"/>
 
 		<menuitem
 			id="evaluate_for_services_menu"
+			name="For Services"
 			parent="kolacontract_report_menu"
 			action="kolaevaluate_action_services"
 			sequence="2"/>
