@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 	<data>
-		<record model="ir.ui.view" id="contract_evaluate_tree">
-			<field name="name">contract.evaluate.tree</field>
+		<record model="ir.ui.view" id="contract_evaluate_goods_tree">
+			<field name="name">contract.evaluate.goods.tree</field>
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<tree string="Contract Evaluation">
@@ -13,11 +13,34 @@
 			</field>
 		</record>
 
-		<record model="ir.ui.view" id="contract_evaluate_form">
-			<field name="name">contract.evaluate.form</field>
+		<record model="ir.ui.view" id="contract_evaluate_services_tree">
+			<field name="name">contract.evaluate.service.tree</field>
+			<field name="model">kolacontract.evaluate</field>
+			<field name="arch" type="xml">
+				<tree string="Contract Evaluation">
+					<field name="contract_id"/>
+					<field name="department_id"/>
+					<field name="evaluation_date" widget="date" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<!-- Evaluation forms for goods -->
+		<record model="ir.ui.view" id="contract_evaluate_goods_form">
+			<field name="name">contract.evaluate.goods.form</field>
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<form string="Contract Evaluation">
+					<header>
+						<button name="confirm_evaluation" states="state" string="Confirm" type="object" class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+
+						<button name="validate_evaluation" states="state" string="Approve" type="object" class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
+
+						<button name="" states="state" string="Reset To Draft" type="object"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate"/>
+					</header>
 					<sheet>
 						<group>
 							<group>
@@ -29,12 +52,52 @@
 							</group>
 						</group>
 					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+					</div>
 				</form>
 			</field>
 		</record>
 
-		<record model="ir.ui.view" id="contract_evaluate_kanban">
-			<field name="name">contract.evaluate.kanban</field>
+		<!-- Evaluation forms for services -->
+		<record model="ir.ui.view" id="contract_evaluate_services_form">
+			<field name="name">contract.evaluate.goods.form</field>
+			<field name="model">kolacontract.evaluate</field>
+			<field name="arch" type="xml">
+				<form string="Contract Evaluation">
+					<header>
+						<button name="confirm_evaluation" states="state" string="Confirm" type="object" class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+
+						<button name="validate_evaluation" states="state" string="Approve" type="object" class="oe_highlight"
+							attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
+
+						<button name="" states="state" string="Reset To Draft" type="object"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate"/>
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="contract_id" options="{'no_create':True}"/>
+								<field name="department_id" options="{'no_create':True}"/>
+							</group>
+							<group>
+								<field name="evaluation_date" widget="date" invisible="1"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<!-- Kanban view for goods -->
+		<record model="ir.ui.view" id="contract_evaluate_goods_kanban">
+			<field name="name">contract.evaluate.goods.kanban</field>
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
@@ -54,14 +117,63 @@
 			</field>
 		</record>
 
-		<record id="kolaevaluate_action" model="ir.actions.act_window">
-			<field name="name">Evaluate Contract</field>
+		<!-- Kanban view for services -->
+		<record model="ir.ui.view" id="contract_evaluate_services_kanban">
+			<field name="name">contract.evaluate.services.kanban</field>
+			<field name="model">kolacontract.evaluate</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
+					<field name="contract_id"/>
+					<field name="department_id"/>
+					<field name="evaluation_date"/>
+					<field name="state"/>
+					<templates>
+						<t t-name="kanban-box">
+						</t>
+					</templates>
+					<searchpanel>
+						<field name="state"/>
+						<field name="department_id"/>
+					</searchpanel>
+				</kanban>
+			</field>
+		</record>
+
+		<!-- Action for goods -->
+		<record id="kolaevaluate_action_goods" model="ir.actions.act_window">
+			<field name="name"> For Goods</field>
 			<field name="res_model">kolacontract.evaluate</field>
 			<field name="view_type">form</field>
+			<field name="view_ids" eval="[(5,0,0),
+				(0,0,{'view_mode': 'kanban', 'view_id': ref('kolacontract.contract_evaluate_goods_kanban')}),
+				(0,0,{'view_mode': 'tree', 'view_id': ref('kolacontract.contract_evaluate_goods_tree')}),
+				(0,0,{'view_mode': 'form', 'view_id': ref('kolacontract.contract_evaluate_goods_form')})]"/>
 			<field name="view_mode">kanban,tree,form,graph,pivot</field>
 			<field name="help" type="xml">
 				<p class="o_view_nocontent_smiling_face">
-					Contract Evaluations Process
+					Contract Evaluations Process for goods supply
+				</p>
+				<p>
+					Generate Evaluation templates for a contracts to renew/running contracts
+				</p>
+			</field>
+		</record>
+
+		<!-- Action for services -->
+		<record id="kolaevaluate_action_services" model="ir.actions.act_window">
+			<field name="name"> For Services</field>
+			<field name="res_model">kolacontract.evaluate</field>
+			<field name="view_type">form</field>
+			<field name="view_ids" eval="[(5,0,0),
+				(0,0,{'view_mode': 'kanban', 'view_id': ref('kolacontract.contract_evaluate_services_kanban')}),
+				(0,0,{'view_mode': 'tree', 'view_id': ref('kolacontract.contract_evaluate_services_tree')}),
+				(0,0,{'view_mode': 'form', 'view_id': ref('kolacontract.contract_evaluate_services_form')})]"/>
+			<field name="view_mode">kanban,tree,form,graph,pivot</field>
+			<field name="view_id" ref="contract_evaluate_services_kanban"/>
+			<field name="form_view_id" ref="contract_evaluate_services_form"/>
+			<field name="help" type="xml">
+				<p class="o_view_nocontent_smiling_face">
+					Contract Evaluations Process for goods supply
 				</p>
 				<p>
 					Generate Evaluation templates for a contracts to renew/running contracts
@@ -73,7 +185,19 @@
 			id="contract_evaluate_menu"
 			name="Evaluate Contract"
 			parent="kolacontract_report_menu"
-			action="kolaevaluate_action"
 			sequence="0"/>
+
+		<menuitem
+			id="evaluate_for_goods_menu"
+			parent="kolacontract_report_menu"
+			action="kolaevaluate_action_goods"
+			sequence="1"/>
+
+		<menuitem
+			id="evaluate_for_services_menu"
+			parent="kolacontract_report_menu"
+			action="kolaevaluate_action_services"
+			sequence="2"/>
+
 	</data>
 </odoo>

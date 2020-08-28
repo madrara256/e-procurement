@@ -11,7 +11,6 @@ class ExpiryReminders(models.Model):
 	@api.model
 	def reminders_for_expiry_notification(self):
 		all_contracts  = self.env['kola.contract'].search([])
-		print('*****Searching*****')
 		for record in all_contracts:
 			if record.state == 'renew':
 				template_id = self.env.ref('kolacontract.expiry_mail_template')

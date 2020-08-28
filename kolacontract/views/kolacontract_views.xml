@@ -10,7 +10,7 @@
 			name="Vendor Management" id="kolacontract_configs_menu"
 			parent="kolacontract_root_menu"
 			groups="kolacontract.kola_contract_ict_admin"
-			sequence="8"/>
+			sequence="9"/>
 
 		<record id="contract_sequence_by_code" model="ir.sequence">
 			<field name="name">Contract Sequence Code</field>
@@ -437,18 +437,16 @@
 			action="kolacontract_action"
 			sequence="1"/>
 
-		<menuitem name="Contract Analysis"
+		<menuitem name="Contract Evaluation"
 			id="kolacontract_report_menu"
 			parent="kolacontract_root_menu"
-			sequence="9"/>
+			sequence="8"/>
 
-
-
-		<menuitem name="Contracts Analysis"
-			id="kolacontract_report_analysis"
-			parent="kolacontract_report_menu"
+		<menuitem id="kolacontract_dashboard"
+			name="Dashboard"
+			parent="kolacontract_root_menu"
 			action="kolacontract_report_action"
-			sequence="1"/>
+			sequence="10"/>
 
 			<record id="auto_contract_status_manager_cron" model="ir.cron">
 				<field name="name">Contract status manager</field>
