@@ -263,7 +263,6 @@ class kolacontract(models.Model):
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
-
 	def _compute_access_url(self):
 		super(kolacontract, self)._compute_access_url()
 		for contract in self:
@@ -304,8 +303,12 @@ class kolacontract(models.Model):
 		for record in self:
 			if len(record.kolacontract_line_id) > 1:
 				raise ValidationError(_('Record limit Exceeded!'))
+		if values.get('procurement_minute_extracts'):
+			#trigger email notification ---chair procurement committee
+			template_id = self.env.ref('kolacontract.mail_template_for_minute_signup')
+			if template_id:
+				template_id.send_mail(self.id, force_send=True)
 		result = super(kolacontract, self).write(values)
-		#self.add_follower(user_id)
 		return result
 
 	@api.multi

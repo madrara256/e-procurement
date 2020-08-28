@@ -10,6 +10,7 @@ from werkzeug import url_encode
 
 class KolaEvaluate(models.Model):
 	_name = 'kolacontract.evaluate'
+	_inherit = ['mail.thread']
 	_rec_name = 'contract_id'
 	_description = 'Contract Evaluation'
 
@@ -84,6 +85,7 @@ class KolaEvaluate(models.Model):
 	@api.multi
 	def write(self, values):
 		evaluate = super(KolaEvaluate, self).write(values)
+		return evaluate
 
 	@api.multi
 	def copy_data(self, default=None):
@@ -92,6 +94,22 @@ class KolaEvaluate(models.Model):
 	@api.multi
 	def unlink(self):
 		return super(KolaEvaluate, self).unlink()
+
+	#------------------------------------------------
+	#Business logic
+	#------------------------------------------------
+
+	@api.multi
+	def confirm_evaluation(self):
+		self.write({'state':'confirm'})
+
+	@api.multi
+	def validate_evaluation(self):
+		self.write({'state': 'validate'})
+
+	@api.multi
+	def reset_to_draft(self):
+		self.write({'state': 'draft'})
 
 
 
