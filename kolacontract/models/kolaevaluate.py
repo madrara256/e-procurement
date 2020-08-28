@@ -15,8 +15,14 @@ class KolaEvaluate(models.Model):
 	_description = 'Contract Evaluation'
 
 	contract_id = fields.Many2one('kola.contract', string='Contract', track_visibility='onchange')
+	supplier_id = fields.Many2one('res.partner',string='Supplier')
+	address = fields.Char(string='Address')
 	evaluation_date = fields.Datetime(string='Date', default=datetime.today().now(), track_visibility='onchange')
 	department_id = fields.Many2one('hr.department', related='contract_id.department_id', string='Department')
+	prepared_by = fields.Many2one('hr.employee', string='Prepared By')
+	goods_supplied = fields.Many2one('product.product', string='Goods Supplied')
+	service_line_ratings_id = fields.One2many('kola.rating.service', 'kolaevaluate_service_id', string='Service Ratings')
+	goods_line_ratings_id = fields.One2many('kola.rating.goods', 'kolaevaluate_goods_id', string='Supply Ratings')
 
 	def compute_access_url(self):
 		action = self.env.ref('kolacontract.').id
