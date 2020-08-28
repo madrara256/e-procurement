@@ -1,18 +1,45 @@
 from odoo import models, fields, api
 from datetime import datetime,timedelta,date
 
-class kolarating(models.Model):
-	_name = 'kola.rating'
-	_description = 'Kola Ratings Based On Service Delivery'
-	_rec_name = 'contract_id'
+class kolaratingService(models.Model):
+	_name = 'kola.rating.service'
+	_description = 'Contract Ratings Based On Service Delivery'
 
-	contract_id = fields.Many2one('kola.contract', string='Contract')
-	vendor_id = fields.Many2one('res.partner', string='Vendor', domain=[('is_company', '=', True), ('supplier', '=', True)])
-	date_from = fields.Datetime(related='contract_id.date_from', string='Start Date')
-	date_to = fields.Datetime(related='contract_id.date_to', string='End Date')
 
-	total_score = fields.Float(string='Service Delivery Score', compute='_compute_average_score')
+	kolaevaluate_service_id = fields.Many2one('kolacontract.evaluate', string='Service Rating', ondelete='cascade')
+	rating_params = fields.Many2one('rating.parameter', string='Parameter', domain=[('category','=','service'),])
+	ratings = fields.Selection(
+		[
+			(4, 'Excellent'),
+			(3, 'Good'),
+			(2, 'Fair'),
+			(1, 'Poor')
+		], string='Ratings')
 
+	score = fields.Float(string='Score', compute='_compute_average_score', store=True,)
+	comments = fields.Char(string='Comments')
+
+	@api.multi
+	def _compute_average_score(self):
+		pass
+
+class KolaratingGoods(models.Model):
+	_name = 'kola.rating.goods'
+	_description = 'Contract Rating Based On Goods Supply'
+
+
+	kolaevaluate_goods_id = fields.Many2one('kolacontract.evaluate', string='Ratings', ondelete='cascade')
+	rating_params = fields.Many2one('rating.parameter', string='Parameter',domain=[('category','=','goods'),])
+	ratings = fields.Selection(
+		[
+			(4, 'Excellent'),
+			(3, 'Good'),
+			(2, 'Fair'),
+			(1, 'Poor')
+		], string='Ratings')
+
+	score = fields.Float(string='Score', compute='_compute_average_score', store=True,)
+	comments = fields.Char(string='Comments')
 
 	@api.multi
 	def _compute_average_score(self):
