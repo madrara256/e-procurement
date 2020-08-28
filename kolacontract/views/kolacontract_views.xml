@@ -12,6 +12,11 @@
 			groups="kolacontract.kola_contract_ict_admin"
 			sequence="9"/>
 
+		<menuitem
+			id="configs_menu"
+			name="Configurations" parent="kolacontract_root_menu"
+			sequence="20"/>
+
 		<record id="contract_sequence_by_code" model="ir.sequence">
 			<field name="name">Contract Sequence Code</field>
 			<field name="code">contract.sequence</field>

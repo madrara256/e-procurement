@@ -38,6 +38,8 @@
 		'views/res_config_settings_views.xml',
 		'views/kolacontract_terminate_views.xml',
 		'views/kolaevaluate_views.xml',
+		'views/rating_params_views.xml',
+
 		'data/kolacontract_terminate_data.xml',
 		'data/kolacontract_data.xml',
 		'data/mail_template.xml',
