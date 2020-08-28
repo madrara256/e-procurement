@@ -11,6 +11,7 @@ access_kolacontract_line_legal,kola.contract.line,model_kola_contract_line,kola_
 access_kolacontract_terminate_legal,kolacontract.terminate,model_kolacontract_terminate,kola_contract_legal,1,1,1,0
 access_kolacontract_evaluate_legal,kolacontract.evaluate,model_kolacontract_evaluate,kola_contract_legal,1,1,1,0
 access_line_terminate_legal,kolacontract.terminate.line,model_kolacontract_terminate_line,kola_contract_legal,1,1,1,0
+access_kolacontract_dashboard,kolacontract.dashboard,model_kolacontract_dashboard,kola_contract_administration,1,1,1,0
 
 access_kolacontract_dept_head,kola.contract,model_kola_contract,kola_contract_department_head,1,1,1,1
 access_kolacontract_line_dept_head,kola.contract.line,model_kola_contract_line,kola_contract_department_head,1,1,1,1

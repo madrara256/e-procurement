@@ -442,12 +442,6 @@
 			parent="kolacontract_root_menu"
 			sequence="8"/>
 
-		<menuitem id="kolacontract_dashboard"
-			name="Dashboard"
-			parent="kolacontract_root_menu"
-			action="kolacontract_report_action"
-			sequence="10"/>
-
 			<record id="auto_contract_status_manager_cron" model="ir.cron">
 				<field name="name">Contract status manager</field>
 				<field name="active" eval="True"/>

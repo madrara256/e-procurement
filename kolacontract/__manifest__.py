@@ -45,6 +45,8 @@
 
 		'crons/cron_mail_template.xml',
 		'crons/expiry_reminders_views.xml',
+
+		'report/kolacontract_dashboard_views.xml',
 	],
 	# only loaded in demonstration mode
 	'demo': [

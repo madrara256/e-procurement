@@ -287,11 +287,18 @@ class KolacontractTerminateLine(models.Model):
 
 	@api.model
 	def create(self,values):
+		user_id = values.get('user_id', False)
 		rec = super(KolacontractTerminateLine, self).create(values)
 		return rec
 
 	@api.multi
 	def write(self,values):
+		user_id = values.get('user_id', False)
+		if values.get('procurement_minute_extracts'):
+			#trigger email notification ---chair procurement committee
+			template_id = self.env.ref('kolacontract.mail_template_for_minute_signup')
+			if template_id:
+				template_id.send_mail(self.id, force_send=True)
 		rec = super(KolacontractTerminateLine, self).create(values)
 		return rec
 

@@ -20,7 +20,6 @@ DAYS_IN_A_YEAR = 365.0
 
 receipients = []
 
-
 class kolacontract(models.Model):
 	_name = 'kola.contract'
 	_description = 'Kola Contracts'
@@ -42,7 +41,6 @@ class kolacontract(models.Model):
 								{
 									'amount':subtotal_amount
 								})
-
 	def get_alias_model_name(self, vals):
 		return vals.get('alias_model', 'kola.contract')
 
@@ -70,7 +68,7 @@ class kolacontract(models.Model):
 
 	user_id = fields.Many2one('res.users','Current User', default=lambda self: self.env.user)
 
-	amount = fields.Float(string='Amount', compute='_compute_contract_total')
+	amount = fields.Float(string='Amount', compute='_compute_contract_total', store=True,)
 	number_of_days_due = fields.Float(string='Number of Days Left', track_visibility='onchange', compute='_compute_days_left_to_expire', store=True,)
 
 	contract_doc = fields.Many2many('ir.attachment',string='Attach a file(s)')

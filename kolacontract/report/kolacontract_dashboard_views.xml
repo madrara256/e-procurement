@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+
+		<record id="kolacontract_filter" model="ir.ui.view">
+			<field name="name">Contract Dashboard</field>
+			<field name="model">kolacontract.dashboard</field>
+			<field name="arch" type="xml">
+				<search>
+					<filter name="contractor_id" string="Contractor"/>
+					<filter name="department_id" string="Department"/>
+					<filter name="state" string="State"/>
+					<filter name="number_of_days" string="Number Of Days"/>
+					<filter name="amount" string="Amount"/>
+					<group expand="0">
+						<filter name="contractor_id" string="Contractor"/>
+						<filter name="department_id" string="Department"/>
+						<filter name="state" string="State"/>
+						<filter name="number_of_days" string="Number Of Days"/>
+						<filter name="amount" string="Amount"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="kolacontract_pivot" model="ir.ui.view">
+			<field name="name">Contract Dashboard</field>
+			<field name="model">kolacontract.dashboard</field>
+			<field name="arch" type="xml">
+				<pivot string="Contract Dashboard" stacked="True">
+					<field name="contractor_id" type="row"/>
+					<field name="department_id" type="col"/>
+					<field name="number_of_days" type="measure"/>
+					<field name="amount" type="measure"/>
+					<field name="state" type="measure"/>
+				</pivot>
+			</field>
+		</record>
+
+		<record id="action_kolacontract_dashboard_action" model="ir.actions.act_window">
+			<field name="name">Contract Dashboard</field>
+			<field name="res_model">kolacontract.dashboard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">graph,pivot</field>
+			<field name="context">{}</field>
+			<field name="view_id"></field>
+			<field name="help">Contract Analysis allows you to easily check and analyse company contract history</field>
+		</record>
+
+		<menuitem id="contract_dashboard"
+			parent="kolacontract_root_menu"
+			action="action_kolacontract_dashboard_action"
+			sequence="10"/>
+	</data>
+</odoo>
