@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_add_confirm_reason_form" model="ir.ui.view">
+		<field name="name">po.confirm.reason.form</field>
+		<field name="model">po.confirm.reason</field>
+		<field name="arch" type="xml">
+			<form string="Confirm Reason">
+				<group>
+					<field name="po_confirm_comment"/>
+				</group>
+				<footer>
+					<button string="Confirm" name="confirm_reason" type="object" class="btn-primary"/>
+					<button string='Cancel' class='btn-default' special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+</odoo>

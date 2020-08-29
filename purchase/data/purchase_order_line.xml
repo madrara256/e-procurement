@@ -1,0 +1,172 @@
+<odoo>
+	<record model="purchase.order.line" id="purchase_orderline1">
+		<field name="order_id" ref="purchase_order1"/>
+		<field name="product_id">95</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">680000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline2">
+		<field name="order_id" ref="purchase_order2"/>
+		<field name="product_id">94</field>
+		<field name="product_qty">5</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">120000</field>
+		<field name="Subtotal">600000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline3">
+		<field name="order_id" ref="purchase_order3"/>
+		<field name="product_id">43</field>
+		<field name="product_qty">10</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">3400000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline4">
+		<field name="order_id" ref="purchase_order4"/>
+		<field name="product_id">96</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">330000</field>
+		<field name="Subtotal">660000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline5">
+		<field name="order_id" ref="purchase_order20"/>
+		<field name="product_id">53</field>
+		<field name="product_qty">1</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">23000000</field>
+		<field name="Subtotal">23000000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline6">
+		<field name="order_id" ref="purchase_order5"/>
+		<field name="product_id">95</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">680000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline7">
+		<field name="order_id" ref="purchase_order6"/>
+		<field name="product_id">32</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">680000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline9">
+		<field name="order_id" ref="purchase_order8"/>
+		<field name="product_id">37</field>
+		<field name="product_qty">37</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">370000</field>
+		<field name="Subtotal">370000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline10">
+		<field name="order_id" ref="purchase_order9"/>
+		<field name="product_id">46</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">750000</field>
+		<field name="Subtotal">1500000.0</field>
+	</record>
+	<record model="purchase.order.line" id="purchase_orderline11">
+		<field name="order_id" ref="purchase_order10"/>
+		<field name="product_id">38</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">310000</field>
+		<field name="Subtotal">620000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline12">
+		<field name="order_id" ref="purchase_order11"/>
+		<field name="product_id">95</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">680000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline13">
+		<field name="order_id" ref="purchase_order12"/>
+		<field name="product_id">23</field>
+		<field name="product_qty">1</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">1750000</field>
+		<field name="Subtotal">1750000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline14">
+		<field name="order_id" ref="purchase_order13"/>
+		<field name="product_id">62</field>
+		<field name="product_qty">1</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">810000</field>
+		<field name="Subtotal">810000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline15">
+		<field name="order_id" ref="purchase_order14"/>
+		<field name="product_id">31</field>
+		<field name="product_qty">3</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">120000</field>
+		<field name="Subtotal">360000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline16">
+		<field name="order_id" ref="purchase_order15"/>
+		<field name="product_id">25</field>
+		<field name="product_qty">3</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">150000</field>
+		<field name="Subtotal">450000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline17">
+		<field name="order_id" ref="purchase_order16"/>
+		<field name="product_id">28</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">350000</field>
+		<field name="Subtotal">700000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline18">
+		<field name="order_id" ref="purchase_order17"/>
+		<field name="product_id">31</field>
+		<field name="product_qty">3</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">10200000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline19">
+		<field name="order_id" ref="purchase_order18"/>
+		<field name="product_id">21</field>
+		<field name="product_qty">2</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">340000</field>
+		<field name="Subtotal">680000.0</field>
+	</record>
+
+	<record model="purchase.order.line" id="purchase_orderline20">
+		<field name="order_id" ref="purchase_order19"/>
+		<field name="product_id">27</field>
+		<field name="product_qty">1</field>
+		<field name="date_planned">2020-05-012 00:39:39.213417</field>
+		<field name="price_unit">550000</field>
+		<field name="Subtotal">550000.0</field>
+	</record>
+
+</odoo>
