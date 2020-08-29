@@ -13,5 +13,3 @@ class KolaRequisitionCase(models.Model):
 	case_value = fields.Float(string='Case Value')
 	description = fields.Html(string='Description')
 	active = fields.Boolean(string='Active', default=True)
-
-
