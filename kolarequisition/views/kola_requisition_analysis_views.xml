@@ -1,0 +1,72 @@
+<odoo>
+	<record id="view_module_search" model="ir.ui.view">
+		<field name="name">Purchase Requests Analysis filter</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+			<search string="String">
+				<filter name="name" string="" domain="[]"/>
+				<filter name="department_id" string="Department"/>
+				<filter name="state" string="Status"/>
+				<filter name="employee_id" string="Employee" domain="[]" context="{'group_by' : 'employee_id'}"/>
+				<filter name="department_id" string="Department" domain="[]" context="{'group_by' : 'department_id'}"/>
+				<filter name="state" string="Status" domain="[]" context="{'group_by' : 'state'}"/>
+			</search>
+		</field>
+	</record>
+
+	<record id="purchase_requisition_pivot" model="ir.ui.view">
+		<field name="name">Purchase Requests Analysis</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+			<pivot string="Requisition Analysis">
+				<field name="name" type="measure"/>
+				<field name="reference_number"/>
+				<field name="employee_id"/>
+				<field name="department_id" type="col"/>
+				<field name="requisition_deadline"/>
+				<field name="po_name"/>
+				<field name="requisition_amount"/>
+				<field name="state"/>
+			</pivot>
+		</field>
+	</record>
+
+	<record id="purchase_requisition_graph" model="ir.ui.view">
+		<field name="name">Purchase Requests Analysis</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+			<graph string="Requisition Analysis">
+				<field name="department_id" type="col"/>
+				<field name="requisition_deadline"/>
+				<field name="po_name"/>
+				<field name="requisition_amount"/>
+				<field name="state"/>
+			</graph>
+		</field>
+	</record>
+
+	<record id="purchase_analysis_action" model="ir.actions.act_window">
+		<field name="name">Purchase Requests Analysis</field>
+		<field name="res_model">kola.requisition</field>
+		<field name="view_mode">graph,pivot</field>
+		<field name="context">{
+
+			}</field>
+		<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Create a Purchase Request Analysis
+			</p>
+			<p>
+				This window shows purchase requisitions analysis
+			</p>
+		</field>
+	</record>
+
+
+	<menuitem
+		name="Requisition Analysis"
+		id="kolarequisition_menu_4_list"
+		parent="kolarequisition_menu_2"
+		action="purchase_analysis_action"
+		sequence="1"/>
+</odoo>

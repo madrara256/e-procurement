@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- report function -->
+	<data>
+		<report
+			string="Purchase Requests"
+			id="report_purchase_request"
+			model="kola.requisition"
+			report_type="qweb-pdf"
+			name="kolarequisition.report_purchaserequest"
+			file="kolarequisition.report_purchaserequest"
+			print_report_name="
+				(object.state in ('draft', 'validate','validate1','validate2', 'validate3', 'validate') and 'Purchase Request - %s' %(object.name))"/>
+	</data>
+</odoo>

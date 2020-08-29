@@ -1,0 +1,27 @@
+<odoo>
+	<!-- menu xml -->
+	<menuitem
+		name="Purchase Requests"
+		web_icon="kolarequisition,static/description/icon.png"
+		id="kolarequisition_menu_root"/>
+
+	<menuitem
+		name="Reporting"
+		id="kolarequisition_menu_2"
+		parent="kolarequisition_menu_root"
+		groups="kolarequisition.kola_requisition_administration"/>
+
+	<menuitem
+		name="Configurations"
+		id="kolarequisition_configs_menu"
+		parent="kolarequisition_menu_root"
+		groups="kolarequisition.kola_requisition_administration"/>
+
+	<menuitem
+		name="Settings"
+		id="kolarequisition_settings_menu"
+		parent="kolarequisition_configs_menu"
+		groups="kolarequisition.kola_requisition_administration"
+		sequence="1"/>
+
+</odoo>

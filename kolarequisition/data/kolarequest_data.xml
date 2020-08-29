@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="mt_request_drafted" model="mail.message.subtype">
+			<field name="name">New Request</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="description">New Request Has been raised</field>
+		</record>
+
+		<record id="mt_request_validate1" model="mail.message.subtype">
+			<field name="name">Awaiting Department Approval</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="description">Request is Awaiting Department Approval</field>
+		</record>
+
+		<record id="mt_request_validate2" model="mail.message.subtype">
+			<field name="name">Awaiting Admin Approval</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="description">Request ia Awaiting Admin Approval</field>
+		</record>
+
+		<record id="mt_request_validate3" model="mail.message.subtype">
+			<field name="name">Awaiting Finance Approval</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="description">Request ia Awaiting Finance Approval</field>
+		</record>
+
+		<record id="mt_request_validate" model="mail.message.subtype">
+			<field name="name">Awaiting Procurement Approval</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="description">Request ia Awaiting Procurement Approval</field>
+		</record>
+
+		<record id="mt_request_rejected" model="mail.message.subtype">
+			<field name="name">Rejected Request</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="description">Request has been rejected</field>
+		</record>
+
+	</data>
+</odoo>

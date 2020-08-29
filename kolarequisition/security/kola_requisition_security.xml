@@ -1,0 +1,145 @@
+<odoo>
+	<!-- User Groups -->
+
+	<record id="kola_requisition_category" model="ir.module.category">
+		<field name="name">Purchase Requisition</field>
+		<field name="description">description</field>
+	</record>
+
+	<record id="kola_requisition_user" model="res.groups">
+		<field name="name">User</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">Users: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_officer" model="res.groups">
+		<field name="name">Officer</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">Officer: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_manager" model="res.groups">
+		<field name="name"> Manager</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">Managers: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_administration" model="res.groups">
+		<field name="name">Administration</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">Managers: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_finance" model="res.groups">
+		<field name="name">Finance</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">Finance: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_ed" model="res.groups">
+		<field name="name">ED</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">ED: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_procurement" model="res.groups">
+		<field name="name">Procurement</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment">Procurement: create,read,write</field>
+	</record>
+
+	<!-- Record rules -->
+
+	<record id="department_users_role" model="ir.rule">
+		<field name="name">User: Creates New Requests</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">
+			[
+				('employee_id.user_id','=',user.id)
+			]
+		</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_user'))]"/>
+	</record>
+
+	<record id="department_officer_role" model="ir.rule">
+		<field name="name">Officer: read,create,write</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">
+			[
+				'|',
+				('employee_id.user_id','=',user.id),
+				('department_manager_id.user_id', '=', user.id)
+			]</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_officer'))]"/>
+	</record>
+
+	<record id="department_manager_role" model="ir.rule">
+		<field name="name">Manager: create,read,write,unlink</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">
+			[
+				'|',
+				('employee_id.user_id', '=', user.id),
+				('department_manager_id.user_id', '=', user.id)
+			]
+		</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_manager'))]"/>
+	</record>
+
+	<record id="administrator_role" model="ir.rule">
+		<field name="name">Administrator: create,read,write,unlink</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">[]</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_administration'))]"/>
+	</record>
+
+	<record id="finance_user_role" model="ir.rule">
+		<field name="name">Finance: create,read,write,unlink</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">[]</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_finance'))]"/>
+	</record>
+
+	<record id="ed_user_role" model="ir.rule">
+		<field name="name">ED: create,read,write,unlink</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">[]</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_ed'))]"/>
+	</record>
+
+	<record id="procurement_user_role" model="ir.rule">
+		<field name="name">Procurement: create,read,write,unlink</field>
+		<field name="model_id" ref="model_kola_requisition"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">[]</field>
+		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_procurement'))]"/>
+	</record>
+
+</odoo>

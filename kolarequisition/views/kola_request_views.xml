@@ -1,0 +1,633 @@
+<odoo>
+	<data>
+		<record id="view_product_search_filter" model="ir.ui.view">
+			<field name="name">Requests Search filter</field>
+			<field name="model">kola.requisition.lines</field>
+			<field name="arch" type="xml">
+				<search string="Requisition">
+					<field name="name" string="Product Reference" domain="[]"/>
+					<field name="kola_requisition_id"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="requisition_line_view_tree" model="ir.ui.view">
+			<field name="name">Requests Items</field>
+			<field name="model">kola.requisition.lines</field>
+			<field name="arch" type="xml">
+				<tree string="Requisition Items">
+					<field name="create_date" widget="date"/>
+					<field name="kola_requisition_id"/>
+					<field name="currency_id" invisible="1"/>
+					<field name="product_id"/>
+					<field name="total_qty"/>
+					<field name="unit_cost" widget="monetary" options="{'currency_id': 'company_currency'}"/>
+					<field name="actual_amount" sum="Total Amount" widget="monetary" options="{'currency_id': 'company_currency'}"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="requisition_line_form" model="ir.ui.view">
+			<field name="name">Requests line Items</field>
+			<field name="model">kola.requisition.lines</field>
+			<field name="arch" type="xml">
+				<form string="Requisition line Items">
+					<sheet>
+						<group>
+							<group>
+								<field name="kola_requisition_id"/>
+								<field name="currency_id" invisible="1"/>
+								<field name="product_id"/>
+								<field name="total_qty"/>
+							</group>
+							<group>
+								<field name="unit_cost" widget="monetary" options="{'currency_id': 'company_currency'}"/>
+								<field name="actual_amount" widget="monetary" options="{'currency_id': 'company_currency'}"/>
+								<field name="product_category"/>
+								<field name="product_uom_id" invisible="1"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+					<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+				</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="act_items_from_requisition" model="ir.actions.act_window">
+			<field name="name">Requests Items</field>
+			<field name="res_model">kola.requisition.lines</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+			<field name="search_view_id" ref="view_product_search_filter"/>
+			<field name="context">{
+				'search_default_kola_requisition_id':[active_id],
+				'default_kola_requisition_id':active_id
+				}
+			</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Add a new Item
+				</p>
+				<p>
+					With just a glance you find all the information needed on a requisition,
+					etc
+				</p>
+			</field>
+		</record>
+	<record model="ir.ui.view" id="kolarequisition.list">
+		<field name="name">Purchase Requests</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+		<tree>
+			<field name="name" string="Reference"/>
+			<field name="requisition_date" widget="date"/>
+			<field name="employee_id"/>
+			<field name="department_id"/>
+			<field name="requisition_amount"/>
+			<field name="state"/>
+		</tree>
+		</field>
+	</record>
+
+
+	<record id="purchase_requests_action_window" model="ir.actions.act_window">
+		<field name="name">Purchase Requests</field>
+		<field name="res_model">kola.requisition</field>
+		<field name="view_mode">kanban,tree,form,pivot</field>
+		<field name="context">{}</field>
+		<field name="domian">[]</field>
+		<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Create a new Purchase Request
+			</p>
+			<p>
+				This window provides for creation of new purchase requests
+			</p>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="kolarequisition.form">
+		<field name="name">Purchase Requests</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+			<form>
+				<header>
+					<field name="user_id" invisible="1"/>
+
+					<button name="department_approval" string="Submit for Approval" type="object" class="oe_highlight"
+						attrs="{'invisible': [('state', '!=', 'draft')]}"
+						groups="kolarequisition.kola_requisition_officer, kolarequisition.kola_requisition_manager"/>
+
+					<button name="admin_approval" string="Submit to Admin" type="object" class="oe_highlight"
+						attrs="{'invisible': [('state', '!=', 'validate1')]}"
+						groups="kolarequisition.kola_requisition_administration"/>
+
+					<button name="finance_approval" string="Review &amp; Approve Request" type="object"
+						class="oe_highlight" attrs="{'invisible':[('state', '!=', 'validate2')]}"
+						groups="kolarequisition.kola_requisition_finance"/>
+
+					<button name="procurement_approval" string="Review &amp; Approve" type="object"
+						class="oe_highlight" attrs="{'invisible':[('state', '!=', 'validate3')]}"
+						groups="kolarequisition.kola_requisition_procurement"/>
+
+					<button name="validate_request" string="Generate RFQ" type="object" class="oe_highlight"
+						attrs="{'invisible': [('state', '!=', 'validate'),('is_service', '=', True)]}"/>
+
+					<button name="generate_contract_draft" string="Create Contract Draft" type="object"
+						class="oe_highlight"
+						attrs="{'invisible':[('state', '!=', 'validate'),('is_service', '!=', True)]}"/>
+
+					<!-- <button name="confirm_receipt" string="Recieve Products/Goods" type="object" class="oe_highlight"
+						attrs="{'invisible': [('state', '!=', 'receive')]}"/> -->
+
+					<button name="reject_request" string="Reject" type="object" class="oe_highlight btn-danger"
+						attrs="{'invisible': [('state', 'not in', ['validate1', 'validate2', 'validate3', 'order'])]}"
+						groups="kolarequisition.kola_requisition_officer,
+						kolarequisition.kola_requisition_manager,kolarequisition.kola_requisition_administration,
+						kolarequisition.kola_requisition_finance,kolarequisition.kola_requisition_procurement"
+						/>
+
+					<button name="reset_to_draft" string="Reset to Draft" type="object" class="oe_highlight btn-warning"
+						attrs="{'invisible': [('state', '!=', 'reject')]}"
+						/>
+
+					<button name="print_purchase_request" states="draft,validate1,validate2,validate3,validate" string="Print" type="object" class="oe_highlight"/>
+
+					<button name="action_pr_send" states="draft,validate1,validate2,validate3,validate" string="Send By Email" type="object" class="oe_highlight"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,validate1,validate2,validate3,validate4,validate, receive"/>
+				</header>
+
+				<sheet>
+					<div class="oe_button_box" name="button_box" >
+						<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+							<field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+						</button>
+						<button name="" type="action" class="statinfo" icon="fa-file-text-o">
+							<field name="docs_count" widget="statinfo"/>
+						</button>
+					</div>
+					<div class="oe_title">
+						 <label for="display_name" string="Purchase Requisition"/>
+						<h1><field name="display_name"/></h1>
+					</div>
+					<group>
+						<group>
+							<field name="user_id"/>
+							<field name="employee_id" invisible="1"/>
+							<field name="department_id" invisible="1"/>
+							<field name="department_manager_id" string="Department Manager" invisible="1"/>
+							<field name="company_id" invisible="1"/>
+							<field name="name" invisible="1"/>
+							<field name="is_service"/>
+							<field name="vendor_id" attrs="{'invisible':[('state', '!=', 'validate')], 'required':[('state', '=', 'validate')]}"/>
+						</group>
+						<group>
+							<field name="requisition_date" widget="date"/>
+							<field name="received_date" invisible="1" widget="date"/>
+							<field name="requisition_deadline" invisible="1"/>
+							<field name="currency_id" groups="base.group_multi_currency" force_save="1" invisible="1"/>
+							<field name="doc_attachment" widget="many2many_binary"/>
+						</group>
+					</group>
+					<notebook>
+						<page string="Request Lines">
+							<field name="requisition_lines_id" widget="one2many">
+								<tree editable="button" decoration-danger="purchase_item_state == 'rejected'">
+									<field name="state" invisible="1"/>
+									<field name="currency_id" invisible="1"/>
+									<field name="product_id" options="{'no_create':True}"/>
+									<field name="product_category" invisible="1"/>
+									<field name="description"/>
+									<field name="total_qty"/>
+									<field name="unit_cost" groups="kolarequisition.kola_requisition_administration" widget="monetary" options="{'currency_field':'currency_id'}"/>
+									<field name="actual_amount" sum="Subtotal Cost" groups="kolarequisition.kola_requisition_administration" widget="monetary" options="{'currency_field':'currency_id'}"/>
+									<field name="budget_balance"/>
+									<button name="approve_purchase_line" string="Approve" type="object" class="btn btn-sm btn-block btn-primary"
+										confirm="Confirm purchase line approval"/>
+									<button name="reject_purchase_line" string="Reject" type="object" class="btn btn-sm btn-block btn-warning"
+										confirm="Confirm purchase line rejection"/>
+									<field name="product_uom_id" invisible="1" options="{'no_create':True}"/>
+									<field name="purchase_item_state" string="State"/>
+								</tree>
+								<form string="Purchase Request Details">
+									<group>
+										<group>
+											<field name="product_id"/>
+											<field name="product_category"/>
+											<field name="budget_balance"  widget="monetary" options="{'currency_field':'currency_id'}"/>
+										</group>
+										<group>
+											<field name="total_qty"/>
+											<field name="unit_cost"  widget="monetary" options="{'currency_field':'currency_id'}"/>
+											<field name="actual_amount"  widget="monetary" options="{'currency_field':'currency_id'}"/>
+											<field name="purchase_item_state"/>
+										</group>
+									</group>
+								</form>
+							</field>
+							<group class="oe_subtotal_footer oe_right">
+								<div class="oe_subtotal_footer_separator oe_inline">
+									<label for="requisition_amount"/>
+								</div>
+								<field name="requisition_amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field':'currency_id'}"/>
+							</group>
+						</page>
+
+						<page string="Additional Information">
+						</page>
+					</notebook>
+					<group>
+						<field name="remarks" attrs="{'invisible':[('state', 'in', ['draft'])]}"/>
+					</group>
+				</sheet>
+				<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+					<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+				</div>
+			</form>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="pr_search_view_id">
+		<field name="name">Purchase Request Filter</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+			<search>
+				<field name="name"/>
+				<field name="employee_id"/>
+				<field name="department_id"/>
+				<filter name="year" string="Current Year"/>
+				<filter name="department_id" string="Department"/>
+				<filter name="employee_id" string="Requested By"/>
+				<filter name="state" string="Status"/>
+				<group expand="0" string="Group By">
+					<filter name="department_id" string="Department" domain="[]" context="{'group_by':'department_id'}"/>
+					<filter name="state" string="Requests Summary" domain="[('state', 'in', ['validate', 'reject'])]" context="{'group_by':'state'}"/>
+				</group>
+			</search>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="purchase_req_kanban_view">
+		<field name="name">Purchase Requests</field>
+		<field name="model">kola.requisition</field>
+		<field name="arch" type="xml">
+			<kanban default_group_by="state" class="o_kanban_medium_column" quick_create="true" import="false" disable_drag_drop_record="true">
+				<field name="name"/>
+				<field name="reference_number"/>
+				<field name="employee_id"/>
+				<field name="department_manager_id"/>
+				<field name="state"/>
+				<field name="currency_id" invisible="1"/>
+				<field name="user_id"/>
+				<field name="approver_id"/>
+				<field name="partner_id"/>
+				<field name="department_id"/>
+				<field name="requisition_lines_id" widget="one2many_list"/>
+				<field name="company_id"/>
+				<field name="requisition_date"/>
+				<field name="received_date"/>
+				<field name="requisition_deadline"/>
+				<field name="vendor_id"/>
+				<field name="po_name"/>
+				<field name="internal_picking"/>
+				<field name="purchase_order"/>
+				<field name="remarks"/>
+				<field name="requisition_amount" widget="monetary" options="{'currency_field':'currency_id'}"/>
+				<field name="email_from"/>
+				<field name="email_cc"/>
+				<field name="active"/>
+				<field name="color"/>
+				<field name="activity_ids"/>
+				<progressbar field="state" colors='{"reject": "danger"}'/>
+				<templates>
+					<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<a role="menuitem" type="open" class="dropdown-item">
+											<i class="fa fa-external-link" /> Open
+										</a>
+										<t t-if="widget.editable">
+											<a role="menuitem" type="edit" class="dropdown-item">
+												<i class="fa fa-pencil-square-o" /> Edit
+											</a>
+										</t>
+										<t t-if="record.user_id.raw_value == record.create_uid">
+											<t t-if="widget.deletable">
+												<a role="menuitem" type="delete" class="dropdown-item">
+													<i class="fa fa-trash-o" /> Delete
+												</a>
+											</t>
+										</t>
+										<t t-if="record.active">
+											<a role="menuitem" name="toggle_active" type="object" class="dropdown-item">
+												<i class="fa fa-archive" /> Archive
+											</a>
+										</t>
+											<t t-if="!record.active"><a role="menuitem" name="toggle_active" type="object" class="dropdown-item"><i class="fa fa-archive" /> Unarchive</a>
+										</t>
+									</div>
+								</div>
+								<div class="oe_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="name"/></strong><br/></div>
+													</a>
+												</span>
+											</div>
+											<div class="o_kanban_record_body">
+												<div class="row" style="border-bottom:1;">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span style="font-size:12px;font-family:Arial;"><strong>Product(s)</strong></span>
+													</div>
+													<div class="col-xl-2 o_kanban_primary_center">
+														<span style="font-size:12px;font-family:Arial;"><strong>Qty</strong></span>
+													</div>
+													<div class="col-xl-4 o_kanban_primary_right">
+														<span style="font-size:12px;font-family:Arial;"><strong>Cost</strong>(USh)</span>
+													</div>
+
+													<t t-foreach="record.requisition_lines_id.raw_value" t-as="o">
+														<div class="col-sm-6 o_kanban_primary_left">
+															<t t-esc="o.product_id[1]"/>
+														</div>
+														<div class="col-sm-2 o_kanban_primary_center">
+															<t t-esc="o.total_qty.raw_value"/>
+														</div>
+														<div class="col-sm-4 o_kanban_primary_right">
+															<t t-esc="o.actual_amount"/>
+														</div>
+													</t>
+												</div>
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span style="font-size:12px;font-family:Arial;"><strong>Total Amount(USh)</strong></span>
+													</div>
+													<div class="col-xl-2 o_kanban_primary_center">
+														<span style="font-size:12px;font-family:Arial;"><strong></strong></span>
+													</div>
+													<div class="col-xl-4 o_kanban_primary_right">
+														<span style="font-size:12px;font-family:Arial;"><strong><field name="requisition_amount"/></strong></span>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<t t-if="record.state.raw_value == 'draft'">
+															<span  style="font-size:12px;font-family:Arial;"> Date:
+															<field name="create_date" widget="date"/>
+														</span><br/>
+														</t>
+														<t t-if="record.state.raw_value != 'draft'">
+															<span  style="font-size:12px;font-family:Arial;"> Date:
+															<field name="write_date" widget="date"/>
+														</span><br/>
+														</t>
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<t t-if="record.state.raw_value == 'validate'">
+															<button class="btn btn-sm btn-block btn-primary" type="open">View Details</button>
+															<button class="btn btn-sm btn-block btn-primary" name="validate_request" type="object">Generate RFQ</button>
+														</t>
+														<t t-if="record.state.raw_value == 'draft'">
+															<button class="btn btn-sm btn-block btn-primary" name="department_approval" type="object">Submit</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate1'">
+															<t t-if="record.user_id.raw_value != record.department_manager_id.raw_value">
+																<button class="btn btn-sm btn-block btn-primary" name="admin_approval" type="object">Submit to Admin</button>
+															</t>
+															<button class="btn btn-sm btn-block btn-warning" name="reject_request" type="object">Reject</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate2'">
+															<button class="btn btn-sm btn-block btn-primary" name="finance_approval" type="object">Submit for Review</button>
+															<button class="btn btn-sm btn-block btn-warning" name="reject_request" type="object">Reject</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate3'">
+															<button class="btn btn-sm btn-block btn-primary" name="procurement_approval" type="object">Approve Request</button>
+															<button class="btn btn-sm btn-block btn-warning" name="reject_request" type="object">Reject</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'reject'">
+															<button class="btn btn-sm btn-block btn-primary" name="reset_to_draft" type="object">Reset to Draft</button>
+														</t>
+													</div>
+												</div>
+											</div>
+											<div class="oe_kanban_footer">
+												<!-- <div class="oe_kanban_footer_right">
+
+												</div> -->
+												<!-- <div class="oe_kanban_footer_left">
+													<field name="activity_ids" widget="kanban_activity"/>
+												</div> -->
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="oe_clear"></div>
+							</div>
+						</t>
+				</templates>
+			</kanban>
+		</field>
+	</record>
+
+	<record id="sequence_pr_code" model="ir.sequence">
+		<field name="name">Purchase Request Sequence Code</field>
+		<field name="code">pr.sequence</field>
+		<field name="active">TRUE</field>
+		<field name="prefix">PR</field>
+		<field name="padding">6</field>
+		<field name="number_next">1</field>
+		<field name="number_increment">1</field>
+	</record>
+
+
+		<record model="ir.actions.act_window" id="kolarequisition_act_window_new">
+			<field name="name">New Purchase Request</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('employee_id.user_id', '=',uid)]</field>
+			<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Create Purchase Requests
+			</p>
+			<p>
+				This window shows purchase purchase requests initiated by the user(s)
+			</p>
+			</field>
+			<field name="search_view_id" ref="pr_search_view_id"/>
+		</record>
+
+		<record model="ir.actions.act_window" id="kolarequisition_validate1">
+			<field name="name">Purchase Request(Department Approval)</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('state', '=', 'validate1')]</field>
+			<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Purchase Requests for Department Approval
+			</p>
+			<p>
+				This window shows purchase requests pending approval at department levels
+			</p>
+			</field>
+			<field name="search_view_id" ref="pr_search_view_id"/>
+		</record>
+
+		<record model="ir.actions.act_window" id="kolarequisition_validate2">
+			<field name="name">Purchase Requisition(Administration Approval)</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('state', '=', 'validate2')]</field>
+			<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Purchase Requests for Approval by Administration
+			</p>
+			<p>
+				This window shows purchase requests pending approval by administration department
+			</p>
+			</field>
+			<field name="search_view_id" ref="pr_search_view_id"/>
+		</record>
+
+		<record model="ir.actions.act_window" id="kolarequisition_validate3">
+			<field name="name">Purchase Request(Finance Review &amp; Approval)</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('state', '=', 'validate3')]</field>
+			<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Purchase Requests for Review &amp; Approval
+			</p>
+			<p>
+				This window shows requisitions for items pending approval by the finance team
+			</p>
+			</field>
+			<field name="search_view_id" ref="pr_search_view_id"/>
+		</record>
+
+		<record model="ir.actions.act_window" id="kolarequisition_act_window_validate4">
+			<field name="name">Purchase Request(Procurement Review)</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('state', '=', 'validate4')]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Purchase Requisition at Procurement
+				</p>
+				<p>
+					This window shows purchase requisitions for items pending review &amp; approval by
+					procurement committee
+				</p>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="kolarequisition_act_window_validate">
+			<field name="name">Approved Purchase Request</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('state', '=', 'validate')]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Approved Purchase Requests
+				</p>
+				<p>
+					This window shows purchase requests that have been approved by management
+				</p>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="kolarequisition_rfq">
+			<field name="name">Request for Quotations(RFQs)</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{'search_default_year':1}</field>
+			<field name="domain">[('state', '=', 'order'),('employee_id.user_id', '=',uid)]</field>
+			<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Requests for Quotations
+			</p>
+			<p>
+				This window shows requests for quotation for items on the purchase requests
+			</p>
+			</field>
+			<field name="search_view_id" ref="pr_search_view_id"/>
+		</record>
+
+		<record model="ir.actions.server" id="kolarequisition.action_server">
+			<field name="name">kolarequisition server</field>
+			<field name="model_id" ref="model_kola_requisition"/>
+			<field name="state">code</field>
+			<field name="code">
+			action = {
+				"type": "ir.actions.act_window",
+				"view_mode": "tree,form",
+				"res_model": self._name,
+			}
+			</field>
+		</record>
+
+
+
+		<record id="rejected_requests_action" model="ir.actions.act_window">
+			<field name="name">Rejected Requests</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="domain">[('state', '=', 'reject')]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Rejected Purchase Requests
+				</p>
+				<p>
+					This window shows rejected purchase requests
+				</p>
+			</field>
+		</record>
+
+		<record id="pr_requests_summary_action" model="ir.actions.act_window">
+			<field name="name">Purchase Requests Summary</field>
+			<field name="res_model">kola.requisition</field>
+			<field name="view_mode">kanban,form,tree,pivot</field>
+			<field name="context">{
+				'search_default_year':1,
+				'search_default_state':1
+				}</field>
+			<field name="domain">[('employee_id.user_id', '=',uid),('state', 'in',['validate', 'reject'])]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Purchase Requests Summary
+				</p>
+				<p>
+					This window shows summary of purchase requests that have been initiated
+				</p>
+			</field>
+			<field name="search_view_id" ref="pr_search_view_id"/>
+		</record>
+
+		<menuitem
+			name="Purchase Requests"
+			id="kolarequisition_menu_1"
+			parent="kolarequisition_menu_root"
+			action="purchase_requests_action_window"
+			sequence="1"/>
+	</data>
+</odoo>
+

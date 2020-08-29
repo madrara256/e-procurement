@@ -1,0 +1,8 @@
+<odoo>
+	<!-- demo templates -->
+	<template id="assets_backend" name="kolarequisition assets" inherit_id="web.assets_backend">
+		<xpath expr="." position="inside">
+			<script type="text/javascript" src="/kolarequisition/static/src/js/kanban_renderer.js"></script>
+		</xpath>
+	</template>
+</odoo>
