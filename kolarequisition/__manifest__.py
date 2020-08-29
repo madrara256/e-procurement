@@ -25,7 +25,6 @@
 	# always loaded
 	'data': [
 		'data/kolarequest_data.xml',
-		#'data/ir_ui_views.xml',
 		'report/requisition_reports.xml',
 		'data/kolarequest_mail_template.xml',
 		'report/kola_requisition_templates.xml',
@@ -39,7 +38,7 @@
 		'views/kola_requisition_analysis_views.xml',
 		'data/kolarequest_data.xml',
 		'data/kolarequest_line.xml',
-
+		'report/requisition_report_views.xml',
 
 	],
 	# only loaded in demonstration mode

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data >
-		<!-- kola request mail template -->
 		<record id="pr_draft_mail_template" model="mail.template">
-			<field name="name">Request Draft</field>
+			<field name="name">REQUEST DRAFT</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -45,9 +44,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
+															A New Purchase Request ${object.name} has been drafted by ${object.department_id}<br/>
+															To Access Record use the link <a href="${object.request_url}"></a>Purchase Request<br/>
+															You are required to review and Approve so Administration can proceed with Approval
 														</div>
 													</td>
 												</tr>
@@ -90,7 +89,7 @@
 		</record>
 
 		<record id="pr_dept_approval_mail_template" model="mail.template">
-			<field name="name">Request Draft</field>
+			<field name="name">REQUEST DEP'T TEMPLATE</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -132,9 +131,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
+															A Purchase Request ${object.name} has been forwarded to Administration<br/>
+															To Access Record use the link <a href="${object.request_url}">Purchase Request</a><br/>
+															You are required to Review Details and Approve or Send back for more Details to be Added
 														</div>
 													</td>
 												</tr>
@@ -179,7 +178,7 @@
 
 
 		<record id="pr_admin_approval_mail_template" model="mail.template">
-			<field name="name">Request Draft</field>
+			<field name="name">REQUEST ADMIN TEMPLATE</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -221,10 +220,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
-														</div>
+															A Purchase Request ${object.name} has been Approved by Administration<br/>
+															To Access Record use the link <a href="${object.request_url}">Purchase Request</a> <br/>
+															It has been forwarded to your Attention
 													</td>
 												</tr>
 												<tr>
@@ -268,7 +266,7 @@
 
 
 		<record id="pr_proc_review_approval_mail_template" model="mail.template">
-			<field name="name">Request Draft</field>
+			<field name="name">REQUEST PROC TEMPLATE</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -310,9 +308,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
+															A Purchase Request ${object.name} has been by the Procurement Team<br/>
+															To Access Record use the link <a href="${object.request_url}">Purchase Request</a> <br/>
+															You are required to Review and Submit for final Approval or Send Back incase of any missing Information
 														</div>
 													</td>
 												</tr>
@@ -357,7 +355,7 @@
 
 
 		<record id="pr_approved_mail_template" model="mail.template">
-			<field name="name">Request Draft</field>
+			<field name="name">REQUEST APPROVED TEMPLATE</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -399,9 +397,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
+															A Purchase Request ${object.name} has been drafted for temination<br/>
+															To Access Record use the link <a href="${object.request_url}">Purchase Request</a> <br/>
+															This Purchase Request has been Approved
 														</div>
 													</td>
 												</tr>
@@ -445,7 +443,7 @@
 		</record>
 
 		<record id="pr_rfq_mail_template" model="mail.template">
-			<field name="name">Request Draft</field>
+			<field name="name">REQUEST RFQ TEMPLATE</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -487,9 +485,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
+															RFQ for the Purchase Request ${object.contract_id} has been Generated<br/>
+															To Access Record use the link <a href="${object.request_url}">Purchase Request</a> <br/>
+															For more Information, Check in the RFQs generated
 														</div>
 													</td>
 												</tr>
@@ -534,7 +532,7 @@
 
 
 		<record id="pr_rejected_mail_template" model="mail.template">
-			<field name="name">Rejected Purchase Request</field>
+			<field name="name">REQUEST REJECT TEMPLATE</field>
 			<field name="model_id" ref="kolarequisition.model_kola_requisition"/>
 			<field name="auto_delete" eval="True"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
@@ -576,9 +574,9 @@
 													<td valign="top" style="font-size: 13px;">
 														<div>
 															Dear Team,<br/> <br/>
-															A Contract for ${object.contract_id} has been drafted for temination<br/>
-															To Access Record use the link <a href="${object.contract_url}">Termination Draft</a> <br/>
-															You are required to confirm and review then submit to the Procurement Team
+															The Purchase Request ${object.name} has been Rejected<br/>
+															To Access Record use the link <a href="${object.request_url}">Purchase Request</a> <br/>
+															Follow the link above for more information
 														</div>
 													</td>
 												</tr>
@@ -621,5 +619,4 @@
 			</field>
 		</record>
 	</data>
-
 </odoo>

@@ -61,12 +61,4 @@
 			</p>
 		</field>
 	</record>
-
-
-	<menuitem
-		name="Requisition Analysis"
-		id="kolarequisition_menu_4_list"
-		parent="kolarequisition_menu_2"
-		action="purchase_analysis_action"
-		sequence="1"/>
 </odoo>

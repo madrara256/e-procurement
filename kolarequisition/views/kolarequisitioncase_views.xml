@@ -29,6 +29,10 @@
 						</group>
 						<field name="description"/>
 					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+					</div>
 				</form>
 			</field>
 		</record>
@@ -55,6 +59,6 @@
 			id="purchase_cases_menu"
 			parent="kolarequisition_configs_menu"
 			action="kolarequisition_case_act_window"
-			sequence="2"/>
+			sequence="1"/>
 	</data>
 </odoo>

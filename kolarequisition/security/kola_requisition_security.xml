@@ -2,7 +2,7 @@
 	<!-- User Groups -->
 
 	<record id="kola_requisition_category" model="ir.module.category">
-		<field name="name">Purchase Requisition</field>
+		<field name="name">Purchase Request</field>
 		<field name="description">description</field>
 	</record>
 
@@ -22,6 +22,12 @@
 		<field name="name"> Manager</field>
 		<field name="category_id" ref="kola_requisition_category"/>
 		<field name="comment">Managers: create,read,write</field>
+	</record>
+
+	<record id="kola_requisition_regional_manager" model="res.groups">
+		<field name="name">Regional Manager</field>
+		<field name="category_id" ref="kola_requisition_category"/>
+		<field name="comment"> Regional Manager: create, read, write, approve</field>
 	</record>
 
 	<record id="kola_requisition_administration" model="res.groups">

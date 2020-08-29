@@ -25,9 +25,8 @@
 					</p>
 			</field>
 		</record>
-
-		<menuitem
+		<!-- <menuitem
 			name="Suppliers" id="supplier_menu_id" parent="kolarequisition_configs_menu"
-			action="res_partner_action_window" sequence="3"/>
+			action="res_partner_action_window" sequence="3"/> -->
 	</data>
 </odoo>

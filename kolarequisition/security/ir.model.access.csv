@@ -11,18 +11,22 @@ access_req_lines_manager,kola.requisition.lines,model_kola_requisition_lines,kol
 
 access_kola_req_admin,kola.requisition,model_kola_requisition,kola_requisition_administration,1,1,1,0
 access_kola_req_line_admin,kola.requisition.lines,model_kola_requisition_lines,kola_requisition_administration,1,1,1,0
+access_requisition_dash_admin,requisition.dashboard,model_requisition_dashboard,kola_requisition_administration,1,1,1,0
+access_req_case_admin,kola.requisition.case,model_kola_requisition_case,kola_requisition_administration,1,1,1,1
 
 access_kola_req_finance,kola.requisition,model_kola_requisition,kola_requisition_finance,1,1,1,0
 access_kola_req_line_finance,kola.requisition.lines,model_kola_requisition_lines,kola_requisition_finance,1,1,1,0
+access_requisition_dash_finance,requisition.dashboard,model_requisition_dashboard,kola_requisition_finance,1,1,1,0
 
 access_kola_req_ed,kola.requisition,model_kola_requisition,kola_requisition_ed,1,1,1,0
 access_kola_req_line_ed,kola.requisition.lines,model_kola_requisition_lines,kola_requisition_ed,1,1,1,0
+access_requisition_dash_ed,requisition.dashboard,model_requisition_dashboard,kola_requisition_ed,1,1,1,0
 
 access_kola_req_procurement,kola.requisition,model_kola_requisition,kola_requisition_procurement,1,1,1,0
 access_kola_req_line_proc,kola.requisition.lines,model_kola_requisition_lines,kola_requisition_procurement,1,1,1,0
+access_requisition_dash_proc,requisition.dashboard,model_requisition_dashboard,kola_requisition_procurement,1,1,1,0
 
-
-
-
-
-
+access_reg_manager,kola.requisition,model_kola_requisition,kola_requisition_regional_manager,1,1,1,1
+access_line_reg_manager,kola.requisition.lines,model_kola_requisition_lines,kola_requisition_regional_manager,1,1,1,1
+access_case_reg_manager,kola.requisition.case,model_kola_requisition_case,kola_requisition_regional_manager,1,1,1,1
+access_board_reg_manager,requisition.dashboard,model_requisition_dashboard,kola_requisition_regional_manager,1,1,1,1

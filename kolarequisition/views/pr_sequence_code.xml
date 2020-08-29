@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data noupdate="1">
-		<record id="seq_type_purchase_req" model="ir.sequence.type">
-			<field name="name">Purchase Requisition</field>
-			<field name="code">kola.requisition</field>
-		</record>
-
-		<!-- requisition sequence -->
 		<record id="seq_purchase_requisition" model="ir.sequence">
-			<field name="name">Purchase Requisition</field>
-			<field name="code">kola.requisition</field>
+			<field name="name">Purchase Request Code</field>
+			<field name="code">purchase.request.code</field>
+			<field name="active">TRUE</field>
 			<field name="prefix">PR</field>
-			<field name="padding">3</field>
-			<field name="company_id" eval="False"/>
+			<field name="padding">6</field>
+			<field name="number_next">1</field>
+			<field name="number_increment">1</field>
 		</record>
 
 	</data>
