@@ -51,7 +51,7 @@
 			<field name="name">Loan Forecasts/Projections</field>
 			<field name="model">loan.forecasts</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="months" class="o_kanban_medium_column">
+				<kanban default_group_by="months" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
 					<field name="team_id"/>
 					<field name="months"/>
 					<field name="forecast_volume"/>

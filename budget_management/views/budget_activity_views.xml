@@ -60,7 +60,7 @@
 			<field name="name">Budget Activity</field>
 			<field name="model">budget.activity</field>
 			<field name="arch" type="xml">
-				<kanban class="o_kanban_large_column" import="0">
+				<kanban class="o_kanban_large_column" disable_drag_drop_record="true">
 					<field name="name"/>
 					<field name="budget_id"/>
 					<field name="department_id"/>

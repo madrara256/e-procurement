@@ -7,6 +7,6 @@
 			id="p2p_reporting_menu"
 			name="Reporting"
 			parent="procure2pay_root_menu"
-			sequence="9"/>
+			sequence="10"/>
 	</data>
 </odoo>

@@ -111,11 +111,27 @@
 		action="p2p_action_stock_scrap"
 		sequence="4"/>
 
+	<menuitem id="procure_assets_menu"
+		name="Assets"
+		parent="procure2pay_root_menu"
+		sequence="8"/>
+
+	<menuitem id="id_assets_menu"
+		name="Assets"
+		parent="procure_assets_menu"
+		action="asset_stock.action_assets_stock"
+		sequence="1"/>
+
+	<menuitem id="id_asset_states"
+		parent="procure_assets_menu"
+		action="asset_stock.action_management_assets_stock"
+		sequence="2"/>
+
 	<menuitem
 		id="p2p_inventory_master_data_menu"
 		name="Master Data"
 		parent="procure2pay_root_menu"
-		sequence="8"/>
+		sequence="9"/>
 
 	<menuitem
 		id="p2p_inventory_products_menu"

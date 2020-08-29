@@ -29,6 +29,7 @@
 
 		'views/templates.xml',
 		'views/kolabudget_menu.xml',
+		'data/mail_template.xml',
 		'views/kolabudget_views.xml',
 		'views/loan_forecasts_views.xml',
 		'views/savings_forecasts_views.xml',
@@ -42,10 +43,11 @@
 		'report/budget_reports.xml',
 		'report/budget_templates.xml',
 		'views/assets.xml',
+		'views/templates.xml',
 		'data/budgets_data.xml',
 		#'data/budget_line_data.xml',
 		#'data/ir_ui_views.xml',
-		'data/mail_template.xml',
+
 
 	],
 	# only loaded in demonstration mode

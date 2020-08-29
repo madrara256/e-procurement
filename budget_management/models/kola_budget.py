@@ -81,7 +81,7 @@ class BudgetManagement(models.Model):
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]
 
-	date_from = fields.Date('Start Date', required=True, state={'done': [('readonly', True)]})
+	date_from = fields.Date('Period', required=True, state={'done': [('readonly', True)]})
 	date_to = fields.Date('End Date', required=True, state={'done': [('readonly', True)]})
 	comments = fields.Html(string='Comments')
 	year = fields.Char(string='Current Year', default=get_year)
@@ -114,7 +114,7 @@ class BudgetManagement(models.Model):
 			url = '/web?#%s' % url_encode(url_params)
 			record.budget_url = url
 
-	budget_url = fields.Char(string='Budget Url', compute=_compute_access_url)
+	budget_url = fields.Char(string='Budget Url', compute='_compute_access_url')
 
 	total_budget_line_requests = fields.Integer(
 		compute='_compute_budget_line_requests',
@@ -133,41 +133,41 @@ class BudgetManagement(models.Model):
 	#--------------------------------------------------------------------------------
 
 	@api.multi
-	def mail_notification(self):
+	def mail_notification(self, obj):
 		if self.state == 'draft':
-			template = self.env.ref('budget_management.budget_draft_mail_template')
-			if template:
-				self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
+			template_id = self.env.ref('budget_management.budget_draft_mail_template')
+			if template_id:
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 		elif self.state == 'propose':
-			template = self.env.ref('budget_management.budget_proposal_mail_template')
-			if template:
-				self.env['mail.template'].browse(template.id).send_mail(self.id, force_send=True)
+			template_id = self.env.ref('budget_management.budget_proposal_mail_template')
+			if template_id:
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 		elif self.state == 'review1':
 			template_id = self.env.ref('budget_management.budget_review1_mail_template')
 			if template_id:
-				self.env['mail.template'].browse(template_id.id).send_mail(self.id, force_send=True)
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 		elif self.state == 'consolidate':
 			template_id = self.env.ref('budget_management.budget_consolidate_mail_template')
 			if template_id:
-				self.env['mail.template'].browse(template_id.id).send_mail(self.id, force_send=True)
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 		elif self.state == 'review':
 			template_id = self.env.ref('budget_management.budget_review_mail_template')
 			if template_id:
-				self.env['mail.template'].browse(template_id.id).send_mail(self.id, force_send=True)
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 		elif self.state == 'validate':
 			template_id = self.env.ref('budget_management.budget_validate_mail_template')
 			if template_id:
-				self.env['mail.template'].browse(template_id.id).send_mail(self.id, force_send=True)
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 		elif self.state == 'reject':
 			template_id = self.env.ref('budget_management.budget_reject_mail_template')
 			if template_id:
-				self.env['mail.template'].browse(template_id.id).send_mail(self.id, force_send=True)
+				self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 	@api.multi
 	@api.depends('name','department_id')
@@ -197,7 +197,7 @@ class BudgetManagement(models.Model):
 			values['name'] = self.env['ir.sequence'].next_by_code('budget.sequence') or 'New'
 		rec = super(BudgetManagement, self).create(values)
 		#rec.add_followers()
-		self.mail_notification()
+		#self.mail_notification()
 		return rec
 
 	@api.multi
@@ -324,7 +324,7 @@ class BudgetManagement(models.Model):
 		#self._check_budgetline_approvals()
 		self.write({'state':'propose'})
 		for record in self:
-			self.mail_notification()
+			self.mail_notification(self)
 
 	@api.multi
 	def action_review_proposal(self):
@@ -333,13 +333,13 @@ class BudgetManagement(models.Model):
 			raise UserError(_('Budget must be proposed before it can be reviewed by finance team'))
 		#self._check_budgetline_approvals()
 		self.write({'state':'review1'})
-		self.mail_notification()
+		self.mail_notification(self)
 
 	@api.multi
 	def action_reject_proposal(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state':'draft'})
-		self.mail_notification()
+		self.mail_notification(self)
 
 	@api.multi
 	def action_consolidate_proposal(self):
@@ -348,14 +348,14 @@ class BudgetManagement(models.Model):
 			raise UserError(_('Budget must be reviewed by finance team before it can be consolidated'))
 		#self._check_budgetline_approvals()
 		self.write({'state': 'consolidate'})
-		self.mail_notification()
+		self.mail_notification(self)
 
 
 	@api.multi
 	def action_reject_consolidation(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state': 'draft'})
-		self.mail_notification()
+		self.mail_notification(self)
 
 	@api.multi
 	def action_submit_for_mgt_review(self):
@@ -364,16 +364,16 @@ class BudgetManagement(models.Model):
 			raise UserError(_('Budget must proposed before it can be reviewed by finance'))
 		#self._check_budgetline_approvals()
 		self.write({'state': 'review'})
-		self.mail_notification(obj)
+		self.mail_notification(self)
 
 	@api.multi
-	def action_mgt_approve(self,obj):
+	def action_mgt_approve(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'review' for budget in self):
 			raise UserError(_('Budget must be consolidated by finance team before it can be reviewed by administration'))
 		#self._check_budgetline_approvals()
 		self.write({'state':'validate'})
-		self.mail_notification(obj)
+		self.mail_notification()
 
 	@api.multi
 	def action_mgt_reject(self):
@@ -382,7 +382,7 @@ class BudgetManagement(models.Model):
 			raise UserError(_('Budget must be reviews by management before it can be rejected by administration'))
 		#self._check_budgetline_approvals()
 		self.write({'state': 'reject'})
-		self.mail_notification()
+		self.mail_notification(self)
 
 	@api.multi
 	def print_budget(self):
@@ -419,10 +419,6 @@ class BudgetManagement(models.Model):
 			'target':'new',
 			'context':ctx,
 		}
-	#----------------------------------------------------------------------
-	#Activity methods
-	#----------------------------------------------------------------------
-
 	#-----------------------------------------------------------------------
 	#Messagging methods
 	#-----------------------------------------------------------------------
@@ -522,7 +518,6 @@ class BudgetLines(models.Model):
 	_description = 'Budget Lines'
 	_rec_name = 'budget_management_id'
 	_inherit = ['mail.thread', 'mail.activity.mixin']
-
 
 	#------------------------------------------------
 	#DATABASE

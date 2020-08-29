@@ -1,7 +1,7 @@
 <odoo>
 	<template id="assets_backend" name="budget_management assets" inherit_id="web.assets_backend">
 		<xpath expr="." position="inside">
-
+			<script type="text/javascript" src="/budget_management/static/src/js/kanban_renderer.js"></script>
 		</xpath>
 	</template>
 </odoo>

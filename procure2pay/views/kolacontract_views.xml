@@ -30,7 +30,7 @@
 
 
 		<menuitem
-			name="Vendor Management"
+			name="Vendors"
 			id="kola_contracts_vendor_menu" parent="procure2pay_root_menu"
 			sequence="6"/>
 
