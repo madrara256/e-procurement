@@ -12,8 +12,8 @@ access_kolacontract_terminate_legal,kolacontract.terminate,model_kolacontract_te
 access_kolacontract_evaluate_legal,kolacontract.evaluate,model_kolacontract_evaluate,kola_contract_legal,1,1,1,0
 access_line_terminate_legal,kolacontract.terminate.line,model_kolacontract_terminate_line,kola_contract_legal,1,1,1,0
 access_kolacontract_dashboard,kolacontract.dashboard,model_kolacontract_dashboard,kola_contract_administration,1,1,1,0
-access_service_rating_user,kola.rating.service,model_kola_rating_service,kola_contract_user,1,1,1,0
-access_good_rating_user,kola.rating.goods,model_kola_rating_goods,kola_contract_user,1,1,1,0
+access_service_rating_user,kola.rating.service,model_kola_rating_service,kola_contract_user,1,1,1,1
+access_good_rating_user,kola.rating.goods,model_kola_rating_goods,kola_contract_user,1,1,1,1
 
 access_kolacontract_dept_head,kola.contract,model_kola_contract,kola_contract_department_head,1,1,1,1
 access_kolacontract_line_dept_head,kola.contract.line,model_kola_contract_line,kola_contract_department_head,1,1,1,1
@@ -28,7 +28,7 @@ access_kolacontract_terminate_admin,kolacontract.terminate,model_kolacontract_te
 access_kola_stage_admin,kola.stage,model_kola_stage,kola_contract_administration,1,1,0,0
 access_kola_terminate_line_admin, kolacontract.terminate.line,model_kolacontract_terminate_line,kola_contract_administration,1,1,1,1
 access_kolaevaluate_admin,kolacontract.evaluate,model_kolacontract_evaluate,kola_contract_administration,1,1,1,0
-access_service_rating,kola.rating.service,model_kola_rating_service,kola_contract_administration,1,1,1,0
+access_service_rating,kola.rating.service,model_kola_rating_service,kola_contract_administration,1,1,1,1
 access_good_rating,kola.rating.goods,model_kola_rating_goods,kola_contract_administration,1,1,1,0
 access_rating_params_admin,rating.parameter,model_rating_parameter,kola_contract_administration,1,1,1,0
 

@@ -19,14 +19,21 @@ class kolaratingService(models.Model):
 	score = fields.Float(string='Score', compute='_compute_average_score', store=True,)
 	comments = fields.Char(string='Comments')
 
-	@api.multi
+	@api.depends('ratings')
 	def _compute_average_score(self):
-		pass
+		for record in self:
+			if record.ratings == 4:
+				return record.update({'score':4.0})
+			elif record.ratings == 3:
+				return record.update({'score':3.0})
+			elif record.ratings == 2:
+				return record.update({'score':2.0})
+			elif record.ratings == 1:
+				return record.update({'score':1.0})
 
 class KolaratingGoods(models.Model):
 	_name = 'kola.rating.goods'
 	_description = 'Contract Rating Based On Goods Supply'
-
 
 	kolaevaluate_goods_id = fields.Many2one('kolacontract.evaluate', string='Ratings', ondelete='cascade')
 	rating_params = fields.Many2one('rating.parameter', string='Parameter',domain=[('category','=','goods'),])
@@ -41,6 +48,14 @@ class KolaratingGoods(models.Model):
 	score = fields.Float(string='Score', compute='_compute_average_score', store=True,)
 	comments = fields.Char(string='Comments')
 
-	@api.multi
+	@api.depends('ratings')
 	def _compute_average_score(self):
-		pass
+		for record in self:
+			if record.ratings == 4:
+				return record.update({'score':4.0})
+			elif record.ratings == 3:
+				return record.update({'score':3.0})
+			elif record.ratings == 2:
+				return record.update({'score':2.0})
+			elif record.ratings == 1:
+				return record.update({'score':1.0})

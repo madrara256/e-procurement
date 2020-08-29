@@ -44,11 +44,15 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="contract_id" options="{'no_create':True}"/>
+								<field name="contract_id" options="{'no_create':True}" string="Supplier"/>
 								<field name="department_id"/>
+								<field name="param_count_goods"/>
+								<field name="max_score_goods"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date"/>
+								<field name="actual_supplier_score"/>
+								<field name="supplier_score"/>
 							</group>
 						</group>
 						<notebook>
@@ -74,7 +78,7 @@
 
 		<!-- Evaluation forms for services -->
 		<record model="ir.ui.view" id="contract_evaluate_services_form">
-			<field name="name">contract.evaluate.goods.form</field>
+			<field name="name">contract.evaluate.services.form</field>
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<form string="Contract Evaluation">
@@ -91,11 +95,15 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="contract_id" options="{'no_create':True}"/>
+								<field name="contract_id" options="{'no_create':True}" string="Service Provider"/>
 								<field name="department_id"/>
+								<field name="param_count_service"/>
+								<field name="max_score_service"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date" invisible="1"/>
+								<field name="actual_provider_score"/>
+								<field name="service_provider_score"/>
 							</group>
 						</group>
 						<notebook>
@@ -129,8 +137,80 @@
 					<field name="department_id"/>
 					<field name="evaluation_date"/>
 					<field name="state"/>
+					<field name="supplier_id"/>
+					<field name="prepared_by"/>
+					<field name="goods_supplied"/>
+					<field name="service_line_ratings_id"/>
+					<field name="goods_line_ratings_id"/>
+					<field name="param_count_goods"/>
+					<field name="max_score_goods"/>
+					<field name="actual_supplier_score"/>
+					<field name="supplier_score"/>
+					<field name="max_score_service"/>
+					<field name="actual_provider_score"/>
+					<field name="service_provider_score"/>
+					<progressbar field="state" colors='{"validate": "primary"}' />
 					<templates>
 						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<a role="menuitem" type="open" class="dropdown-item">
+											<i class="fa fa-external-link" /> Open
+										</a>
+										<t t-if="widget.editable">
+											<a role="menuitem" type="edit" class="dropdown-item">
+												<i class="fa fa-pencil-square-o" /> Edit
+											</a>
+										</t>
+									</div>
+								</div>
+								<div class="o_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="oe_kanban_body">
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span style="font-size:12px;font-family:Arial;">
+															<field name="department_id" style="text-transform: lowercase;"/>
+														</span><br/>
+														<span style="font-size:12px;font-family:Arial;">Date:
+															<field name="evaluation_date" style="text-transform: lowercase;" widget="date"/>
+														</span><br/>
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<t t-if="record.state.raw_value == 'draft'">
+															<button class="btn btn-sm btn-block btn-warning" name="confirm_evaluation" type="object">Confirm</button>
+														</t>
+														<t t-if="record.state.raw_value == 'confirm'">
+															<button class="btn btn-sm btn-block btn-warning" name="validate_evaluation" type="object">Approve</button>
+															<button class="btn btn-sm btn-block btn-warning" name="reset_to_draft" type="object">Reset to Draft</button>
+														</t>
+														<t t-if="record.state.raw_value == 'validate'">
+															<button class="btn btn-sm btn-block btn-warning" name="reset_to_draft" type="object">Reset to Draft</button>
+														</t>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xl-12 o_kanban_primary_right">
+														<field name="supplier_score" widget="progressbar"/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</t>
 					</templates>
 					<searchpanel>
@@ -151,8 +231,81 @@
 					<field name="department_id"/>
 					<field name="evaluation_date"/>
 					<field name="state"/>
+					<field name="supplier_id"/>
+					<field name="prepared_by"/>
+					<field name="goods_supplied"/>
+					<field name="service_line_ratings_id"/>
+					<field name="goods_line_ratings_id"/>
+					<field name="max_score_goods"/>
+					<field name="actual_supplier_score"/>
+					<field name="supplier_score"/>
+					<field name="param_count_service"/>
+					<field name="max_score_service"/>
+					<field name="actual_provider_score"/>
+					<field name="service_provider_score"/>
+					<progressbar field="state" colors='{"validate": "primary"}' />
 					<templates>
 						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<a role="menuitem" type="open" class="dropdown-item">
+											<i class="fa fa-external-link" /> Open
+										</a>
+										<t t-if="widget.editable">
+											<a role="menuitem" type="edit" class="dropdown-item">
+												<i class="fa fa-pencil-square-o" /> Edit
+											</a>
+										</t>
+									</div>
+								</div>
+								<div class="o_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="oe_kanban_body">
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span style="font-size:12px;font-family:Arial;">
+															<field name="department_id" style="text-transform: lowercase;"/>
+														</span><br/>
+														<span style="font-size:12px;font-family:Arial;">Date:
+															<field name="evaluation_date" style="text-transform: lowercase;" widget="date"/>
+														</span><br/>
+
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<t t-if="record.state.raw_value == 'draft'">
+															<button class="btn btn-sm btn-block btn-warning" name="confirm_evaluation" type="object">Confirm</button>
+														</t>
+														<t t-if="record.state.raw_value == 'confirm'">
+															<button class="btn btn-sm btn-block btn-warning" name="validate_evaluation" type="object">Approve</button>
+															<button class="btn btn-sm btn-block btn-warning" name="reset_to_draft" type="object">Reset to Draft</button>
+														</t>
+														<t t-if="record.state.raw_value == 'validate'">
+															<button class="btn btn-sm btn-block btn-warning" name="reset_to_draft" type="object">Reset to Draft</button>
+														</t>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xl-12 o_kanban_primary_right">
+														<field name="service_provider_score" widget="progressbar"/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</t>
 					</templates>
 					<searchpanel>

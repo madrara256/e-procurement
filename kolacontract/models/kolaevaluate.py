@@ -24,6 +24,76 @@ class KolaEvaluate(models.Model):
 	service_line_ratings_id = fields.One2many('kola.rating.service', 'kolaevaluate_service_id', string='Service Ratings')
 	goods_line_ratings_id = fields.One2many('kola.rating.goods', 'kolaevaluate_goods_id', string='Supply Ratings')
 
+	param_count_goods = fields.Integer(string='Param Count(Goods)',compute='_compute_params_goods', store=True,)
+	max_score_goods = fields.Float(string='Maximum Score', compute='_compute_maximum_score_goods', store=True,)
+	actual_supplier_score = fields.Float(string='Actual Supplier Score', compute='_compute_actual_supplier_score', store=True,)
+	supplier_score = fields.Float(string='Supplier Ratings', compute='_compute_supplier_ratings', store=True,)
+
+	param_count_service = fields.Integer(string='Param Count(Service)', compute='_compute_params_service', store=True,)
+	max_score_service = fields.Float(string='Maximum Score', compute='_compute_maximum_score_service', store=True,)
+	actual_provider_score = fields.Float(string='Actual Provider Score', compute='_compute_actual_service_provider_score', store=True,)
+	service_provider_score = fields.Float(string='Service Provider Ratings', compute='_compute_service_provider_ratings', store=True,)
+	color = fields.Integer(string='Index')
+
+	#goods
+	@api.depends('goods_line_ratings_id.score')
+	def _compute_maximum_score_goods(self):
+		for evaluation in self:
+			maximum_score = 0.0
+			for param in evaluation.goods_line_ratings_id:
+				maximum_score = (evaluation.param_count_goods*4)
+				evaluation.update({'max_score_goods':maximum_score})
+
+	@api.depends('goods_line_ratings_id.score')
+	def _compute_actual_supplier_score(self):
+		for evaluation in self:
+			actual_score = 0.0
+			for param in evaluation.goods_line_ratings_id:
+				actual_score += param.score
+				evaluation.update({'actual_supplier_score':actual_score})
+
+	@api.depends('goods_line_ratings_id')
+	def _compute_params_goods(self):
+		param_search_count = len(self.goods_line_ratings_id)
+		self.update({'param_count_goods':param_search_count})
+
+
+	@api.depends('param_count_goods', 'max_score_goods')
+	def _compute_supplier_ratings(self):
+		if self.max_score_goods > 0:
+			actual_score = 0.0
+			actual_score = (self.actual_supplier_score/self.max_score_goods)*100
+			self.update({'supplier_score':actual_score})
+
+	#service
+	@api.depends('service_line_ratings_id.score')
+	def _compute_maximum_score_service(self):
+		for evaluation in self:
+			maximum_score = 0.0
+			for param in evaluation.service_line_ratings_id:
+				maximum_score = (evaluation.param_count_service*4)
+				evaluation.update({'max_score_service':maximum_score})
+
+	@api.depends('service_line_ratings_id.score')
+	def _compute_actual_service_provider_score(self):
+		for evaluation in self:
+			actual_score = 0.0
+			for param in evaluation.service_line_ratings_id:
+				actual_score += param.score
+				evaluation.update({'actual_provider_score':actual_score})
+
+	@api.depends('service_line_ratings_id')
+	def _compute_params_service(self):
+		param_search_count = len(self.service_line_ratings_id)
+		self.update({'param_count_service':param_search_count})
+
+	@api.depends('param_count_service')
+	def _compute_service_provider_ratings(self):
+		if self.max_score_service > 0:
+			actual_score = 0.0
+			actual_score = (self.actual_provider_score/self.max_score_service)*100
+			self.update({'service_provider_score':actual_score})
+
 	def compute_access_url(self):
 		action = self.env.ref('kolacontract.').id
 		form_view_id = self.env.ref('kolacontract.').id
