@@ -33,8 +33,8 @@ class KolaRequisition(models.Model):
 			for item in requisition.requisition_lines_id:
 				sub_total_amount +=item.actual_amount
 				requisition.update({
-									'requisition_amount':requisition.currency_id.round(sub_total_amount)
-									})
+					'requisition_amount':requisition.currency_id.round(sub_total_amount)
+				})
 
 	def default_department(self):
 		employee_id = self.env['hr.employee'].search([('active','=',True), ('user_id', '=', self.env.uid)])
@@ -45,10 +45,10 @@ class KolaRequisition(models.Model):
 		employee_id = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)])
 		return employee_id
 
-	name = fields.Char(
-		string='Request',track_visibility='onchange',default='New', required=True)
+	name = fields.Char(string='Request',track_visibility='onchange',default='New', required=True)
 	currency_id = fields.Many2one('res.currency', 'Currency', required=True,
 		default=lambda self: self.env.user.company_id.currency_id.id)
+
 	reference_number = fields.Char(string='Reference Number')
 	employee_id = fields.Many2one('hr.employee',string='Employee',track_visibility='onchange',
 		default=default_employee)
@@ -111,12 +111,12 @@ class KolaRequisition(models.Model):
 
 	state = fields.Selection([
 		('draft', 'New Request'),
-		('validate1', 'For Department Approval'),
+		('validate1', 'Department Approval'),
 		('validate2','Admin Approval'),
 		('validate3', 'Review & Approval'),
 		('validate', 'Approved Requests'),
 		('order', 'RFQs'),
-		('reject', 'Cancelled')
+		('reject', 'Rejected')
 		], default='draft', group_expand='_expand_states', help='Status of purchase request',
 		track_visibility='onchange', string='Status')
 
@@ -139,21 +139,35 @@ class KolaRequisition(models.Model):
 
 	doc_attachment = fields.Many2many('ir.attachment', string='Attach Files', attachment=True)
 	docs_count = fields.Integer(string='Files', compute='_compute_docs')
+	required_date = fields.Datetime(string='Required Date', default=datetime.today())
+
+	def _compute_access_url(self):
+		action = self.env.ref('kolarequisition.purchase_requests_action_window').id
+		form_view_id = self.env.ref('kolarequisition.kolarequisition_form').id
+		for record in self:
+			url_params = {
+				'view_type': 'form',
+				'model': 'kolarequisition.kola_requisition',
+				'id':record.id,
+				'active_id':record.id,
+				'view_id':form_view_id,
+				'action': action
+			}
+			url = '/web?#%s' %url_encode(url_params)
+			record.request_url = url
+
+	request_url = fields.Char(string='Contract Url', compute='_compute_access_url')
+
 
 	@api.depends('doc_attachment')
 	def _compute_docs(self):
 		for record in self:
 			record.docs_count = len(record.doc_attachment)
 
-
 	@api.onchange('user_id')
 	def _onchange_user_id(self):
 		self.email_from = self.user_id.email
 
-	def _compute_access_url(self):
-		super(KolaRequisition, self)._compute_access_url()
-		for request in self:
-			request.access_url = '/my/purchaserequest/%s' %(request.id)
 	#------------------------------------------------------------------------
 	#Override ORM methods
 	#------------------------------------------------------------------------
@@ -194,20 +208,15 @@ class KolaRequisition(models.Model):
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
-
-	@api.multi
-	def add_followers(self, employee_id):
-		employee = self.env['hr.employee'].browse(employee_id)
-		if employee.user_id:
-			self.message_subscribe(user_ids=employee.user_id.ids)
-
 	@api.model
 	def create(self, values):
 		employee_id = values.get('employee_id', False)
 		if values.get('name', 'New') == 'New':
-			values['name'] = self.env['ir.sequence'].next_by_code('pr.sequence') or 'New'
+			values['name'] = self.env['ir.sequence'].next_by_code('purchase.request.code') or 'New'
+		template_id = self.env.ref('kolarequisition.pr_draft_mail_template')
+		if template_id:
+			template_id.send_mail(self.id, force_send=True)
 		purchase_request = super(KolaRequisition, self).create(values)
-		# purchase_request.email_with_template()
 		return purchase_request
 
 	@api.multi
@@ -250,7 +259,7 @@ class KolaRequisition(models.Model):
 			for each in all_purchase_requisition_items:
 				if each.product_id.id == budget_item.product_id.id:
 					each.sudo().write({
-						'status':'true',
+						'status':'draft',
 						'unit_cost':budget_item.unit_cost,
 						'actual_amount':(budget_item.unit_cost*each.total_qty)
 						})
@@ -268,6 +277,7 @@ class KolaRequisition(models.Model):
 		if any(purchase_request.state != 'draft' for purchase_request in self):
 			raise ValidationError(_('Purchase Request must be in draft before it can be approved by the department'))
 		self.write({'state': 'validate1'})
+		self.send_email_notification(self)
 		self._update_pr_based_on_budget()
 
 	@api.multi
@@ -276,6 +286,7 @@ class KolaRequisition(models.Model):
 		if any(purchase_request.state != 'validate1' for purchase_request in self):
 			raise ValidationError(_('Purchase Request must approved by department before approval by administration'))
 		self.write({'state':'validate2'})
+		self.send_email_notification(self)
 		self._update_pr_based_on_budget()
 
 	@api.multi
@@ -284,6 +295,7 @@ class KolaRequisition(models.Model):
 		if any(purchase_request.state != 'validate2' for purchase_request in self):
 			raise ValidationError(_('Purchase Request must be approved by administration before Finance Approval'))
 		self.write({'state':'validate3'})
+		self.send_email_notification(self)
 		self._update_pr_based_on_budget()
 
 	@api.multi
@@ -292,16 +304,19 @@ class KolaRequisition(models.Model):
 		if any(purchase_request.state != 'validate3' for purchase_request in self):
 			raise ValidationError(_('Purchase Request must be approved by administration before Procurement Approval'))
 		self.write({'state':'validate'})
+		self.send_email_notification(self)
 
 	@api.multi
 	def reject_request(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state': 'reject'})
+		self.send_email_notification(self)
 
 	@api.multi
 	def reset_to_draft(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state': 'draft'})
+		self.send_email_notification(self)
 
 	def _check_state_administration_right(self, values):
 		if values.get('state') and values['state']  in ['validate'] and not self.env['res.users'].has_group('kolarequisition.kola_requisition_administration'):
@@ -312,18 +327,37 @@ class KolaRequisition(models.Model):
 	def generate_rfq(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state':'order'})
+		self.send_email_notification(self)
+
+	@api.multi
+	def send_back_astep(self):
+		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		for record in self:
+			if record.state == 'validate1':
+				record.write({'state':'draft'})
+			elif record.state == 'validate2':
+				record.write({'state':'validate1'})
+			elif record.state == 'validate3':
+				record.write({'state': 'validate2'})
+			elif record.state == 'validate':
+				record.write({'state': 'validate3'})
+			elif record.state == 'order':
+				record.write({'state': 'validate3'})
+			elif record.state == 'reject':
+				record.write({'state': 'draft'})
 
 	@api.multi
 	def validate_request(self, values):
 		partner_id = self.vendor_id.id
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		self.send_email_notification(self)
 		if not self._check_state_access_right(values):
 			raise AccessError(_('You have no access right to this document \n'+
 				' Please Contact the System Administrator'))
 		else:
 			if self.partner_id == '':
 				raise UserError(_('Vendor Records are Mandatory'+
-								'Please fill the Vendor Details before generating an RFQ...'))
+					'Please fill the Vendor Details before generating an RFQ...'))
 			#create rfq
 			elif self.is_service == False:
 				self.write({'state':'order'})
