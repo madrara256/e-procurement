@@ -286,6 +286,9 @@ class kolacontract(models.Model):
 			values['name'] = self.env['ir.sequence'].next_by_code('contract.sequence') or 'New'
 		if len(values.get('kolacontract_line_id')) > 1:
 			raise ValidationError(_('Record limit Exceeded!'))
+		template_id = self.env.ref('kolacontract.contract_draft_mail_template')
+		if template_id:
+			template_id.send_mail(self.id, force_send=True)
 		contract = super(kolacontract, self).create(values)
 		return contract
 
@@ -495,6 +498,7 @@ class kolacontract(models.Model):
 		for contract in contracts:
 			if contract.state == 'validate' and contract.number_of_days_due < CONTRACT_NOTIFY_THRESH:
 				contract.sudo().write({'state':'renew'})
+		self.send_email_notification(self)
 
 
 	@api.multi
@@ -502,10 +506,13 @@ class kolacontract(models.Model):
 		for record in self:
 			if record.state == 'validate1':
 				record.write({'state': 'draft'})
+				self.send_email_notification(record)
 			elif record.state == 'validate2':
 				record.write({'state': 'validate1'})
+				self.send_email_notification(record)
 			elif record.state == 'validate3':
 				record.write({'state':'validate2'})
+				self.send_email_notification(record)
 
 class KolaContractLine(models.Model):
 	_name = 'kola.contract.line'

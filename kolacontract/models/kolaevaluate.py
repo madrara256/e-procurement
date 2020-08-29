@@ -34,6 +34,9 @@ class KolaEvaluate(models.Model):
 	actual_provider_score = fields.Float(string='Actual Provider Score', compute='_compute_actual_service_provider_score', store=True,)
 	service_provider_score = fields.Float(string='Service Provider Ratings', compute='_compute_service_provider_ratings', store=True,)
 	color = fields.Integer(string='Index')
+	evaluation = fields.Selection([
+									('supply', 'Supply Of Goods'),
+									('service', 'Provision Of Service')], string='Evaluation for?', default='supply')
 
 	#goods
 	@api.depends('goods_line_ratings_id.score')

@@ -46,13 +46,14 @@
 							<group>
 								<field name="contract_id" options="{'no_create':True}" string="Supplier"/>
 								<field name="department_id"/>
-								<field name="param_count_goods"/>
-								<field name="max_score_goods"/>
+								<field name="param_count_goods" invisible="1"/>
+								<field name="max_score_goods" invisible="1"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date"/>
-								<field name="actual_supplier_score"/>
-								<field name="supplier_score"/>
+								<field name="actual_supplier_score" invisible="1"/>
+								<field name="supplier_score" invisible="1"/>
+								<field name="evaluation"/>
 							</group>
 						</group>
 						<notebook>
@@ -97,13 +98,14 @@
 							<group>
 								<field name="contract_id" options="{'no_create':True}" string="Service Provider"/>
 								<field name="department_id"/>
-								<field name="param_count_service"/>
-								<field name="max_score_service"/>
+								<field name="param_count_service" invisible="1"/>
+								<field name="max_score_service" invisible="1"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date" invisible="1"/>
-								<field name="actual_provider_score"/>
-								<field name="service_provider_score"/>
+								<field name="actual_provider_score" invisible="1"/>
+								<field name="service_provider_score" invisible="1"/>
+								<field name="evaluation" placeholder="Choose What the Evaluation is for"/>
 							</group>
 						</group>
 						<notebook>
@@ -320,6 +322,7 @@
 		<record id="kolaevaluate_action_goods" model="ir.actions.act_window">
 			<field name="name">Supplier Performance Evaluation</field>
 			<field name="res_model">kolacontract.evaluate</field>
+			<field name="domain">[('evaluation', '=', 'supply')]</field>
 			<field name="view_type">form</field>
 			<field name="view_ids" eval="[(5,0,0),
 				(0,0,{'view_mode': 'kanban', 'view_id': ref('kolacontract.contract_evaluate_goods_kanban')}),
@@ -340,6 +343,7 @@
 		<record id="kolaevaluate_action_services" model="ir.actions.act_window">
 			<field name="name">Service Provider Performance Evaluation</field>
 			<field name="res_model">kolacontract.evaluate</field>
+			<field name="domain">[('evaluation', '=', 'service')]</field>
 			<field name="view_type">form</field>
 			<field name="view_ids" eval="[(5,0,0),
 				(0,0,{'view_mode': 'kanban', 'view_id': ref('kolacontract.contract_evaluate_services_kanban')}),
