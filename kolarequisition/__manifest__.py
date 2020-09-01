@@ -36,9 +36,17 @@
 		'views/kolarequisitioncase_views.xml',
 		'views/res_partner_views.xml',
 		'views/kola_requisition_analysis_views.xml',
+
 		'data/kolarequest_data.xml',
 		'data/kolarequest_line.xml',
+		'data/report_paperformat.xml',
 		'report/requisition_report_views.xml',
+		'report/kolaconsolidation_report_views.xml',
+		'report/kolaconsolidate_report.xml',
+
+		'wizard/kolaconsolidate_views.xml',
+		'wizard/add_refuse_reason_views.xml',
+
 
 	],
 	# only loaded in demonstration mode

@@ -118,11 +118,14 @@
 						<field name="user_id" invisible="1"/>
 
 						<button name="department_approval" string="Submit for Approval" type="object" class="oe_highlight"
-							attrs="{'invisible': [('state', '!=', 'draft')]}"
-							groups="kolarequisition.kola_requisition_officer, kolarequisition.kola_requisition_manager"/>
+							attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+
+						<button name="hod_approval" string="Supervise Request" type="object" class="oe_highlight"
+							attrs="{'invisible': [('state', '!=', 'validate1')]}"
+							/>
 
 						<button name="admin_approval" string="Submit to Admin" type="object" class="oe_highlight"
-							attrs="{'invisible': [('state', '!=', 'validate1')]}"
+							attrs="{'invisible': [('state', '!=', 'validate2')]}"
 							groups="kolarequisition.kola_requisition_administration"/>
 
 						<button name="finance_approval" string="Submit to Finance" type="object"
@@ -142,7 +145,7 @@
 							class="oe_highlight"
 							attrs="{'invisible':[('state', '!=', 'validate'),('is_service', '!=', True)]}"/>
 
-						<button name="reject_request" string="Cancel" type="object" class="oe_highlight btn-warning"
+						<button name="refuse_reason_wizard" string="Cancel" type="object" class="oe_highlight btn-warning"
 							attrs="{'invisible': [('state', 'not in', ['validate1', 'validate2', 'validate3', 'order'])]}"
 							groups="kolarequisition.kola_requisition_officer,
 							kolarequisition.kola_requisition_manager,kolarequisition.kola_requisition_administration,
@@ -169,7 +172,7 @@
 						</div>
 						<group>
 							<group>
-								<field name="user_id"/>
+								<field name="user_id" readonly="1"/>
 								<field name="employee_id" invisible="1"/>
 								<field name="department_id" invisible="1"/>
 								<field name="department_manager_id" string="Department Manager" invisible="1"/>
@@ -185,6 +188,8 @@
 								<field name="requisition_deadline" invisible="1"/>
 								<field name="currency_id" groups="base.group_multi_currency" force_save="1" invisible="1"/>
 								<field name="doc_attachment" widget="many2many_binary"/>
+								<field name="department_manager_id" invisible="1"/>
+								<field name="approver_id" invisible="1"/>
 							</group>
 						</group>
 						<notebook>
@@ -235,6 +240,7 @@
 							</page>
 						</notebook>
 						<group>
+							<field name="request_refuse_reason" attrs="{'invisible':[('state', '!=', 'reject')]}"/>
 							<field name="remarks" attrs="{'invisible':[('state', 'in', ['draft'])]}"/>
 						</group>
 					</sheet>
@@ -353,13 +359,13 @@
 														</div>
 
 														<t t-foreach="record.requisition_lines_id.raw_value" t-as="o">
-															<div class="col-sm-6 o_kanban_primary_left">
+															<div class="col-sm-5 o_kanban_primary_left">
 																<t t-esc="o.product_id[1]"/>
 															</div>
-															<div class="col-sm-2 o_kanban_primary_center">
+															<div class="col-sm-4 o_kanban_primary_center">
 																<t t-esc="o.total_qty.raw_value"/>
 															</div>
-															<div class="col-sm-4 o_kanban_primary_right">
+															<div class="col-sm-3 o_kanban_primary_right">
 																<t t-esc="o.actual_amount"/>
 															</div>
 														</t>
@@ -398,20 +404,22 @@
 															</t>
 
 															<t t-if="record.state.raw_value == 'validate1'">
-																<t t-if="record.user_id.raw_value != record.department_manager_id.raw_value">
-																	<button class="btn btn-sm btn-block btn-primary" name="admin_approval" type="object">Submit to Admin</button>
+																<t t-if="record.user_id.raw_value != record.approver_id.raw_value">
+																	<button class="btn btn-sm btn-block btn-primary" name="hod_approval" type="object">Supervise Request</button>
 																</t>
-																<button class="btn btn-sm btn-block btn-warning" name="reject_request" type="object">Reject</button>
+																<button class="btn btn-sm btn-block btn-warning" name="refuse_reason_wizard" type="object">Reject</button>
 															</t>
 
 															<t t-if="record.state.raw_value == 'validate2'">
-																<button class="btn btn-sm btn-block btn-primary" name="finance_approval" type="object">Submit for Review</button>
-																<button class="btn btn-sm btn-block btn-warning" name="reject_request" type="object">Reject</button>
+																<t t-if="record.user_id.raw_value != record.department_manager_id.raw_value">
+																	<button class="btn btn-sm btn-block btn-primary" name="finance_approval" type="object">Submit to Admin</button>
+																	<button class="btn btn-sm btn-block btn-warning" name="refuse_reason_wizard" type="object">Reject</button>
+																</t>
 															</t>
 
 															<t t-if="record.state.raw_value == 'validate3'">
 																<button class="btn btn-sm btn-block btn-primary" name="procurement_approval" type="object">Approve Request</button>
-																<button class="btn btn-sm btn-block btn-warning" name="reject_request" type="object">Reject</button>
+																<button class="btn btn-sm btn-block btn-warning" name="refuse_reason_wizard" type="object">Reject</button>
 															</t>
 
 															<t t-if="record.state.raw_value == 'reject'">
