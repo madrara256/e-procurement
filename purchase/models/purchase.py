@@ -96,6 +96,7 @@ class PurchaseOrder(models.Model):
 		('draft', 'RFQ'),
 		('sent', 'RFQ Sent'),
 		('to approve', 'To Approve'),
+		('procurement', 'To Procurement'),
 		('purchase', 'Purchase Order'),
 		('done', 'Locked'),
 		('cancel', 'Cancelled')
@@ -355,14 +356,14 @@ class PurchaseOrder(models.Model):
 				continue
 			order._add_supplier_to_product()
 			# Deal with double validation process
-			if order.company_id.po_double_validation == 'one_step'\
-					or (order.company_id.po_double_validation == 'two_step'\
-						and order.amount_total < self.env.user.company_id.currency_id._convert(
-							order.company_id.po_double_validation_amount, order.currency_id, order.company_id, order.date_order or fields.Date.today()))\
-					or order.user_has_groups('purchase.group_purchase_manager'):
-				order.button_approve()
-			else:
-				order.write({'state': 'to approve'})
+			# if order.company_id.po_double_validation == 'one_step'\
+			# 		or (order.company_id.po_double_validation == 'two_step'\
+			# 			and order.amount_total < self.env.user.company_id.currency_id._convert(
+			# 				order.company_id.po_double_validation_amount, order.currency_id, order.company_id, order.date_order or fields.Date.today()))\
+			# 		or order.user_has_groups('purchase.group_purchase_manager'):
+			# 	order.button_approve()
+			# else:
+			order.write({'state': 'to approve'})
 		return True
 
 	@api.multi
