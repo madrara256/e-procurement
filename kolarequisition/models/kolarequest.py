@@ -10,6 +10,7 @@ from odoo.tools.float_utils import float_compare
 from odoo.exceptions import UserError, AccessError,ValidationError
 from odoo.tools.misc import formatLang
 from odoo.addons import decimal_precision as dp
+from werkzeug import url_encode
 
 from fuzzywuzzy import fuzz
 
@@ -59,14 +60,26 @@ class KolaRequisition(models.Model):
 	def department_manager(self):
 		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if employee_id:
-			return employee_id.department_id.manager_id
+			manager_id = employee_id.department_id.manager_id.id
+			related_user_id = self.env['hr.employee'].search([('user_id', '=', manager_id)], limit=1)
+			for user in related_user_id:
+				return user.user_id
 
 	department_manager_id = fields.Many2one('hr.employee',string='Deprtment Manager',
 		default=department_manager)
 	user_id = fields.Many2one('res.users',string='Responsible',default=lambda self: self.env.user.id,
 		track_visibility='onchange')
-	approver_id = fields.Many2one('res.users',string='Approver',
-		track_visibility='onchange')
+
+	def _get_supervisor_id(self):
+		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		if employee_id:
+			print('This is the supervisor id' +str(employee_id.parent_id.user_id.name))
+			return employee_id.parent_id.user_id
+
+	approver_id = fields.Many2one('res.users',string='Supervisor',
+		default=_get_supervisor_id, store=True,)
+
+
 	partner_id = fields.Many2one('res.partner',string='Partner',
 		track_visibility='onchange')
 	department_id = fields.Many2one('hr.department',string='User Deprtment',default=default_department,
@@ -110,13 +123,13 @@ class KolaRequisition(models.Model):
 	year = fields.Char(string='Current Year', default=get_year)
 
 	state = fields.Selection([
-		('draft', 'New Request'),
-		('validate1', 'Department Approval'),
-		('validate2','Admin Approval'),
-		('validate3', 'Review & Approval'),
-		('validate', 'Approved Requests'),
-		('order', 'RFQs'),
-		('reject', 'Rejected')
+		('draft', 'Draft'),
+		('validate1', 'To Supervisor'),
+		('validate2','To Department Head'),
+		('validate3', 'To Admin'),
+		('validate', 'Assessed Requests'),
+		('order', 'RFQs(Sourcing)'),
+		('reject', 'Cancelled')
 		], default='draft', group_expand='_expand_states', help='Status of purchase request',
 		track_visibility='onchange', string='Status')
 
@@ -140,6 +153,20 @@ class KolaRequisition(models.Model):
 	doc_attachment = fields.Many2many('ir.attachment', string='Attach Files', attachment=True)
 	docs_count = fields.Integer(string='Files', compute='_compute_docs')
 	required_date = fields.Datetime(string='Required Date', default=datetime.today())
+
+	request_refuse_reason = fields.Text(string='Comments')
+
+	@api.multi
+	def refuse_reason_wizard(self, context=None):
+		return {
+			'name': ('Refuse Reason'),
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'kolarequest.refuse.reason',
+			'view_id': False,
+			'type': 'ir.actions.act_window',
+			'target': 'new'
+		}
 
 	def _compute_access_url(self):
 		action = self.env.ref('kolarequisition.purchase_requests_action_window').id
@@ -182,7 +209,7 @@ class KolaRequisition(models.Model):
 			if record.state == 'draft':
 				template_id = self.env.ref('kolarequisition.pr_draft_mail_template')
 				if template_id:
-					self.env['mail.tempalate'].browse(template_id.id).send_mail(obj.id, force_send=True)
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 			if record.state == 'validate1':
 				template_id = self.env.ref('kolarequisition.pr_dept_approval_mail_template')
 				if template_id:
@@ -194,7 +221,7 @@ class KolaRequisition(models.Model):
 			if record.state == 'validate3':
 				template_id = self.env.ref('kolarequisition.pr_proc_review_approval_mail_template')
 				if template_id:
-					self.env['mail.tempalate'].browse(template_id.id).send_mail(obj.id, force_send=True)
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 			if record.state == 'validate':
 				template_id = self.env.ref('kolarequisition.pr_approved_mail_template')
 				if template_id:
@@ -214,8 +241,8 @@ class KolaRequisition(models.Model):
 		if values.get('name', 'New') == 'New':
 			values['name'] = self.env['ir.sequence'].next_by_code('purchase.request.code') or 'New'
 		template_id = self.env.ref('kolarequisition.pr_draft_mail_template')
-		if template_id:
-			template_id.send_mail(self.id, force_send=True)
+		# if template_id:
+		# 	template_id.send_mail(self.id, force_send=True)
 		purchase_request = super(KolaRequisition, self).create(values)
 		return purchase_request
 
@@ -274,10 +301,26 @@ class KolaRequisition(models.Model):
 	@api.multi
 	def department_approval(self):
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
-		if any(purchase_request.state != 'draft' for purchase_request in self):
-			raise ValidationError(_('Purchase Request must be in draft before it can be approved by the department'))
-		self.write({'state': 'validate1'})
-		self.send_email_notification(self)
+		if self.approver_id == self.department_manager_id:
+			if any(purchase_request.state != 'draft' for purchase_request in self):
+				raise ValidationError(_('Purchase Request must be in draft before it can be approved by the department'))
+			self.write({'state': 'validate2'})
+			self.send_email_notification(self)
+			self._update_pr_based_on_budget()
+		else:
+			if any(purchase_request.state != 'draft' for purchase_request in self):
+				raise ValidationError(_('Purchase Request must be in draft before it can be approved by the department'))
+			self.write({'state':'validate1'})
+			self.send_email_notification(self)
+			self._update_pr_based_on_budget()
+
+	@api.multi
+	def hod_approval(self):
+		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		if any(purchase_request.state != 'validate1' for purchase_request in self):
+			raise ValidationError(_('Request must be submitted by user before it can be supervised'))
+		self.write({'state': 'validate2'})
+		self.send_email_notification()
 		self._update_pr_based_on_budget()
 
 	@api.multi
