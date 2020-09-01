@@ -287,8 +287,8 @@ class kolacontract(models.Model):
 		if len(values.get('kolacontract_line_id')) > 1:
 			raise ValidationError(_('Record limit Exceeded!'))
 		template_id = self.env.ref('kolacontract.contract_draft_mail_template')
-		if template_id:
-			template_id.send_mail(self.id, force_send=True)
+		# if template_id:
+		# 	template_id.send_mail(self.id, force_send=True)
 		contract = super(kolacontract, self).create(values)
 		return contract
 
