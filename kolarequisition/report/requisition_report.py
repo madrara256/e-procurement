@@ -20,7 +20,8 @@ class RequisitionReport(models.Model):
 				kr.active,
 				kr.employee_id,
 				kr.department_id,
-				kr.requisition_date
+				kr.requisition_date,
+				kr.name as reference_number
 		"""
 
 	def _from(self):
@@ -41,7 +42,8 @@ class RequisitionReport(models.Model):
 				kr.active,
 				kr.employee_id,
 				kr.department_id,
-				kr.requisition_date
+				kr.requisition_date,
+				kr.reference_number
 		"""
 
 	def init(self):

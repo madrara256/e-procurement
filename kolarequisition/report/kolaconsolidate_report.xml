@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<report
+			string="Consolidated Request Report"
+			id="action_consolidated_purchase_request"
+			model="kola.requisition"
+			report_type="qweb-pdf"
+			name="kolarequisition.report_consolidate_purchase_request"
+			file="kolarequisition.report_consolidate_purchase_request"
+			menu="False"/>
+
+			<record id="action_consolidated_purchase_request" model="ir.actions.report">
+				<field name="paperformat_id" ref="kolarequisition.paperformat_consolidatedsummary"/>
+			</record>
+	</data>
+</odoo>

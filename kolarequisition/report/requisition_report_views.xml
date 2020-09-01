@@ -1,11 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 	<data>
+		<record id="purchase_request_filter" model="ir.ui.view">
+			<field name="name">Purchase Request Filter</field>
+			<field name="model">requisition.dashboard</field>
+			<field name="arch" type="xml">
+				<search>
+					<filter name="reference_number"/>
+					<filter name="active"/>
+					<filter name="employee_id"/>
+					<filter name="department_id"/>
+					<filter name="requisition_date"/>
+					<group expand="0">
+						<filter name="department_id"/>
+						<filter name="employee_id"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="purchase_request_pivot" model="ir.ui.view">
+			<field name="name">Purchase Request Pivot</field>
+			<field name="model">requisition.dashboard</field>
+			<field name="arch" type="xml">
+				<pivot string="Requests Dashboard" stacked="True">
+					<field name="department_id" type="row"/>
+					<field name="employee_id" type="col"/>
+					<field name="active" type="measure"/>
+					<field name="reference_number" type="measure"/>
+				</pivot>
+			</field>
+		</record>
+
+		<record id="purchase_request_graph" model="ir.ui.view">
+			<field name="name">Requests Dashboard</field>
+			<field name="model">requisition.dashboard</field>
+			<field name="arch" type="xml">
+				<graph string="Requests Dashboard">
+					<field name="department_id" type="row"/>
+					<field name="reference_number" type="col"/>
+					<field name="reference_number" type="measure"/>
+					<!-- <field name="requisition_date" type="measure"/> -->
+				</graph>
+			</field>
+		</record>
 
 		<record id="purchase_request_dashboard_action" model="ir.actions.act_window">
 			<field name="name">Dashboard</field>
 			<field name="res_model">requisition.dashboard</field>
-			<field name="view_mode">graph,pivot,form,</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">graph,pivot,form</field>
 			<field name="help" type="xml">
 				<p class="o_view_nocontent_smiling_face">
 					Purchase Requests Summary
@@ -22,5 +66,12 @@
 			parent="kolarequisition_menu_root"
 			action="purchase_request_dashboard_action"
 			sequence="3"/>
+
+		<!-- <menuitem
+			id="purchase_requests_dept_summary"
+			name="Department Summary"
+			parent="kolarequisition_menu_1"
+			action="purchase_request_dashboard_action"
+			sequence="2"/> -->
 	</data>
 </odoo>
