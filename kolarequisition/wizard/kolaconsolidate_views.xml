@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="kolaconsolidate_wizard" model="ir.ui.view">
+		<field name="name">Consolidate Requests</field>
+		<field name="model">kolaconsolidate.compute</field>
+		<field name="arch" type="xml">
+			<form string="Parameters">
+				<p>
+					You will be able to generate consolidated report of all the purchase request<br/>
+					This will be the report to be presented to the Procurement Committee
+				</p>
+
+				<footer>
+					<button name="print_consolidated_requests" string="Consolidate Requests"
+						type="object" class="btn-primary"/>
+					<button string="Cancel" class="btn-secondary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_consolidate_purchase_requests" model="ir.actions.act_window">
+		<field name="name">Consolidate Requests</field>
+		<field name="res_model">kolaconsolidate.compute</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">form</field>
+		<field name="target">new</field>
+	</record>
+
+	<menuitem id="menu_consolidate_requests" parent="kolarequisition_menu_root"
+		action="action_consolidate_purchase_requests"
+		sequence="2"/>
+</odoo>
