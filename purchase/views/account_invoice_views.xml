@@ -4,7 +4,7 @@
 		<field name="name">Vendor Bills</field>
 		<field name="res_model">account.invoice</field>
 		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+		<field name="view_mode">kanban,form,tree,calendar,pivot,graph</field>
 		<field eval="False" name="view_id"/>
 		<field name="domain">[('type','=','in_invoice')]</field>
 		<field name="context">{'default_type':'in_invoice', 'type':'in_invoice', 'journal_type': 'purchase'}</field>
@@ -25,7 +25,7 @@
 		<field name="name">Vendor Bills</field>
 		<field name="res_model">account.invoice</field>
 		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+		<field name="view_mode">kanban,tree,form,calendar,pivot,graph</field>
 		<field eval="False" name="view_id"/>
 		<field name="domain">[('type','in',('in_invoice', 'in_refund')),('purchase_id','=',active_id)]</field>
 		<field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase', 'default_purchase_id': active_id}</field>
