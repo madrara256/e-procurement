@@ -8,7 +8,7 @@ from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.osv import expression
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools.float_utils import float_compare
-from odoo.exceptions import UserError, AccessError
+from odoo.exceptions import UserError, AccessError, ValidationError
 from odoo.tools.misc import formatLang
 from odoo.addons import decimal_precision as dp
 
@@ -18,6 +18,10 @@ class PurchaseOrder(models.Model):
 	_inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
 	_description = "Purchase Order"
 	_order = 'date_order desc, id desc'
+
+	#------------------------------------------------------------
+	#DATABASES
+	#------------------------------------------------------------
 
 	@api.depends('order_line.price_total')
 	def _amount_all(self):
@@ -95,8 +99,9 @@ class PurchaseOrder(models.Model):
 	state = fields.Selection([
 		('draft', 'RFQ'),
 		('sent', 'RFQ Sent'),
-		('to approve', 'To Approve'),
-		('procurement', 'To Procurement'),
+		('supervise', 'To Supervisor'),
+		('to approve', 'To Finance'),
+		('board', 'Board Authorization'),
 		('purchase', 'Purchase Order'),
 		('done', 'Locked'),
 		('cancel', 'Cancelled')
@@ -135,20 +140,33 @@ class PurchaseOrder(models.Model):
 	user_id = fields.Many2one('res.users', string='Purchase Representative', index=True, track_visibility='onchange', default=lambda self: self.env.user)
 	company_id = fields.Many2one('res.company', 'Company', required=True, index=True, states=READONLY_STATES, default=lambda self: self.env.user.company_id.id)
 
-	po_check_state = fields.Selection(
-										[
-											('draft', 'Draft'),
-											('check', 'Checked'),
-											('validate', 'Approved'),
-											('refuse', 'Rejected'),
-										],
-										string='PO State')
-
-	po_confirm_comment = fields.Char(string='Check Comments',track_visibility='always')
-	po_approve_comment = fields.Char(string='Approval Comments', track_visibility='always')
-
 	document_count = fields.Integer(string='Documents', compute='_compute_doc_count')
 	doc_attachement = fields.Many2many('ir.attachment', string='Documents',attachment=True,store=True,)
+
+	digital_signature = fields.Binary(string='Signature',oldname="signature_image",attachment=True)
+	procurement_minutes = fields.Binary(string='Minute Extracts', attachment=True)
+
+	cancel_reason = fields.Char(string='Cancel Reason')
+	validate_comment = fields.Char(string='Comment')
+	approve_comment = fields.Char(string='Comments')
+
+	@api.depends('amount_untaxed')
+	def validate_purchase_case_values(self):
+		cases  = self.env['purchase.case'].sudo().search([('active', '=', True)])
+		if len(cases) > 0:
+			for case in cases:
+				if case.code == '000' and self.amount_untaxed < case.case_value_upper:
+					self.update({'process_determinant':'normal'})
+				elif case.code == '111' and self.amount_untaxed < case.case_value_upper:
+					self.update({'process_determinant':'procurement'})
+				elif case.code == '222' and self.amount_untaxed > case.case_value_lower:
+					self.update({'process_determinant': 'board'})
+
+	process_determinant = fields.Selection([
+		('normal', 'Normal'),
+		('procurement', 'Procurement'),
+		('board', 'Board'),
+	],string='Determinant', default='normal', compute='validate_purchase_case_values', track_visibility='onchange')
 
 	@api.depends('doc_attachement')
 	def _compute_doc_count(self):
@@ -183,11 +201,66 @@ class PurchaseOrder(models.Model):
 			result.append((po.id, name))
 		return result
 
+	#---------------------------------------------------
+	#Messaging
+	#---------------------------------------------------
+	def email_notification(self, obj):
+		for record in self:
+			if record.state == 'sent':
+				template_id = self.env.ref('purchase.mail_template_sent')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			if record.state == 'supervise':
+				template_id = self.env.ref('purchase.mail_template_supervise')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			if record.state == 'to approve':
+				template_id = self.env.ref('purchase.mail_template_approve')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			if record.state == 'board':
+				template_id = self.env.ref('purchase.mail_template_board')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			if record.state == 'purchase':
+				template_id = self.env.ref('purchase.mail_template_approved')
+				if template_id:
+					self.env['mail.temolate'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			if record.state == 'cancel':
+				template_id = self.env.ref('purchase.mail_template_cancelled')
+				if template_id:
+					self.env['mail.template'].browse(template_id.id).send_mail(obj, force_send=True)
+
+	#-----------------------------------------------------
+	#Override ORM
+	#-----------------------------------------------------
+
 	@api.model
 	def create(self, vals):
 		if vals.get('name', 'New') == 'New':
 			vals['name'] = self.env['ir.sequence'].next_by_code('purchase.order') or '/'
 		return super(PurchaseOrder, self).create(vals)
+
+	@api.multi
+	def write(self, vals):
+		for record in self:
+			if record.state == 'to approve' and record.process_determinant == 'procurement':
+				if not vals.get('digital_signature') and not vals.get('procurement_minutes'):
+					raise ValidationError(_('Procurement Minute Extracts & Chairperson\'s Signature are Missing \n'+
+					'Please Consult Administration Department'))
+
+			if record.state == 'board' and record.process_determinant == 'board':
+				if not vals.get('digital_signature') and not vals.get('procurement_minutes'):
+					raise ValidationError(_('Procurement Minute Extracts & Chairperson\'s Signature are Missing \n'+
+					'Please Consult Administration Department'))
+
+		rec = super(PurchaseOrder, self).write(vals)
+		return rec
 
 	@api.multi
 	def unlink(self):
@@ -336,23 +409,48 @@ class PurchaseOrder(models.Model):
 	@api.multi
 	def print_quotation(self):
 		self.write({'state': "sent"})
+		self.email_notification(self)
 		return self.env.ref('purchase.report_purchase_quotation').report_action(self)
 
 	@api.multi
 	def button_approve(self, force=False):
-		self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
-		self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
-		return {}
+		#pass conditions to check the amount before approvals right here
+		if self.process_determinant == 'normal':
+			self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
+			self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
+			return {}
+		elif self.process_determinant == 'procurement':
+			return {
+				'name': ('Requires Procurement Sitting'),
+				'view_type': 'form',
+				'view_mode': 'form',
+				'res_model': 'procurement.approval',
+				'view_id': False,
+				'type': 'ir.actions.act_window',
+				'target': 'new'
+			}
+		elif self.process_determinant == 'board':
+			#call a wizard ro execute the job here
+			return {
+				'name': ('Requires Board Approval'),
+				'view_type': 'form',
+				'view_mode': 'form',
+				'res_model': 'board.approval',
+				'view_id': False,
+				'type': 'ir.actions.act_window',
+				'target': 'new'
+			}
 
 	@api.multi
 	def button_draft(self):
 		self.write({'state': 'draft'})
 		return {}
 
+
 	@api.multi
 	def button_confirm(self):
 		for order in self:
-			if order.state not in ['draft', 'sent']:
+			if order.state not in ['draft', 'sent', 'supervise']:
 				continue
 			order._add_supplier_to_product()
 			# Deal with double validation process
@@ -364,6 +462,7 @@ class PurchaseOrder(models.Model):
 			# 	order.button_approve()
 			# else:
 			order.write({'state': 'to approve'})
+		self.email_notification(self)
 		return True
 
 	@api.multi
@@ -374,14 +473,94 @@ class PurchaseOrder(models.Model):
 					raise UserError(_("Unable to cancel this purchase order. You must first cancel the related vendor bills."))
 
 		self.write({'state': 'cancel'})
+		self.email_notification(self)
+
+	@api.multi
+	def cancel_wizard(self, context=None):
+		return {
+			'name': ('Cancel Reason'),
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'purchase.order.cancel.reason',
+			'view_id': False,
+			'type': 'ir.actions.act_window',
+			'target': 'new'
+		}
+
+	@api.multi
+	def validate_wizard(self, context=None):
+		return {
+			'name': ('Comments'),
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'purchase.order.validate.comment',
+			'view_id': False,
+			'type': 'ir.actions.act_window',
+			'target': 'new'
+		}
+
+	@api.multi
+	def approve_wizard(self, context=None):
+		return {
+			'name': ('Comments'),
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': '',
+			'view_id': False,
+			'type': 'ir.actions.act_window',
+			'target': 'new'
+		}
+
+	@api.multi
+	def action_send_for_supervision(self):
+		#check security access rights
+		self.write({'state': 'supervise'})
+		self.email_notification(self)
+
+	@api.multi
+	def action_send_for_board(self):
+		#check security access rights
+		self.write({'state': 'board'})
+		self.email_notification(self)
+
+	@api.multi
+	def action_board_approve(self):
+		self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
+		self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
+		self.email_notification(self)
+
+	@api.multi
+	def confirm_after_procurement(self, force=False):
+		self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
+		self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
+		self.email_notification(self)
 
 	@api.multi
 	def button_unlock(self):
+		#check security access rights
 		self.write({'state': 'purchase'})
+		self.email_notification(self)
 
 	@api.multi
 	def button_done(self):
+		#check security access rights
 		self.write({'state': 'done'})
+
+	@api.multi
+	def send_back_a_step(self):
+		if self.state == 'sent':
+			self.write({'state': 'draft'})
+			self.email_notification(self)
+		elif self.state == 'supervise':
+			self.write({'state': 'sent'})
+			self.email_notification(self)
+		elif self.state == 'to approve':
+			self.write({'state': 'supervise'})
+			self.email_notification(self)
+		elif self.state == 'board':
+			self.write({'state': 'to approve'})
+			self.email_notification(self)
+
 
 	@api.multi
 	def _add_supplier_to_product(self):
@@ -464,41 +643,6 @@ class PurchaseOrder(models.Model):
 	def action_set_date_planned(self):
 		for order in self:
 			order.order_line.update({'date_planned': order.date_planned})
-
-	@api.multi
-	def action_confirm_purchase_order(self):
-		self.write({'po_check_state':'check'})
-		#call mail send at this point
-
-	@api.multi
-	def action_approve_purchase_order(self):
-		self.write({'po_check_state':'validate'})
-		#call mail send at this point
-
-	@api.multi
-	def action_po_confirm(self, context=None):
-		return {
-					'name':('Add Comment Before Confirmation'),
-					'view_type': 'form',
-					'view_mode': 'form',
-					'res_model':'po.confirm.reason',
-					'view_type':False,
-					'type':'ir.actions.act_window',
-					'target':'new'
-				}
-
-	@api.multi
-	def action_po_approve(self, context=None):
-		return {
-					'name':('Add Comment Before Approval'),
-					'view_type': 'form',
-					'view_mode': 'form',
-					'res_model':'po.approve.reason',
-					'view_type':False,
-					'type':'ir.actions.act_window',
-					'target':'new'
-				}
-
 
 
 class PurchaseOrderLine(models.Model):
@@ -605,8 +749,8 @@ class PurchaseOrderLine(models.Model):
 			for line in self:
 				if line.order_id.state == 'purchase':
 					line.order_id.message_post_with_view('purchase.track_po_line_template',
-														 values={'line': line, 'product_qty': values['product_qty']},
-														 subtype_id=self.env.ref('mail.mt_note').id)
+						 values={'line': line, 'product_qty': values['product_qty']},
+						 subtype_id=self.env.ref('mail.mt_note').id)
 		return super(PurchaseOrderLine, self).write(values)
 
 	# @api.multi
