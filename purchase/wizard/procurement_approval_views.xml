@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="board_procurement_views_form" model="ir.ui.view">
+			<field name="name">procurement.approval.form</field>
+			<field name="model">procurement.approval</field>
+			<field name="arch" type="xml">
+				<form string="Board Approval">
+					<p>
+						This Purchase Order Exceeds 2 Millions, therefore it will have to be subjected to <br/>
+						a procurement committtee sitting and minute extracts signed by the chair of the committee<br/>
+						will have have to be submitted before approvals can proceed.
+						Please ensure minute extracts have been uploaded and signed before proceeding.
+					</p>
+					<footer>
+						<button string="Proceed" name="procurement_approval_path" type="object" class='btn-primary'/>
+						<button string="Cancel" class='btn-default' special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+	</data>
+</odoo>

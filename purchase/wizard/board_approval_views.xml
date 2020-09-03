@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="board_approval_views_form" model="ir.ui.view">
+			<field name="name">board.approval.form</field>
+			<field name="model">board.approval</field>
+			<field name="arch" type="xml">
+				<form string="Board Approval">
+					<p>
+						This Purchase Order Exceeds 250 Millions, therefore it will have to be subjected to <br/>
+						a procurement committtee sitting and minute extracts signed by the chair of the committee<br/>
+						There after proceeds to Board for Approval
+					</p>
+					<footer>
+						<button string="Proceed" name="board_approval_path" type="object" class='btn-primary'/>
+						<button string="Cancel" class='btn-default' special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+	</data>
+</odoo>

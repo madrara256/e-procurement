@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="purchase_order_approve_form" model="ir.ui.view">
+		<field name="name">purchase.order.approve.form</field>
+		<field name="model">purchase.order.approve.comment</field>
+		<field name="arch" type="xml">
+			<form string="ApproveComment">
+				<field name="approve_comment"/>
+				<footer>
+					<button string="Approve Purchase Order" name="approve_comment_wizard" type="object" class='btn-primary'/>
+					<button string="Cancel" class='btn-default' special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+	</data>
+</odoo>

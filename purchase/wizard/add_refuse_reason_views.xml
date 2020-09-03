@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="purchase_order_refuse_form" model="ir.ui.view">
+		<field name="name">purchase.order.refuse.form</field>
+		<field name="model">purchase.order.cancel.reason</field>
+		<field name="arch" type="xml">
+			<form string="CancelReason">
+				<field name="cancel_reason"/>
+				<footer>
+					<button string="Cancel Order" name="cancel_reason_wizard" type="object" class='btn-primary'/>
+					<button string="Cancel" class='btn-default' special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+	</data>
+</odoo>

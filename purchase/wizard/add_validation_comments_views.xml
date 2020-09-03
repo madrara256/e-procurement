@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="purchase_order_validate_form" model="ir.ui.view">
+			<field name="name">purchase.order.validate.form</field>
+			<field name="model">purchase.order.validate.comment</field>
+			<field name="arch" type="xml">
+				<form string="ValidateComment">
+					<field name="validate_comment"/>
+					<footer>
+						<button string="Submit to Finance" name="validate_comment_wizard" type="object" class='btn-primary'/>
+						<button string="Cancel" class='btn-default' special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+	</data>
+</odoo>
