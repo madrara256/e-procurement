@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="purchase_case_tree_view">
+			<field name='name'>Purchase Cases</field>
+			<field name='model'>purchase.case</field>
+			<field name='arch' type='xml'>
+				<tree string="Purchase Cases">
+					<field name='name'/>
+					<field name="case_value_lower"/>
+					<field name="case_value_upper"/>
+					<field name="code"/>
+					<field name="description"/>
+					<field name="active"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_case_form">
+			<field name="name">Purchase Cases</field>
+			<field name="model">purchase.case</field>
+			<field name="arch" type="xml">
+				<form string="description">
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<label for="case_value_lower" string="Case Limits"/>
+								<div>
+									<field name="case_value_lower" class="oe_inline"/> --
+									<field name="case_value_upper" class="oe_inline"/>
+								</div>
+							</group>
+							<group>
+								<field name="code"/>
+								<field name="active"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Description">
+								<field name="description"/>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="purchase_case_action" model="ir.actions.act_window">
+			<field name="name">Purchase Cases</field>
+			<field name="res_model">purchase.case</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create Purchase Cases
+				</p>
+				<p>
+					This will have cases under which a purchase order may call for a procurement setting
+					or any other special treatment
+				</p>
+			</field>
+		</record>
+
+		<menuitem id="purchase_case_menu"
+				parent="purchase.menu_purchase_config"
+				action="purchase_case_action"
+				sequence="40"/>
+
+	</data>
+</odoo>
