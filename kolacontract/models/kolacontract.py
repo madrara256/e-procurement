@@ -284,11 +284,11 @@ class kolacontract(models.Model):
 		# 	raise AccessError(_('You do not have rights!'))
 		if values.get('name', 'New') == 'New':
 			values['name'] = self.env['ir.sequence'].next_by_code('contract.sequence') or 'New'
+		if not values.get('kolacontract_line_id'):
+			raise ValidationError(_('Please Specify the service for the Contract Draft'))
+			
 		if len(values.get('kolacontract_line_id')) > 1:
 			raise ValidationError(_('Record limit Exceeded!'))
-		template_id = self.env.ref('kolacontract.contract_draft_mail_template')
-		# if template_id:
-		# 	template_id.send_mail(self.id, force_send=True)
 		contract = super(kolacontract, self).create(values)
 		return contract
 

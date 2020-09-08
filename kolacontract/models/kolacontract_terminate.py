@@ -133,6 +133,11 @@ class KolaContractTerminate(models.Model):
 	def create(self, values):
 		if len(values.get('kolacontract_line_terminate_id')) > 1:
 			raise ValidationError(_('Record limit Exceeded!'))
+		if not values.get('kolacontract_line_id'):
+			raise ValidationError(_('Please Specify the service for the Contract Draft'))
+		if len(values.get('kolacontract_line_id')) > 1:
+			raise ValidationError(_('Record limit Exceeded!'))
+			
 		rec = super(KolaContractTerminate, self).create(values)
 		return rec
 

@@ -26,11 +26,12 @@ access_kolacontract_administration,kola.contract,model_kola_contract,kola_contra
 access_kolacontract_line_admin,kola.contract.line,model_kola_contract_line,kola_contract_administration,1,1,1,1
 access_kolacontract_terminate_admin,kolacontract.terminate,model_kolacontract_terminate,kola_contract_administration,1,1,1,1
 access_kola_stage_admin,kola.stage,model_kola_stage,kola_contract_administration,1,1,0,0
-access_kola_terminate_line_admin, kolacontract.terminate.line,model_kolacontract_terminate_line,kola_contract_administration,1,1,1,1
+access_kola_terminate_line_admin,kolacontract.terminate.line,model_kolacontract_terminate_line,kola_contract_administration,1,1,1,1
 access_kolaevaluate_admin,kolacontract.evaluate,model_kolacontract_evaluate,kola_contract_administration,1,1,1,0
 access_service_rating,kola.rating.service,model_kola_rating_service,kola_contract_administration,1,1,1,1
 access_good_rating,kola.rating.goods,model_kola_rating_goods,kola_contract_administration,1,1,1,0
 access_rating_params_admin,rating.parameter,model_rating_parameter,kola_contract_administration,1,1,1,0
+aceess_overall_evaluate,kola.evaluate.overall,model_kola_evaluate_overall,kola_contract_administration,1,1,1,1
 
 access_kolacontract_procurement,kola.contract,model_kola_contract,kola_contract_procurement,1,1,1,1
 access_kolacontract_line_procurement,kola.contract.line,model_kola_contract_line,kola_contract_procurement,1,1,1,1

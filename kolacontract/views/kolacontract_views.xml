@@ -373,6 +373,7 @@
 					<group expand="1">
 						<filter name="contractor_id" string="Suppliers" context="{'group_by':'contractor_id'}"/>
 						<filter name="product_id" string="Services" context="{'group_by':'product_id'}"/>
+						<filter name="create_date" string="Drafted On" context="{'group_by': 'create_date'}" domain="[]"/>
 					</group>
 				</search>
 			</field>

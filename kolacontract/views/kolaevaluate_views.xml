@@ -6,7 +6,7 @@
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<tree string="Contract Evaluation">
-					<field name="contract_id"/>
+					<field name="supplier_id" string="Vendor"/>
 					<field name="department_id"/>
 					<field name="evaluation_date" widget="date"/>
 				</tree>
@@ -18,7 +18,7 @@
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<tree string="Contract Evaluation">
-					<field name="contract_id"/>
+					<field name="supplier_id" string="Vendor"/>
 					<field name="department_id"/>
 					<field name="evaluation_date" widget="date" invisible="1"/>
 				</tree>
@@ -44,7 +44,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="contract_id" options="{'no_create':True}" string="Supplier"/>
+								<field name="supplier_id" options="{'no_create':True}" string="Vendor"/>
 								<field name="department_id"/>
 								<field name="param_count_goods" invisible="1"/>
 								<field name="max_score_goods" invisible="1"/>
@@ -96,7 +96,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="contract_id" options="{'no_create':True}" string="Service Provider"/>
+								<field name="supplier_id" options="{'no_create':True}" string="Supplier"/>
 								<field name="department_id"/>
 								<field name="param_count_service" invisible="1"/>
 								<field name="max_score_service" invisible="1"/>
@@ -135,7 +135,6 @@
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
-					<field name="contract_id"/>
 					<field name="department_id"/>
 					<field name="evaluation_date"/>
 					<field name="state"/>
@@ -176,7 +175,7 @@
 											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
+														<div class="o_primary"><strong><field name="supplier_id"/></strong></div>
 													</a>
 												</span>
 											</div>
@@ -209,6 +208,7 @@
 													</div>
 												</div>
 											</div>
+
 										</div>
 									</div>
 								</div>
@@ -229,7 +229,6 @@
 			<field name="model">kolacontract.evaluate</field>
 			<field name="arch" type="xml">
 				<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
-					<field name="contract_id"/>
 					<field name="department_id"/>
 					<field name="evaluation_date"/>
 					<field name="state"/>
@@ -270,7 +269,7 @@
 											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
+														<div class="o_primary"><strong><field name="supplier_id"/></strong></div>
 													</a>
 												</span>
 											</div>

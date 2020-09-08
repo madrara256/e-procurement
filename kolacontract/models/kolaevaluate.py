@@ -11,14 +11,24 @@ from werkzeug import url_encode
 class KolaEvaluate(models.Model):
 	_name = 'kolacontract.evaluate'
 	_inherit = ['mail.thread']
-	_rec_name = 'contract_id'
+	_rec_name = 'supplier_id'
 	_description = 'Contract Evaluation'
 
-	contract_id = fields.Many2one('kola.contract', string='Contract', track_visibility='onchange')
-	supplier_id = fields.Many2one('res.partner',string='Supplier')
+	#contract_id = fields.Many2one('kola.contract', string='Contract', track_visibility='onchange')
+	supplier_id = fields.Many2one('res.partner',string='Vendor', domain=[('is_company', '=', True),('supplier', '=', True)])
 	address = fields.Char(string='Address')
 	evaluation_date = fields.Datetime(string='Date', default=datetime.today().now(), track_visibility='onchange')
-	department_id = fields.Many2one('hr.department', related='contract_id.department_id', string='Department')
+	user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+	def default_employee(self):
+		employee_id = self.env['hr.employee'].search([('active','=',True), ('user_id', '=', self.env.uid)])
+		if employee_id:
+			return employee_id.department_id
+	employee_id = fields.Many2one('hr.employee', string='Employee', track_visibility='onchange', default=default_employee)
+	def default_department(self):
+		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		return employee_id.department_id.id
+
+	department_id = fields.Many2one('hr.department', string='Department', default=default_department, readonly=True)
 	prepared_by = fields.Many2one('hr.employee', string='Prepared By')
 	goods_supplied = fields.Many2one('product.product', string='Goods Supplied')
 	service_line_ratings_id = fields.One2many('kola.rating.service', 'kolaevaluate_service_id', string='Service Ratings')
@@ -35,8 +45,9 @@ class KolaEvaluate(models.Model):
 	service_provider_score = fields.Float(string='Service Provider Ratings', compute='_compute_service_provider_ratings', store=True,)
 	color = fields.Integer(string='Index')
 	evaluation = fields.Selection([
-									('supply', 'Supply Of Goods'),
-									('service', 'Provision Of Service')], string='Evaluation for?', default='supply')
+		('supply', 'Supply Of Goods'),
+		('service', 'Provision Of Service')], 
+	string='Evaluation for?', default='supply')
 
 	#goods
 	@api.depends('goods_line_ratings_id.score')
