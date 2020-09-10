@@ -7,10 +7,10 @@
 			<field name="model">kola.evaluate.overall</field>
 			<field name="arch" type="xml">
 				<tree>
-					<field name="name"/>
-					<field name="contract_id"/>
 					<field name="supplier_id"/>
 					<field name="department_id"/>
+					<field name="surveys_submitted" invisible="1"/>
+					<field name="evaluation"/>
 				</tree>
 			</field>
 		</record>
@@ -23,19 +23,18 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="name"/>
-								<field name="contract_id"/>
+								<field name="supplier_id"/>
+								<field name="surveys_submitted"/>
+								<field name="evaluation"/>
+								<field name="department_id"/>
 							</group>
 							<group>
-								<field name="supplier_id"/>
-								<field name="department_id"/>
+								<feld name="department_id" invisible="1"/>
+								<field name="service_provider_average_score" attrs="{'invisible':[('evaluation', '=', 'supply')]}"/>
+								<field name="supplier_average_score" attrs="{'invisible': [('evaluation', '=', 'service')]}"/>
 							</group>
 						</group>
 					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
-						<field name="message_ids" widget="mail_thread" options="{'post_refresh':'reciepients'}"/>
-					</div>
 				</form>
 			</field>
 		</record>
@@ -45,15 +44,45 @@
 			<field name="model">kola.evaluate.overall</field>
 			<field name="arch" type="xml">
 				<kanban class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
-					<field name="name"/>
-					<field name="contract_id"/>
 					<field name="supplier_id"/>
-					<field name="department_id"/>
-					<field name="color"/>
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="oe_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="supplier_id"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="o_kanban_record_body">
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Evaluation for: 
+															<field name="evaluation"/>
+														</span><br/>
+														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Department:  
+															<field name="department_id"/>
+														</span><br/>
+													</div>
 
+													<div class="col-xl-6 o_kanban_primary_right">
+														<t t-if="record.evaluation.raw_value == 'supply'">
+															<field name="supplier_average_score" widget="progressbar"/>
+														</t>
+
+														<t t-if="record.evaluation.raw_value == 'service'">
+															<field name="service_provider_average_score" widget="progressbar"/>
+														</t>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</t>
 					</templates>
