@@ -582,6 +582,7 @@ class kolaRequisitionLine(models.Model):
 	requisition_practical_cost = fields.Float(string='Total Amount',digits = 0,compute='_compute_total_amount',
 		track_visibility='onchange',store=True)
 	budget_balance = fields.Float(string='Budget Balance', track_visibility='onchange')
+	budgeted_units = fields.Float(string='Budgetted Units', track_visibility='onchange')
 
 	product_tmpl_id = fields.Many2one('product.template', related='product_id.product_tmpl_id', string='Product Template')
 
@@ -626,7 +627,9 @@ class kolaRequisitionLine(models.Model):
 				if product.product_id.id == self.product_id.id:
 					amount_left_on_budget+=product.practical_amount
 		self.update({
-				'budget_balance':amount_left_on_budget
+				'budget_balance':amount_left_on_budget,
+				'budgeted_units': product.total_qty,
+				'unit_cost':product.unit_cost,
 			})
 
 	@api.onchange('product_id')
