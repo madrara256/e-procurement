@@ -70,10 +70,11 @@ class KolaRequisition(models.Model):
 	user_id = fields.Many2one('res.users',string='Responsible',default=lambda self: self.env.user.id,
 		track_visibility='onchange')
 
+	tag_id = fields.Many2one('request.tag', string='Tag')
+
 	def _get_supervisor_id(self):
 		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if employee_id:
-			print('This is the supervisor id' +str(employee_id.parent_id.user_id.name))
 			return employee_id.parent_id.user_id
 
 	approver_id = fields.Many2one('res.users',string='Supervisor',
@@ -126,8 +127,8 @@ class KolaRequisition(models.Model):
 		('draft', 'Draft'),
 		('validate1', 'To Supervisor'),
 		('validate2','To Department Head'),
-		('validate3', 'To Admin'),
-		('validate', 'Assessed Requests'),
+		('validate3', 'To Admin & Finance'),
+		('validate', 'Approved'),
 		('order', 'RFQs(Sourcing)'),
 		('reject', 'Cancelled')
 		], default='draft', group_expand='_expand_states', help='Status of purchase request',
@@ -320,7 +321,7 @@ class KolaRequisition(models.Model):
 		if any(purchase_request.state != 'validate1' for purchase_request in self):
 			raise ValidationError(_('Request must be submitted by user before it can be supervised'))
 		self.write({'state': 'validate2'})
-		self.send_email_notification()
+		self.send_email_notification(self)
 		self._update_pr_based_on_budget()
 
 	@api.multi
