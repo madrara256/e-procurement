@@ -259,26 +259,26 @@
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/></span><br/>
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/></span>
 														</t>
 
 														<t t-if="record.state.raw_value == 'validate2'">
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/></span>
 														</t>
 
 														<t t-if="record.state.raw_value == 'renew'">
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Days left <field name="number_of_days_due"/></span><br/>
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh<br/></span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/><br/></span>
 														</t>
 
 														<t t-if="record.state.raw_value == 'reject'">
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/>USh</span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/></span>
 														</t>
 
 														<t t-if="record.state.raw_value == 'terminate'">
