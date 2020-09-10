@@ -284,7 +284,7 @@
 														<t t-if="record.state.raw_value == 'terminate'">
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
-															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount"/> USh</span>
+															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/></span>
 														</t>
 
 													</div>
@@ -334,7 +334,7 @@
 											</div>
 											<div class="o_kanban_record_bottom">
 												<div class="oe_kanban_bottom_left">
-													<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="ratings" widget="priority"/></span>
+												<!-- 	<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="ratings" widget="priority"/></span> -->
 												</div>
 												<div class="oe_kanban_bottom_right">
 													<img t-att-src="kanban_image('kola.contract.', 'image_small', record.contractor_id.raw_value)" t-att-title="record.contractor_id.value" t-att-alt="record.contractor_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
