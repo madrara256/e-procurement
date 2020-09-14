@@ -96,9 +96,13 @@ class PurchaseOrder(models.Model):
 			 "Otherwise, keep empty to deliver to your own company.")
 	currency_id = fields.Many2one('res.currency', 'Currency', required=True, states=READONLY_STATES,
 		default=lambda self: self.env.user.company_id.currency_id.id)
+
+	expected_quotation_date = fields.Datetime(string='Date of Submission',track_visibility='onchange', compute='_compute_submission_date')
+
 	state = fields.Selection([
 		('draft', 'RFQ'),
 		('sent', 'RFQ Sent'),
+		('procurement', 'Procurement'),
 		('supervise', 'To Supervisor'),
 		('to approve', 'To Finance'),
 		('board', 'Board Authorization'),
@@ -109,8 +113,18 @@ class PurchaseOrder(models.Model):
 	group_expand='_expand_states',
 	track_visibility='onchange')
 
+	@api.onchange('state')
+	def reload(self):
+		return {'type':'ir.actions.client', 'tag': 'reload'}
+
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]
+
+
+	@api.multi
+	def _compute_submission_date(self):
+		for record in self:
+			pass
 
 	order_line = fields.One2many('purchase.order.line', 'order_id', string='Order Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True)
 	notes = fields.Text('Terms and Conditions')
@@ -210,6 +224,11 @@ class PurchaseOrder(models.Model):
 				template_id = self.env.ref('purchase.mail_template_sent')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
+
+			if record.state == 'procurement':
+				template_id = self.env.ref('purchase.mail_template_procurement')
+				if template_id:
+					self.env['mail.temolate'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			if record.state == 'supervise':
 				template_id = self.env.ref('purchase.mail_template_supervise')
@@ -413,6 +432,11 @@ class PurchaseOrder(models.Model):
 		return self.env.ref('purchase.report_purchase_quotation').report_action(self)
 
 	@api.multi
+	def action_procurement(self):
+		self.write({'state':'procurement'})
+		self.email_notification(self)
+
+	@api.multi
 	def button_approve(self, force=False):
 		#pass conditions to check the amount before approvals right here
 		if self.process_determinant == 'normal':
@@ -450,7 +474,7 @@ class PurchaseOrder(models.Model):
 	@api.multi
 	def button_confirm(self):
 		for order in self:
-			if order.state not in ['draft', 'sent', 'supervise']:
+			if order.state not in ['draft', 'sent', 'procurement', 'supervise']:
 				continue
 			order._add_supplier_to_product()
 			# Deal with double validation process
@@ -461,7 +485,7 @@ class PurchaseOrder(models.Model):
 			# 		or order.user_has_groups('purchase.group_purchase_manager'):
 			# 	order.button_approve()
 			# else:
-			order.write({'state': 'to approve'})
+			order.write({'state': 'purchase'})
 		self.email_notification(self)
 		return True
 
@@ -551,8 +575,10 @@ class PurchaseOrder(models.Model):
 		if self.state == 'sent':
 			self.write({'state': 'draft'})
 			self.email_notification(self)
-		elif self.state == 'supervise':
+		elif self.state == 'procurement':
 			self.write({'state': 'sent'})
+		elif self.state == 'supervise':
+			self.write({'state': 'procurement'})
 			self.email_notification(self)
 		elif self.state == 'to approve':
 			self.write({'state': 'supervise'})
