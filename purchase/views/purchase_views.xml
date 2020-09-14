@@ -38,6 +38,10 @@
 			action="uom.product_uom_form_action" id="menu_purchase_uom_form_action"
 			parent="purchase.menu_product_in_config_purchase" sequence="5"/>
 
+	 	<menuitem
+	 		id="menu_rfq_procurement" name="Procurement"
+	 		parent="menu_purchase_root"
+	 		sequence="3"/>
 
 	<!-- Purchase Control Menu -->
 	<menuitem id="menu_purchase_control" name="Control" parent="purchase.menu_purchase_root" sequence="4"/>
@@ -133,26 +137,46 @@
 				<form string="Purchase Order">
 				<header>
 					<button name="action_rfq_send" states="draft" string="Send by Email" type="object" context="{'send_rfq':True}" class="oe_highlight"/>
-					<button name="print_quotation" string="Print RFQ" type="object" states="draft" class="oe_highlight" groups="base.group_user"/>
-					<!-- <button name="button_confirm" type="object" states="to approve" string="Confirm Order" id="draft_confirm"/> -->
+
+					<button name="print_quotation" string="Print RFQ" type="object" states="draft" class="oe_highlight" groups="base.group_user"
+						attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+
+					<button name="action_procurement" states="sent" string="Send to Procurement" type="object"
+						attrs="{'invisible': [('state', '!=', 'sent')]}" class="oe_highlight"/>
+					
 					<button name="button_confirm" type="object" states="supervise" string="Submit to Finance" class="oe_highlight" id="bid_confirm"/>
-					<button name="button_approve" type="object" states='to approve' string="Approve Order" class="oe_highlight"/>
+					<!-- <button name="button_approve" type="object" states='to approve' string="Approve Order" class="oe_highlight"/> -->
+					<button name="button_confirm" type="object" states="to approve" string="Confirm Order" id="draft_confirm"
+						attrs="{'invisible':[('state', 'not in', ('to approve', 'board'))]}"/>
+
 					<button name="action_view_invoice" string="Create Bill" type="object" class="oe_highlight" context="{'create_bill':True}" attrs="{'invisible': ['|', ('state', 'not in', ('purchase', 'done')), ('invoice_status', 'in', ('no', 'invoiced'))]}"/>
+
 					<button name="action_rfq_send" states="sent" string="Re-Send by Email" type="object" context="{'send_rfq':True}"/>
+
+
 					<button name="action_send_for_supervision" string="Send for Supervision"  type="object" class="oe_highlight"
-						attrs="{'invisible': [('state', '!=', 'sent')]}"/>
+						attrs="{'invisible': [('state', '!=', 'procurement')]}"/>
+
 					<button name="name" string="Authorize Purchase" type="object" class="oe_highlight"
 						attrs="{'invisible': [('state', '!=', 'board')]}"/>
-					<button name="print_quotation" string="Print RFQ" type="object" states="sent" groups="base.group_user"/>
-					<button name="action_rfq_send" states="purchase" string="Send PO by Email" type="object" context="{'send_rfq':False}"/>
+
+					<button name="action_rfq_send" states="purchase" string="Send PO by Email" type="object" context="{'send_rfq':False}"
+						attrs="{'invisible': [('state', '!=', 'purchase')]}"/>
+
 					<button name="action_view_invoice" string="Create Bill" type="object" context="{'create_bill':True}" attrs="{'invisible': ['|', '|', ('state', 'not in', ('purchase', 'done')), ('invoice_status', 'not in', ('no', 'invoiced')), ('order_line', '=', [])]}"/>
+
 					<button name="send_back_a_step" string="Send Back" type="object" class="oe_highlight"
 						attrs="{'invisible': [('state', '=', 'draft')]}"/>
+
 					<button name="button_draft" states="cancel" string="Set to Draft" type="object" />
+
 					<button name="cancel_wizard" states="draft,to approve,sent,purchase,supervise,board" string="Cancel" type="object" />
+
 					<button name="button_done" type="object" string="Lock" states="purchase"/>
+
 					<button name="button_unlock" type="object" string="Unlock" states="done" groups="purchase.group_purchase_manager"/>
-					<field name="state" widget="statusbar" statusbar_visible="draft,sent,supervise,to approve,board,purchase" readonly="1"/>
+
+					<field name="state" widget="statusbar" statusbar_visible="draft,sent,procurement,supervise,to approve,board,purchase" readonly="1"/>
 				</header>
 				<sheet>
 					<div class="oe_button_box" name="button_box">
@@ -186,6 +210,7 @@
 						</group>
 						<group>
 							<field name="date_order"/>
+							<field name="expected_quotation_date"/>
 							<field name="origin" attrs="{'invisible': [('origin','=',False)]}"/>
 							<field name="doc_attachement" widget="many2many_binary"/>
 							<field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
@@ -193,14 +218,14 @@
 					</group>
 					<notebook>
 						<page string="Products">
-							<field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}">
+							<field name="order_line" attrs="{'readonly': [('state', 'in', ('purchase', 'cancel'))]}">
 								 <tree string="Purchase Order Lines" editable="bottom">
 									<field name="currency_id" invisible="1"/>
 									<field name="state" invisible="1"/>
 									<field name="product_type" invisible="1"/>
 									<field name="invoice_lines" invisible="1"/>
 									<field name="sequence" widget="handle"/>
-									<field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}" force_save="1"/>
+									<field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}" force_save="1"/>
 									<field name="name"/>
 									<field name="date_planned"/>
 									<field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
@@ -208,8 +233,8 @@
 									<field name="analytic_tag_ids" groups="analytic.group_analytic_tags" widget="many2many_tags" options="{'color_field': 'color'}"/>
 									<field name="product_qty"/>
 									<field name="qty_received" attrs="{'column_invisible': [('parent.state', 'not in', ('purchase', 'done'))]}"/>
-									<field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ('purchase', 'done'))]}"/>
-									<field name="product_uom" groups="uom.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}" force_save="1"/>
+									<field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ('purchase'))]}"/>
+									<field name="product_uom" groups="uom.group_uom" attrs="{'readonly': [('state', 'in', ('purchase','cancel'))]}" force_save="1"/>
 									<field name="price_unit" attrs="{'readonly': [('invoice_lines', '!=', [])]}"/>
 									<field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase', 'search_view_ref': 'account.account_tax_view_search'}" options="{'no_create': True}"/>
 									<field name="price_subtotal" widget="monetary"/>
@@ -288,7 +313,7 @@
 										attrs="{'required': [('process_determinant', 'in', [('procurement', 'board')])], 'invisible':[('process_determinant', '=', 'normal')]}"/>
 								</group>
 								<group>
-									<field name="procurement_minutes" attrs="{'required':[('process_determinant', 'in', ['procurement', 'board'])],
+									<field name="procurement_minutes" attrs="{'required':[('process_determinant', 'in', ['supervise', 'board'])],
 										'invisible':[('process_determinant', '=', 'normal')]}"/>
 								</group>
 							</group>
@@ -317,7 +342,7 @@
 					<filter name="my_purchases" string="My Purchases" domain="[('user_id','=', uid)]"/>
 					<separator/>
 					<filter name="draft" string="Quotations" domain="[('state','in',('draft','sent','to approve'))]"/>
-					<filter name="approved" string="Purchase Orders" domain="[('state','in',('purchase','done'))]"/>
+					<filter name="approved" string="Purchase Orders" domain="[('state','in',('purchase'))]"/>
 					<filter name="to_approve" string="To Approve" domain="[('state', '=', 'to approve')]"/>
 					<separator/>
 					<filter name="not_invoiced" string="Waiting Bills" domain="[('invoice_status','=', 'to invoice')]" help="Purchase orders that include lines not invoiced."/>
@@ -350,7 +375,7 @@
 			<field name="name">purchase.order.kanban</field>
 			<field name="model">purchase.order</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="state" class="o_kanban_medium_column">
+				<kanban default_group_by="state" class="o_kanban_medium_column" import="false">
 					<field name="name"/>
 					<field name="partner_id"/>
 					<field name="amount_total"/>
@@ -385,20 +410,26 @@
 													<div class="col-xl-6 o_kanban_primary_left">
 														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Date: <field name="date_order" widget="date"/></span><br/>
 														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="amount_total" widget="monetary"/></span><br/>
-														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">State: <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'cancel': 'danger', 'done': 'success', 'approved': 'warning'}}"/></span><br/>
+														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">State: <field name="state" widget="label_selection" options="{'classes': {'draft': 'primary', 'cancel': 'danger', 'purchase': 'success', 'approved': 'warning'}}"/></span><br/>
 													</div>
 
 													<div class="col-xl-6 o_kanban_primary_right">
 
 														<t t-if="record.state.raw_value == 'draft'">
-															<button class="btn btn-sm btn-block btn-primary" name="action_rfq_send" type="object">Send By Email</button>
-															<button class="btn btn-sm btn-block btn-warning" name="print_quotation" type="object">Print RFQ</button>
+															<button class="btn btn-sm btn-block btn-primary" name="action_rfq_send" type="object">Send RFQ By Email</button>
+															<button class="btn btn-sm btn-block btn-primary" name="print_quotation" type="object">Print RFQ</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'sent'">
-															<button class="btn btn-sm btn-block btn-primary" name="action_send_for_supervision" type="object">Send for Supervision</button>
-															<button class="btn btn-sm btn-block btn-warning" name="action_rfq_send" type="object">Re-Send by Email</button>
+															<button class="btn btn-sm btn-block btn-primary" name="action_procurement" type="object">Send for Procurement</button>
+															<button class="btn btn-sm btn-block btn-warning" name="button_cancel" type="object">Cancel Request</button>
 														</t>
+
+														<t t-if="record.state.raw_value == 'procurement'">
+															<button class="btn btn-sm btn-block btn-primary" name="action_send_for_supervision" type="object">Send for Supervision</button>
+															<button class="btn btn-sm btn-block btn-warning" name="button_cancel" type="object">Cancel Request</button>
+														</t>
+
 														<t t-if="record.state.raw_value == 'supervise'">
 															<button class="btn btn-sm btn-block btn-primary" name="validate_wizard" type="object">Submit to Finance</button>
 															<button class="btn btn-sm btn-block btn-warning" name="send_back_a_step" type="object">Send Back</button>
@@ -414,17 +445,13 @@
 														</t>
 
 														<t t-if="record.state.raw_value == 'purchase'">
-															<button class="btn btn-sm btn-block btn-primary" name="action_view_picking" type="object">Receive Products</button>
-															<button class="btn btn-sm btn-block btn-warning" name="action_rfq_send" type="object">Send PO by Email</button>
-														</t>
+															<button class="btn btn-sm btn-block btn-primary" name="action_rfq_send" type="object">Send PO by Email</button>
 
-														<t t-if="record.state.raw_value == 'done'">
-															<button class="btn btn-sm btn-block btn-primary" name="action_view_invoice" type="object">Create Bill</button>
-															<button class="btn btn-sm btn-block btn-warning" name="button_unlock" type="object">Unlock</button>
+															<button class="btn btn-sm btn-block btn-success" name="action_view_picking" type="object">Receive Products</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'cancel'">
-															<button class="btn btn-sm btn-block btn-warning" name="button_draft" type="object">Set to Draft</button>
+															<button class="btn btn-sm btn-block btn-primary" name="button_draft" type="object">Set to Draft</button>
 														</t>
 													</div>
 												</div>
@@ -461,14 +488,6 @@
 			</field>
 		</record>
 
-		<!-- <record id="purchase_order_action_generic" model="ir.actions.act_window">
-			<field name="name">Purchase Orders</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">purchase.order</field>
-			<field name="domain">[]</field>
-			<field name="view_id" ref="purchase_order_form"/>
-		</record> -->
-
 		<record id="purchase_rfq" model="ir.actions.act_window">
 			<field name="name">RFQs &amp; Purchase Orders</field>
 			<field name="type">ir.actions.act_window</field>
@@ -489,25 +508,6 @@
 		<menuitem action="purchase_rfq" id="menu_purchase_rfq"
 			parent="menu_procurement_management"
 			sequence="0"/>
-
-		<!-- <record id="purchase_form_action" model="ir.actions.act_window">
-			<field name="name">Purchase Orders</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">purchase.order</field>
-			<field name="view_mode">kanban,tree,form,pivot,graph,calendar,activity</field>
-			<field name="domain">[('state','in',('purchase', 'done'))]</field>
-			<field name="context">{}</field>
-			<field name="search_view_id" ref="view_purchase_order_filter"/>
-			<field name="help" type="html">
-			  <p class="o_view_nocontent_smiling_face">
-				Create a quotation
-			  </p><p>
-				It will be converted into a purchase order.
-			  </p>
-			</field>
-		</record> -->
-
-		<!-- <menuitem action="purchase_form_action" id="menu_purchase_form_action" parent="menu_procurement_management" sequence="6"/> -->
 
 		<record id="purchase_order_line_tree" model="ir.ui.view">
 			<field name="name">purchase.order.line.tree</field>
@@ -585,4 +585,15 @@
 				</search>
 			</field>
 		</record>
+
+
+		<menuitem
+			id="menu_rfq_report" name="Generate RFQ Report" 
+			parent="menu_rfq_procurement" action="purchase_rfq"
+			sequence="2"/>
+
+		<menuitem
+			id="menu_move_rfqs_procurement" name="Move RFQs to Procurement"
+			parent="menu_rfq_procurement" action="purchase_rfq"
+			sequence="1"/>
 </odoo>
