@@ -286,10 +286,10 @@
 													</div>
 													<div class="col-xl-6 o_kanban_primary_right">
 														<t t-if="record.state.raw_value == 'draft'">
-															<button class="btn btn-sm btn-block btn-warning" name="confirm_evaluation" type="object">Confirm</button>
+															<button class="btn btn-sm btn-block btn-primary" name="confirm_evaluation" type="object">Confirm</button>
 														</t>
 														<t t-if="record.state.raw_value == 'confirm'">
-															<button class="btn btn-sm btn-block btn-warning" name="validate_evaluation" type="object">Approve</button>
+															<button class="btn btn-sm btn-block btn-primary" name="validate_evaluation" type="object">Approve</button>
 															<button class="btn btn-sm btn-block btn-warning" name="reset_to_draft" type="object">Reset to Draft</button>
 														</t>
 														<t t-if="record.state.raw_value == 'validate'">

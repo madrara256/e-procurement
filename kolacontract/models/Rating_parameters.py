@@ -12,8 +12,8 @@ class RatingParameter(models.Model):
 	name = fields.Char(string='Parameter')
 	category = fields.Selection(
 		[
-			('service', 'Services'),
-			('goods', 'Goods')
+			('service', 'Services Offered'),
+			('goods', 'Delivered Supplies')
 		],
 	string='Category')
 

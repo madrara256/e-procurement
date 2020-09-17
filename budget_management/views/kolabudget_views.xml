@@ -758,14 +758,20 @@
 
 		<menuitem
 			name="Budgets"
-			id="budgets_main_menu"
+			id="budgets_submenu"
 			parent="menu_root_budget"
+			sequence="1"/>
+
+		<menuitem
+			name="Organizational Budget"
+			id="budgets_main_menu"
+			parent="budgets_submenu"
 			action="action_budget_management"
 			sequence="1"/>
 
 		<menuitem
 			id="budget_analysis_menu"
-			name="Budget Analysis"
+			name="Budget Dashboard"
 			parent="budgets_analytics_menu"
 			action="budget_analysis_action"
 			sequence="1"/>

@@ -48,6 +48,7 @@ class KolaEvaluate(models.Model):
 		('supply', 'Supply Of Goods'),
 		('service', 'Provision Of Service')], 
 	string='Evaluation for?', default='supply')
+	active = fields.Boolean(string='Active', default=True)
 
 	#goods
 	@api.depends('goods_line_ratings_id.score')
@@ -201,6 +202,12 @@ class KolaEvaluate(models.Model):
 	def reset_to_draft(self):
 		self.write({'state': 'draft'})
 
+
+class VendorScore(models.Model):
+	_name = 'vendor.score'
+
+	vendor_id = fields.Many2one('res.partner', string='Vendor')
+	score = fields.Float(string='Score')
 
 
 

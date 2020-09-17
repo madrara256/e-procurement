@@ -469,7 +469,30 @@
 			<field name="name">stock.move.kanban2</field>
 			<field name="model">stock.move</field>
 			<field name="arch" type="xml">
-				<kanban class="o_kanban_mobile">
+				<kanban default_group_by="state" class="o_kanban_medium_column">
+					<field name="name"/>
+					<field name="product_id"/>
+					<field name="state"/>
+					<field name="priority"/>
+					<field name="sequence"/>
+					<field name="create_date"/>
+					<field name="company_id"/>
+					<field name="date_expected"/>
+					<field name="product_qty"/>
+					<field name="product_uom_qty"/>
+					<field name="product_uom"/>
+					<field name="product_tmpl_id"/>
+					<field name="product_packaging"/>
+					<field name="location_id"/>
+					<field name="location_dest_id"/>
+					<field name="partner_id"/>
+					<field name="move_dest_ids"/>
+					<field name="move_orig_ids"/>
+					<field name="picking_id"/>
+					<field name="picking_partner_id"/>
+					<field name="note"/>
+					<field name="price_unit"/>
+					<progressbar field="state" colors='{"done": "primary"}'/>
 					<templates>
 						<t t-name="kanban-box">
 							<div t-attf-class="oe_kanban_global_click">
@@ -490,13 +513,16 @@
 									</div>
 									<div class="col-8">
 										<span class="float-right">
-											<i class="fa fa-clock-o" role="img" aria-label="Date" title="Date"/> <field name="date"/>
+											<i class="fa fa-clock-o" role="img" aria-label="Date" title="Date"/> <field name="date" widget="date"/>
 										</span>
 									</div>
 								</div>
 							</div>
 						</t>
 					</templates>
+					<searchpanel>
+						<field name="state"/>
+					</searchpanel>
 				</kanban>
 			</field>
 		</record>
@@ -526,6 +552,7 @@
 					<field name="state"/>
 					<field name="product_uom_qty"/>
 					<field name="priority"/>
+					<progressbar field="state" colors='{"done": "primary"}'/>
 					<templates>
 						<t t-name="kanban-box">
 							<div t-attf-class="oe_kanban_global_click">
@@ -560,11 +587,11 @@
 			<field name="res_model">stock.move</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">tree,kanban,form</field>
+			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain" eval="[('picking_id.picking_type_id.code','=','incoming'), ('location_id.usage','!=','internal'), ('location_dest_id.usage', '=', 'internal')]"/>
 			<field name="view_ids" eval="[(5, 0, 0),
-				(0, 0, {'view_mode': 'tree', 'view_id': ref('view_move_tree_receipt_picking')}),
-				(0, 0, {'view_mode': 'kanban', 'view_id': ref('stock_move_view_kanban')})]"/>
+				(0, 0, {'view_mode': 'kanban', 'view_id': ref('stock_move_view_kanban')}),
+				(0, 0, {'view_mode': 'tree', 'view_id': ref('view_move_tree_receipt_picking')})]"/>
 			<field name="context">{'product_receive': True, 'search_default_future': True}</field>
 			<field name="help" type="html">
 			  <p class="o_view_nocontent_smiling_face">

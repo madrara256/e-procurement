@@ -15,6 +15,7 @@
 					<field name="country_id" invisible="1"/>
 					<field name="parent_id" invisible="1"/>
 					<field name="active" invisible="1"/>
+					<!-- <field name="overall_ratings_score" widget="progressbar"/> -->
 				</tree>
 			</field>
 		</record>
@@ -43,6 +44,7 @@
 					<field name="category_id"/>
 					<field name="image_small"/>
 					<field name="type"/>
+					<!-- <field name="overall_ratings_score"/> -->
 					<templates>
 						<t t-name="kanban-box">
 							<div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">

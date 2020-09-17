@@ -29,22 +29,22 @@
 			sequence="1"/>
 
 
-		<menuitem
+		<!-- <menuitem
 			name="Vendors"
 			id="kola_contracts_vendor_menu" parent="procure2pay_root_menu"
-			sequence="6"/>
+			sequence="6"/> -->
 
-		<menuitem
+		<!-- <menuitem
 			id="qualified_vendor_menu"
 			name="Qualified Vendors" parent="kola_contracts_vendor_menu"
 			action="kolacontract.res_partner_action_window"
-			sequence="1"/>
+			sequence="1"/> -->
 
-		<menuitem
+		<!-- <menuitem
 			id="pre_qualify_vendor_menu"
 			name="Pre-Qualify Vendors" parent="kola_contracts_vendor_menu"
 			action="kolacontract.res_partner_action_window"
-			sequence="2"/>
+			sequence="2"/> -->
 
 		<menuitem
 			id="kolacontract_terminate" name="Terminate Contract"
@@ -52,6 +52,31 @@
 			action="kolacontract.action_contract_termination"
 			sequence="2"/>
 
+		<menuitem
+			name="Evaluation"
+			id="kola_contracts_evaluate_main" parent="procure2pay_root_menu"
+			sequence="6"/>
+
+		<menuitem
+			id="kola_contracts_eval_cumulative"
+			parent="kola_contracts_evaluate_main"
+			action="kolacontract.action_contract_evaluate"
+			groups="kolacontract.kola_contract_administration"
+			sequence="1"/>
+
+		<menuitem
+			id="kola_contracts_eval_supplies"
+			name="For Supply of Goods" 
+			parent="kola_contracts_evaluate_main"
+			action="kolacontract.kolaevaluate_action_goods"
+			sequence="2"/>
+
+		<menuitem
+			id="kola_contracts_eval_services" 
+			name="For Services Offered"
+			parent="kola_contracts_evaluate_main"
+			action="kolacontract.kolaevaluate_action_services"
+			sequence="3"/>		
 
 	</data>
 </odoo>

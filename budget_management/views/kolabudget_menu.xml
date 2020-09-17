@@ -17,17 +17,17 @@
 		sequence="3"/>
 
 	<menuitem
-		name="Analysis/Reporting"
+		name="Dashboard"
 		id="budgets_analytics_menu"
 		parent="menu_root_budget"
-		sequence="4"/>
+		sequence="5"/>
 
 	<menuitem
 		name="Configurations"
 		id="budgets_configs_menu"
 		parent="menu_root_budget"
 		groups="bm_ict_admin,bm_finance"
-		sequence="5"/>
+		sequence="6"/>
 
 	</data>
 

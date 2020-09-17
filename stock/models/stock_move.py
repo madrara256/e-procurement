@@ -99,13 +99,17 @@ class StockMove(models.Model):
 		('confirmed', 'Waiting Availability'),
 		('partially_available', 'Partially Available'),
 		('assigned', 'Available'),
-		('done', 'Done')], string='Status',
+		('done', 'Done')], string='Status', group_expand='_expand_states',
 		copy=False, default='draft', index=True, readonly=True,
 		help="* New: When the stock move is created and not yet confirmed.\n"
 			 "* Waiting Another Move: This state can be seen when a move is waiting for another one, for example in a chained flow.\n"
 			 "* Waiting Availability: This state is reached when the procurement resolution is not straight forward. It may need the scheduler to run, a component to be manufactured...\n"
 			 "* Available: When products are reserved, it is set to \'Available\'.\n"
 			 "* Done: When the shipment is processed, the state is \'Done\'.")
+
+	def _expand_states(self, states, domain, order):
+		return [key for key, val in type(self).state.selection]
+
 	price_unit = fields.Float(
 		'Unit Price', help="Technical field used to record the product cost set by the user during a picking confirmation (when costing "
 						   "method used is 'average price' or 'real'). Value given in company currency and in product uom.", copy=False)  # as it's a technical field, we intentionally don't provide the digits attribute

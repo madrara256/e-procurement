@@ -135,24 +135,24 @@ class KolaInventory(models.Model):
 	_description = 'Inventory'
 
 
-	@api.model
-	def get_all_inventory_analysis(self):
-		uid = request.session.uid
+	# @api.model
+	# def get_all_inventory_analysis(self):
+	# 	uid = request.session.uid
 
-		return {
+	# 	return {
 
-		}
+	# 	}
 
-class KolaStock(models.Model):
-	_inherit = 'stock.quant'
+# class KolaStock(models.Model):
+# 	_inherit = 'stock.quant'
 
-	@api.model
-	def get_all_stock_analysis(self):
-		uid = request.session.uid
+# 	@api.model
+# 	def get_all_stock_analysis(self):
+# 		uid = request.session.uid
 
-		return {
+# 		return {
 
-		}
+# 		}
 
 
 class KolaInvoicing(models.Model):

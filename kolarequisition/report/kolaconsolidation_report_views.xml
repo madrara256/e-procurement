@@ -22,6 +22,15 @@
 								Quantity
 							</th>
 						</thead>
+						<tbody>
+							<t t-foreach="get_department_id" t-as="obj">
+								<tr t-if="'department' in obj">
+									<td style="background-color:#ababab">
+										<strong><t t-esc="obj['department']"/></strong>
+									</td>
+								</tr>
+							</t>
+						</tbody>
 					</table>
 				</div>
 			</t>

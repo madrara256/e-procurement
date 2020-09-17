@@ -15,13 +15,12 @@
 			</field>
 		</record>
 
-		<menuitem
+		<!-- <menuitem
 			id="guidelines_menu"
-			name="Guidelines(Budget)"
+			name="Budget Guidelines"
 			parent="budgets_configs_menu"
 			action="action_budget_guidelines"
-			sequence="1"/>
-
+			sequence="1"/> -->
 
 	</data>
 </odoo>

@@ -36,6 +36,7 @@
 		'views/kolarequisitioncase_views.xml',
 		'views/res_partner_views.xml',
 		'views/kola_requisition_analysis_views.xml',
+		'views/kolarequesttag_views.xml',
 
 		'data/kolarequest_data.xml',
 		'data/kolarequest_line.xml',
