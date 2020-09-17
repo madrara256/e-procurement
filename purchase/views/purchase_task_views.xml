@@ -73,7 +73,17 @@
 													</span>
 												</div>
 												<div class="col-xl-6 o_kanban_primary_right">
-													<button class="btn btn-sm btn-block btn-primary" name="mark_done" type="object">Mark Done</button>
+													<t t-if="record.state.raw_value == 'new'">
+														<button class="btn btn-sm btn-block btn-primary" name="mark_done" type="object">Mark Done</button>
+														<button class="btn btn-sm btn-block btn-warning" name="mark_reject" type="object">Cancel</button>
+													</t>
+													<t t-if="record.state.raw_value == 'new'">
+														<button class="btn btn-sm btn-block btn-primary" name="mark_done" type="object">Mark Done</button>
+													</t>
+
+													<t t-if="record.state.raw_value == 'cancel'">
+														<button class="btn btn-sm btn-block btn-warning" name="reset" type="object">Reset</button>
+													</t>
 												</div>
 											</div>
 
