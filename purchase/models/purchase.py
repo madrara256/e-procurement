@@ -104,15 +104,25 @@ class PurchaseOrder(models.Model):
 		for record in self:
 			if record.state == 'sent':
 				current_date = datetime.today().date()
-				if current_date.weekday() == 3:
+				#wednesdays
+				if current_date.weekday() == 2:
 					quotation_date = current_date + timedelta(days=5)
 					record.update({'expected_quotation_date': quotation_date})
+
+				#thurdays
+				if current_date.weekday() == 3:
+					quotation_date = current_date + timedelta(days=6)
+					record.update({'expected_quotation_date': quotation_date})
+
+				#fridays
 				if current_date.weekday() == 4:
 					quotation_date = current_date + timedelta(days=5)
 					record.update({'expected_quotation_date': quotation_date})
-				elif current_date.weekday() == 5:
+				#saturdays
+				if current_date.weekday() == 5:
 					quotation_date = current_date + timedelta(days=4)
 					record.update({'expected_quotation_date': quotation_date})
+				#any other days
 				else:
 					quotation_date = current_date + timedelta(days=3)
 					record.update({'expected_quotation_date': quotation_date})
@@ -133,10 +143,6 @@ class PurchaseOrder(models.Model):
 	], string='Status', readonly=True, index=True, copy=False, default='draft',
 	group_expand='_expand_states',
 	track_visibility='onchange')
-
-	@api.onchange('state')
-	def reload(self):
-		return {'type':'ir.actions.client', 'tag': 'reload'}
 
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]
@@ -243,7 +249,7 @@ class PurchaseOrder(models.Model):
 			if record.state == 'procurement':
 				template_id = self.env.ref('purchase.mail_template_procurement')
 				if template_id:
-					self.env['mail.temolate'].browse(template_id.id).send_mail(obj.id, force_send=True)
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			if record.state == 'supervise':
 				template_id = self.env.ref('purchase.mail_template_supervise')
@@ -263,7 +269,7 @@ class PurchaseOrder(models.Model):
 			if record.state == 'purchase':
 				template_id = self.env.ref('purchase.mail_template_approved')
 				if template_id:
-					self.env['mail.temolate'].browse(template_id.id).send_mail(obj.id, force_send=True)
+					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
 			if record.state == 'cancel':
 				template_id = self.env.ref('purchase.mail_template_cancelled')
@@ -472,6 +478,8 @@ class PurchaseOrder(models.Model):
 	def action_procurement(self):
 		self.write({'state':'procurement'})
 		self.email_notification(self)
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
+		return reload
 
 	@api.multi
 	def button_approve(self, force=False):
