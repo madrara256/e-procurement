@@ -195,48 +195,60 @@ class KolaContractTerminate(models.Model):
 
 	@api.multi
 	def confirm_terminate(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'draft' for contract in self):
 			raise ValidationError('Contract termination draft must be raised by user department \n'+
 			'Please Contact your System Administrator')
 		self.write({'state':'confirm'})
+		return reload
 
 	@api.multi
 	def review_by_procurement(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'confirm' for contract in self):
 			raise ValidationError(_('Contract must be Reviewed by Procurement before Legal \n'+
 			'Please Contact your System Administrator'))
 		self.write({'state': 'validate1'})
+		return reload
 
 	@api.multi
 	def review_by_legal(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate1' for contract in self):
 			raise ValidationError(_('Contract must be Reviewed by Procurement before Legal Review \n'+
 			'Please Contact your System Administrator'))
 		self.write({'state':'validate2'})
+		return reload
 
 
 	@api.multi
 	def send_for_termination(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate2' for contract in self):
 			raise ValidationError('Contract termnation must be drafted first before it can be Reviewed by Administration \n'+
 			'Please contact your System Administrator')
 		self.write({'state':'validate3'})
+		return reload
 
 
 	@api.multi
 	def approve_termination(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate3' for contract in self):
 			raise ValidationError(_('Contract termination must be drafted by Legal before it can be Signed Off \n'+
 			'Please Contact Your System Administrator'))
 		self.write({'state':'validate'})
+		return reload
 
 
 	@api.multi
 	def reject_terminate(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state': 'reject'})
 		contracts = self.env['kola.contract'].browse(self.contract_id)
 		for contract in contracts:
 			contract.sudo().write({'active':True})
+		return reloadS
 
 	@api.multi
 	def send_contract_back_astep(self):
