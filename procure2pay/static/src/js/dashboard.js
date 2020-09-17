@@ -38,11 +38,8 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 		this.date_range = 'week';
 		this.date_from = moment().subtract(1, 'week');
 		this.date_to = moment();
-		this.dashboard_templates = ['P2PDashboardInventory', 'P2PDashboardRequests','P2PDashboardBudgets','P2PDashboardPurchaseOrder','P2PDashboardContracts',];
-		// this.rfqs = [];
-		// this.purchase_orders = [];
-		// this.rejected_pos = [];
-		console.log('init function executing');
+		this.dashboard_templates = ['P2PDashboardInventory', 'P2PDashboardRequests',];
+		//console.log('init function executing');
 	},
 
 	willStart: function() {
@@ -50,12 +47,12 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 		return $.when(ajax.loadLibs(this), this._super()).then(function() {
 			return self.fetch_data();
 		});
-		console.log('will start function executing')
+		//console.log('will start function executing')
 	},
 	start: function(){
 		var self = this;
 		this.set("title", 'Dashboards');
-		console.log('executing start function');
+		//console.log('executing start function');
 		return this._super().then(function(){
 			self.update_cp();
 			self.render_dashboards();
@@ -75,13 +72,13 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 	render_graphs: function(){
 		var self = this;
-		self.render_stock_trends();
-		self.render_request_trends();
-		self.render_purchase_trends();
-		self.render_budget_trends();
-		self.render_contract_trends();
-		self.render_purchase_analysis();
-		self.render_department_expenditure();
+		// self.render_stock_trends();
+		// self.render_request_trends();
+		// self.render_purchase_trends();
+		// self.render_budget_trends();
+		// self.render_contract_trends();
+		// self.render_purchase_analysis();
+		// self.render_department_expenditure();
 	},
 
 	fetch_data: function(){
@@ -101,7 +98,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 		}).done(function(res){
 			self.requests = res['requests'];
-			console.log(self.requests);
+			//console.log(self.requests);
 		});
 
 		var def3 = this._rpc({
@@ -110,7 +107,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 		}).done(function(res2){
 			self.purchases = res2['purchases'];
-			console.log(self.purchases);
+			//console.log(self.purchases);
 		});
 
 		var def4 = this._rpc({
@@ -119,7 +116,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 		}).done(function(res3) {
 			self.budgets = res3['budgets'];
-			console.log(self.budgets);
+			//console.log(self.budgets);
 		});
 
 		var def5 = this._rpc({
@@ -127,9 +124,9 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 			method: 'get_highest_stock_standings',
 
 		}).done(function(results) {
-			console.log('executing top items in stock');
+			//console.log('executing top items in stock');
 			self.top_products = results['top_ranking_stock'];
-			console.log(self.top_products);
+			//console.log(self.top_products);
 		});
 
 		var def6 = this._rpc({
@@ -137,9 +134,9 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 			method: 'get_lowest_stock_standings'
 
 		}).done(function(res4){
-			console.log('executing lowest items in stock');
+			//console.log('executing lowest items in stock');
 			self.lowest_products = res4['lowest_ranking_stock'];
-			console.log(self.lowest_products);
+			//console.log(self.lowest_products);
 		});
 
 		var def7 = this._rpc({
@@ -147,9 +144,9 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 			method: 'get_stock_scrap_quant',
 
 		}).done(function(res5){
-			console.log('executing top products in scrap');
+			//console.log('executing top products in scrap');
 			self.scrap_products = res5['scrap_ranking_stock'];
-			console.log(self.scrap_products);
+			//console.log(self.scrap_products);
 		});
 
 		var def8 = this._rpc({
@@ -189,7 +186,6 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 			self.render_dashboards();
 			self.render_graphs();
 		});
-		console.log('executing breadcrumbs function');
 	},
 
 
@@ -199,15 +195,12 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 		this.update_control_panel(
 			{breadcrumbs: self.breadcrumbs}, {clear: true}
 		);
-		console.log('executing control panel function');
 	},
 
 	stock_trends: function(e){
 		var self = this;
 		e.stopPropagation();
 		e.preventDefault();
-
-		console.log('Stock link Clicked')
 	},
 
 	expenditure_trends: function(e){
@@ -360,19 +353,19 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 					.attr("height", hGDim.h + hGDim.t + hGDim.b).append("g")
 					.attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
 
-				console.log('x-axis mapping');
+				//console.log('x-axis mapping');
 				var x = d3.scale.ordinal().rangeRoundBands([0, hGDim.w], 0.1)
 					.domain(fData.map(function(d) {
 						return d[0];
 					}));
 
-				console.log('add the x-axis to the histoGram');
+				//console.log('add the x-axis to the histoGram');
 				// Add x-axis to the histogram svg.
 				hGsvg.append("g").attr("class", "x axis")
 					.attr("transform", "translate(0," + hGDim.h + ")")
 					.call(d3.svg.axis().scale(x).orient("bottom"));
 
-				console.log('y-axis mapping');
+				//console.log('y-axis mapping');
 				// Create function for y-axis map.
 				var y = d3.scale.linear().range([hGDim.h, 0])
 					.domain([0, d3.max(fData, function(d) {
@@ -445,10 +438,10 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 			var fData = res[0];
 			var fstate = res[1];
 
-			console.log('printing fData');
+			//console.log('printing fData');
 			console.log(fData);
 
-			console.log('printing fstate');
+			//console.log('printing fstate');
 			console.log(fstate);
 
 			var id = self.$('.purchase_analysis')[0];
@@ -466,7 +459,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 					.attr("height", hGDim.h + hGDim.t + hGDim.b).append("g")
 					.attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
 
-				console.log('Creating x -axis');
+				//console.log('Creating x -axis');
 				// create function for x-axis mapping.
 				var x = d3.scale.ordinal().rangeRoundBands([0, hGDim.w], 0.1)
 						.domain(fData.map(function(d) {
@@ -475,13 +468,13 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 							return d[0];
 							 }));
 
-				console.log('Adding x -axis');
+				//console.log('Adding x -axis');
 				// Add x-axis to the histogram svg.
 				hGsvg.append("g").attr("class", "x axis")
 					.attr("transform", "translate(0," + hGDim.h + ")")
 					.call(d3.svg.axis().scale(x).orient("bottom"));
 
-				console.log('Creating y -axis');
+				//console.log('Creating y -axis');
 				// Create function for y-axis map.
 				var y = d3.scale.linear().range([hGDim.h, 0])
 					.domain([0, d3.max(fData, function(d) {
@@ -491,7 +484,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 					})]
 					);
 
-				console.log('CreatinG BARS');
+				//console.log('CreatinG BARS');
 				// Create bars for histogram to contain rectangles and freq labels.
 				var bars = hGsvg.selectAll(".bar").data(fData).enter()
 					.append("g").attr("class", "bar");
@@ -709,7 +702,7 @@ var Procure2PayDashboardMain = AbstractAction.extend(ControlPanelMixin,{
 
 
 	render_purchase_analysis: function(){
-		console.log('executing purchase trend analysis')
+		//console.log('executing purchase trend analysis')
 		var self = this;
 		var w = 200;
 		var h = 200;
