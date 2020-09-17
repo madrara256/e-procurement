@@ -380,12 +380,14 @@ class kolacontract(models.Model):
 
 	@api.multi
 	def contract_review_by_procurement(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'draft' for contract  in self):
 			raise ValidationError(_('Contract must be Reviewed by Administration'))
 		self.write({
 			'state':'validate1'
 			})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def contract_share(self):
@@ -422,32 +424,39 @@ class kolacontract(models.Model):
 
 	@api.multi
 	def contract_review_by_legal(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate1' for contract in self):
 			raise ValidationError(_('Contract must be Reviewed by Procure before Legal Reviews'))
 		else:
 			self.write({'state': 'validate2'})
 			self.send_email_notification(self)
+		return reload
 
 	#this sign off is either by the MD/ED with the rights
 	@api.multi
 	def contract_signoff(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate2' for contract in self):
 			raise ValidationError(_('Contract must be Reviewed by Legal before Sign Off'))
 		else:
 			self.write({'state': 'validate3'})
 			self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def contract_validattion(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate3' for contract in self):
 			raise ValidationError(_('Contract must signed off before it is set to Running'))
 		else:
 			self.write({'state':'validate'})
 			self.send_email_notification(self)
+		return reload
 
 
 	@api.multi
 	def contract_termination(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state != 'validate' for contract in self):
 			raise ValidationError(_('Contract must be running before it can be terminated'))
 		contract_lines = self.env['kola.contract.line'].search([('kolacontract_id.id', '=',self.id)])
@@ -465,40 +474,49 @@ class kolacontract(models.Model):
 			'active':False
 			})
 		self.send_email_notification(self)
+		return reload
 
 
 	@api.multi
 	def contract_renewal(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state not in ['validate',] for contract in self):
 			raise ValidationError(_('Contract must be either running or terminated before it can be renewed'))
 		self.write({
 			'state':'renew'
 			})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def contract_rejection(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if any(contract.state not in ['draft', 'validate1', 'validate2', 'validate3'] for contract in self):
 			raise ValidationError(_('Contract must be either drafted, Reviewed or Negotiated before it can be rejected'))
 		self.write({
 				'state':'reject'
 				})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def reset_to_draft(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({
 				'state':'draft'
 				})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def auto_manage_contract_status(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		contracts = self.env['kola.contract'].search([])
 		for contract in contracts:
 			if contract.state == 'validate' and contract.number_of_days_due < CONTRACT_NOTIFY_THRESH:
 				contract.sudo().write({'state':'renew'})
 		self.send_email_notification(self)
+		return reload
 
 
 	@api.multi
