@@ -484,10 +484,11 @@ class PurchaseOrder(models.Model):
 	@api.multi
 	def button_approve(self, force=False):
 		#pass conditions to check the amount before approvals right here
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if self.process_determinant == 'normal':
 			self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
 			self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
-			return {}
+			return {},reload
 		elif self.process_determinant == 'procurement':
 			return {
 				'name': ('Requires Procurement Sitting'),
@@ -508,12 +509,14 @@ class PurchaseOrder(models.Model):
 				'view_id': False,
 				'type': 'ir.actions.act_window',
 				'target': 'new'
-			}
+			}, 
+
 
 	@api.multi
 	def button_draft(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state': 'draft'})
-		return {}
+		return {},reload
 
 
 	@api.multi
@@ -542,7 +545,7 @@ class PurchaseOrder(models.Model):
 					raise UserError(_("Unable to cancel this purchase order. You must first cancel the related vendor bills."))
 
 		self.write({'state': 'cancel'})
-		self.email_notification(self)
+		#self.email_notification(self)
 
 	@api.multi
 	def cancel_wizard(self, context=None):
