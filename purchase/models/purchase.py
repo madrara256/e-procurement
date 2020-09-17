@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from datetime import datetime
+import datetime
+from datetime import date, datetime,timedelta
 from dateutil.relativedelta import relativedelta
+import calendar
 
 from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.osv import expression
@@ -97,7 +99,26 @@ class PurchaseOrder(models.Model):
 	currency_id = fields.Many2one('res.currency', 'Currency', required=True, states=READONLY_STATES,
 		default=lambda self: self.env.user.company_id.currency_id.id)
 
-	expected_quotation_date = fields.Datetime(string='Date of Submission',track_visibility='onchange', compute='_compute_submission_date')
+	@api.depends('state')
+	def get_days_to_quotation(self):
+		for record in self:
+			if record.state == 'sent':
+				current_date = datetime.today().date()
+				if current_date.weekday() == 3:
+					quotation_date = current_date + timedelta(days=5)
+					record.update({'expected_quotation_date': quotation_date})
+				if current_date.weekday() == 4:
+					quotation_date = current_date + timedelta(days=5)
+					record.update({'expected_quotation_date': quotation_date})
+				elif current_date.weekday() == 5:
+					quotation_date = current_date + timedelta(days=4)
+					record.update({'expected_quotation_date': quotation_date})
+				else:
+					quotation_date = current_date + timedelta(days=3)
+					record.update({'expected_quotation_date': quotation_date})
+
+	expected_quotation_date = fields.Date(string='Expected Date for Quotations', track_visibility='onchange', 
+		compute='get_days_to_quotation',store=True, default=datetime.today().date())
 
 	state = fields.Selection([
 		('draft', 'RFQ'),
@@ -119,12 +140,6 @@ class PurchaseOrder(models.Model):
 
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]
-
-
-	@api.multi
-	def _compute_submission_date(self):
-		for record in self:
-			pass
 
 	order_line = fields.One2many('purchase.order.line', 'order_id', string='Order Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True)
 	notes = fields.Text('Terms and Conditions')
@@ -423,12 +438,34 @@ class PurchaseOrder(models.Model):
 	def message_post(self, **kwargs):
 		if self.env.context.get('mark_rfq_as_sent'):
 			self.filtered(lambda o: o.state == 'draft').write({'state': 'sent'})
+			all_tasks = self.env['purchase.task'].search([('active', '=', True)])
+			for task in all_tasks:
+				if task.name == self.name:
+					raise ValidationError(_('Task Already Exists'))
+				else:
+					self.env['purchase.task'].sudo().create({
+						'name': self.name,
+						'due_date': self.expected_quotation_date,
+						'active': True,
+						'state': 'new'
+				})
 		return super(PurchaseOrder, self.with_context(mail_post_autofollow=True)).message_post(**kwargs)
 
 	@api.multi
 	def print_quotation(self):
 		self.write({'state': "sent"})
 		self.email_notification(self)
+		all_tasks = self.env['purchase.task'].search([('active', '=', True)])
+		for task in all_tasks:
+			if task.name == self.name:
+				raise ValidationError(_('Task Already Exists'))
+			else:
+				self.env['purchase.task'].sudo().create({
+					'name': self.name,
+					'due_date': self.expected_quotation_date,
+					'active': True,
+					'state': 'new'
+				})
 		return self.env.ref('purchase.report_purchase_quotation').report_action(self)
 
 	@api.multi
