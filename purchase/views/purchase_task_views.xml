@@ -6,7 +6,7 @@
 			<form>
 				<header>
 					<button name="mark_done" string="Mark Done" state="new" class="oe_highlight"/>
-					<field name="state" widget="statusbar" statusbar_visible="new,done" clickable="False"/>
+					<field name="state" widget="statusbar" statusbar_visible="new,done,cancel" clickable="False"/>
 				</header>
 				<sheet>
 					<group>
@@ -40,7 +40,7 @@
 		<field name="name">Tasks/Incoming Quotations</field>
 		<field name="model">purchase.task</field>
 		<field name="arch" type="xml">
-			<kanban default_group_by="state" class="o_kanban_medium_column" import="false">
+			<kanban default_group_by="state" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
 				<field name="name"/>
 				<field name="state"/>
 				<field name="description"/>
