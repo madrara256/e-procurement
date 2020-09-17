@@ -77,7 +77,7 @@
 														<button class="btn btn-sm btn-block btn-primary" name="mark_done" type="object">Mark Done</button>
 														<button class="btn btn-sm btn-block btn-warning" name="mark_reject" type="object">Cancel</button>
 													</t>
-													<t t-if="record.state.raw_value == 'new'">
+													<t t-if="record.state.raw_value == 'done'">
 														<button class="btn btn-sm btn-block btn-primary" name="mark_done" type="object">Mark Done</button>
 													</t>
 
