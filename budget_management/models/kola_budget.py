@@ -318,6 +318,7 @@ class BudgetManagement(models.Model):
 
 	@api.multi
 	def action_propose_draft(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'draft' for budget in self):
 			raise UserError(_('Budget must be drafted before it can be proposed for review & approval'))
@@ -325,64 +326,79 @@ class BudgetManagement(models.Model):
 		self.write({'state':'propose'})
 		for record in self:
 			self.mail_notification(self)
+		return reload
 
 	@api.multi
 	def action_review_proposal(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'propose' for budget in self):
 			raise UserError(_('Budget must be proposed before it can be reviewed by finance team'))
 		#self._check_budgetline_approvals()
 		self.write({'state':'review1'})
 		self.mail_notification(self)
+		return reload
 
 	@api.multi
 	def action_reject_proposal(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state':'draft'})
 		self.mail_notification(self)
+		return reload
 
 	@api.multi
 	def action_consolidate_proposal(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'review1' for budget in self):
 			raise UserError(_('Budget must be reviewed by finance team before it can be consolidated'))
 		#self._check_budgetline_approvals()
 		self.write({'state': 'consolidate'})
 		self.mail_notification(self)
+		return reload
 
 
 	@api.multi
 	def action_reject_consolidation(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state': 'draft'})
 		self.mail_notification(self)
+		return reload
 
 	@api.multi
 	def action_submit_for_mgt_review(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'consolidate' for budget  in self):
 			raise UserError(_('Budget must proposed before it can be reviewed by finance'))
 		#self._check_budgetline_approvals()
 		self.write({'state': 'review'})
 		self.mail_notification(self)
+		return reload
 
 	@api.multi
 	def action_mgt_approve(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'review' for budget in self):
 			raise UserError(_('Budget must be consolidated by finance team before it can be reviewed by administration'))
 		#self._check_budgetline_approvals()
 		self.write({'state':'validate'})
 		self.mail_notification()
+		return reload
 
 	@api.multi
 	def action_mgt_reject(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(budget.state != 'review' for budget in self):
 			raise UserError(_('Budget must be reviews by management before it can be rejected by administration'))
 		#self._check_budgetline_approvals()
 		self.write({'state': 'reject'})
 		self.mail_notification(self)
+		return reload
 
 	@api.multi
 	def print_budget(self):
