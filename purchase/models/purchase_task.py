@@ -34,3 +34,11 @@ class PurchaseTask(models.Model):
 	@api.multi
 	def mark_done(self):
 		self.write({'state':'done'})
+
+	@api.multi
+	def mark_reject(self):
+		self.write({'state': 'cancel'})
+
+	@api.multi
+	def reset(self):
+		self.write({'state': 'new'})
