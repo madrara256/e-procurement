@@ -1,0 +1,105 @@
+<odoo>
+	<record id="purchase_task_form" model="ir.ui.view">
+		<field name="name">Tasks/Incoming Quotations</field>
+		<field name="model">purchase.task</field>
+		<field name="arch" type="xml">
+			<form>
+				<header>
+					<button name="mark_done" string="Mark Done" state="new" class="oe_highlight"/>
+					<field name="state" widget="statusbar" statusbar_visible="new,done" clickable="False"/>
+				</header>
+				<sheet>
+					<group>
+						<group>
+							<field name="name"/>
+						</group>
+						<group>
+							<field name="due_date"/>
+						</group>
+						<field name="description"/>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="purchase_task_tree" model="ir.ui.view">
+		<field name="name">Tasks/Incoming Quotations</field>
+		<field name="model">purchase.task</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name"/>
+				<field name="state"/>
+				<field name="due_date"/>
+				<field name="active"/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="purchase_task_kanban" model="ir.ui.view">
+		<field name="name">Tasks/Incoming Quotations</field>
+		<field name="model">purchase.task</field>
+		<field name="arch" type="xml">
+			<kanban default_group_by="state" class="o_kanban_medium_column" import="false">
+				<field name="name"/>
+				<field name="state"/>
+				<field name="description"/>
+				<field name="due_date"/>
+				<field name="active"/>
+				<progressbar field="state" colors='{"new":"primary"}'/>
+				<templates>
+					<t t-name="kanban-box" import="false">
+						<div class="#{kanban_color(record.color.raw_value)}">
+							<div class="oe_kanban_content">
+								<div class="o_kanban_details">
+									<div class="o_kanban_details_wrapper">
+										<div class="o_kanban_record_title o_text_overflow">
+											<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="name"/></strong></div>
+													</a>
+											</span>
+										</div>
+										<div class="o_kanban_record_body">
+											<div class="row">
+												<div class="col-xl-6 o_kanban_primary_left">
+													<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">Due Date: 
+														<field name="due_date" widget="date"/>
+													</span>
+												</div>
+												<div class="col-xl-6 o_kanban_primary_right">
+													<button class="btn btn-sm btn-block btn-primary" name="mark_done" type="object">Mark Done</button>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</t>
+				</templates>
+				<searchpanel>
+					<field name="state"/>
+				</searchpanel>
+			</kanban>
+		</field>
+	</record>
+
+	<record id="purchase_task_action" model="ir.actions.act_window">
+		<field name="name">Tasks/Incoming Quotations</field>
+		<field name="res_model">purchase.task</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">kanban,tree,form,pivot</field>
+		<field name="domain">[]</field>
+		<field name="context">{}</field>
+		<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">
+				Create tasks related to a purchase/RFQ Quotations In Coming
+			</p>
+			<p>
+				This Window provides a means of managing your tasks related to RFQs/Purchases
+			</p>
+		</field>
+	</record>
+</odoo>
