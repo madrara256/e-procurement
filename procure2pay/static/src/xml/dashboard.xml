@@ -90,7 +90,7 @@
 		</div>
 	</t>
 
-	<t t-name="P2PDashboardContracts">
+	<!-- <t t-name="P2PDashboardContracts">
 		<div class="row main-section">
 				<div class="col-sm-6 col-lg-6  monthly_leave_graph_view">
 					<div class="oh-card text-color">
@@ -99,7 +99,7 @@
 							</h4>
 							<p class="stat-head" style="padding : 0px;">Budget Analysis</p>
 						</div>
-						<!-- <div class="budget_summary"/> -->
+						<div class="budget_summary"/>
 					</div>
 				</div>
 				<div class="col-sm-6 col-lg-6  monthly_leave_graph_view">
@@ -110,11 +110,11 @@
 							<p class="stat-head" style="padding : 0px;">Purchase Requests Analysis</p>
 
 						</div>
-						<!-- <div class="budget_summary"/> -->
+						<div class="budget_summary"/>
 					</div>
 				</div>
 		</div>
-	</t>
+	</t> -->
 
 	<t t-name="P2PDashboardRequests">
 		<div class="row main-section">
@@ -207,10 +207,9 @@
 		</div>
 	</t>
 
-	<t t-name="P2PDashboardBudgets">
+	<!-- <t t-name="P2PDashboardBudgets">
 		<div class="employee_dashboard_main">
 			<div class="row main-section">
-				<!-- <div class="col-md-2 col-sm-2 dummy"></div> -->
 				<div class="col-sm-3 col-lg-3" style="padding-left: 0px;">
 				<div class="col-sm-12 col-lg-12 leave-manager">
 					<div class="row" style="margin:0px">
@@ -292,14 +291,10 @@
 					</div>
 				</div>
 			</div>
-
-			<div class="row main-section">
-				<!-- <div class="col-md-2 col-sm-2 dummy"></div> -->
-			</div>
 		</div>
-	</t>
+	</t> -->
 
-	<t t-name="P2PDashboardPurchaseOrder">
+	<!-- <t t-name="P2PDashboardPurchaseOrder">
 		<div class="employee_dashboard_main">
 			<div class="row main-section">
 				<div class="col-sm-12 col-lg-12">
@@ -316,7 +311,7 @@
 				</div>
 			</div>
 		</div>
-	</t>
+	</t> -->
 
 	<t t-name="DashboardWarning">
 		<div>
