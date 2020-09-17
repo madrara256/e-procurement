@@ -37,11 +37,23 @@
 		<menuitem
 			action="uom.product_uom_form_action" id="menu_purchase_uom_form_action"
 			parent="purchase.menu_product_in_config_purchase" sequence="5"/>
+		<menuitem
+			id="purchase_tasks_menu"
+			name="Tasks"
+			parent="menu_purchase_root"
+			sequence="3"/>
 
-	 	<menuitem
+		<menuitem
+			id="quotation_menu"
+			name="Incoming Quotations"
+			parent="purchase_tasks_menu"
+			action="purchase_task_action"
+			sequence="1"/>
+
+	 	<!-- <menuitem
 	 		id="menu_rfq_procurement" name="Procurement"
 	 		parent="menu_purchase_root"
-	 		sequence="3"/>
+	 		sequence="3"/> -->
 
 	<!-- Purchase Control Menu -->
 	<menuitem id="menu_purchase_control" name="Control" parent="purchase.menu_purchase_root" sequence="4"/>
@@ -209,8 +221,8 @@
 							<field name="process_determinant" invisible="1"/>
 						</group>
 						<group>
-							<field name="date_order"/>
-							<field name="expected_quotation_date"/>
+							<field name="date_order" widget="date"/>
+							<field name="expected_quotation_date" widget="date" attrs="{'invisible':[('state', '!=', 'sent')]}"/>
 							<field name="origin" attrs="{'invisible': [('origin','=',False)]}"/>
 							<field name="doc_attachement" widget="many2many_binary"/>
 							<field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
@@ -227,7 +239,7 @@
 									<field name="sequence" widget="handle"/>
 									<field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}" force_save="1"/>
 									<field name="name"/>
-									<field name="date_planned"/>
+									<field name="date_planned" widget="date"/>
 									<field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
 									<field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}" groups="analytic.group_analytic_accounting"/>
 									<field name="analytic_tag_ids" groups="analytic.group_analytic_tags" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -587,7 +599,7 @@
 		</record>
 
 
-		<menuitem
+		<!-- <menuitem
 			id="menu_rfq_report" name="Generate RFQ Report" 
 			parent="menu_rfq_procurement" action="purchase_rfq"
 			sequence="2"/>
@@ -595,5 +607,5 @@
 		<menuitem
 			id="menu_move_rfqs_procurement" name="Move RFQs to Procurement"
 			parent="menu_rfq_procurement" action="purchase_rfq"
-			sequence="1"/>
+			sequence="1"/> -->
 </odoo>
