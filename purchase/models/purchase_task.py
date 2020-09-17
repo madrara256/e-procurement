@@ -18,14 +18,16 @@ class PurchaseTask(models.Model):
 
 	name = fields.Char(string='Name')
 	description = fields.Html(string='Description')
-	active = fields.Boolean(string='Active')
+	active = fields.Boolean(string='Active', default=True)
 	color = fields.Integer(string='Index')
 	due_date = fields.Datetime(string='Due Date')
 	state = fields.Selection(
 		[
 		('new', 'New'),
-		('done', 'Complete')
-		], string='States', expand='_expand_states', default='new')
+		('done', 'Complete'),
+		('cancel', 'Cancel'),
+		], string='States', group_expand='_expand_states', default='new')
+
 	def _expand_states(self, states, domain, order):
 		return [key for key, val in type(self).state.selection]
 
