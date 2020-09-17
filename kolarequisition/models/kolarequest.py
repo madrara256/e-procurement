@@ -301,6 +301,7 @@ class KolaRequisition(models.Model):
 
 	@api.multi
 	def department_approval(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if self.approver_id == self.department_manager_id:
 			if any(purchase_request.state != 'draft' for purchase_request in self):
@@ -308,21 +309,25 @@ class KolaRequisition(models.Model):
 			self.write({'state': 'validate2'})
 			self.send_email_notification(self)
 			self._update_pr_based_on_budget()
+			return reload
 		else:
 			if any(purchase_request.state != 'draft' for purchase_request in self):
 				raise ValidationError(_('Purchase Request must be in draft before it can be approved by the department'))
 			self.write({'state':'validate1'})
 			self.send_email_notification(self)
 			self._update_pr_based_on_budget()
+			return reload
 
 	@api.multi
 	def hod_approval(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(purchase_request.state != 'validate1' for purchase_request in self):
 			raise ValidationError(_('Request must be submitted by user before it can be supervised'))
 		self.write({'state': 'validate2'})
 		self.send_email_notification(self)
 		self._update_pr_based_on_budget()
+		return reload
 
 	@api.multi
 	def admin_approval(self):
@@ -335,32 +340,40 @@ class KolaRequisition(models.Model):
 
 	@api.multi
 	def finance_approval(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(purchase_request.state != 'validate2' for purchase_request in self):
 			raise ValidationError(_('Purchase Request must be approved by administration before Finance Approval'))
 		self.write({'state':'validate3'})
 		self.send_email_notification(self)
 		self._update_pr_based_on_budget()
+		return reload
 
 	@api.multi
 	def procurement_approval(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if any(purchase_request.state != 'validate3' for purchase_request in self):
 			raise ValidationError(_('Purchase Request must be approved by administration before Procurement Approval'))
 		self.write({'state':'validate'})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def reject_request(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state': 'reject'})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def reset_to_draft(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state': 'draft'})
 		self.send_email_notification(self)
+		return reload
 
 	def _check_state_administration_right(self, values):
 		if values.get('state') and values['state']  in ['validate'] and not self.env['res.users'].has_group('kolarequisition.kola_requisition_administration'):
@@ -369,9 +382,11 @@ class KolaRequisition(models.Model):
 
 	@api.multi
 	def generate_rfq(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		self.write({'state':'order'})
 		self.send_email_notification(self)
+		return reload
 
 	@api.multi
 	def send_back_astep(self):
