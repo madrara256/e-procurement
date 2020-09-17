@@ -32,6 +32,7 @@
 				<field name="state"/>
 				<field name="due_date"/>
 				<field name="active"/>
+				<field name="create_date"/>
 			</tree>
 		</field>
 	</record>
@@ -46,6 +47,7 @@
 				<field name="description"/>
 				<field name="due_date"/>
 				<field name="active"/>
+				<field name="create_date"/>
 				<progressbar field="state" colors='{"new":"primary"}'/>
 				<templates>
 					<t t-name="kanban-box" import="false">
@@ -63,7 +65,10 @@
 										<div class="o_kanban_record_body">
 											<div class="row">
 												<div class="col-xl-6 o_kanban_primary_left">
-													<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">Due Date: 
+													<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Sent Date: 
+														<field name="create_date" widget="date"/>
+													</span>
+													<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Due Date: 
 														<field name="due_date" widget="date"/>
 													</span>
 												</div>
