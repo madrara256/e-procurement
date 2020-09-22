@@ -48,8 +48,33 @@ class KolaContractTerminate(models.Model):
 		'kolacontract_terminate_id',
 		string='Contract Terminate line')
 	user_id = fields.Many2one('res.users','Current User', default=lambda self: self.env.user)
-	active = fields.Boolean(string='Active', default=True)
+	def default_employee(self):
+		employee = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)], limit=1)
+		for empid in employee:
+			return empid.id
+
+	def _department_manager(self):
+		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		if employee_id:
+			manager_id = employee_id.department_id.manager_id.id
+			related_user_id = self.env['hr.employee'].search([('user_id', '=', manager_id)], limit=1)
+			for user in related_user_id:
+				return user.user_id
+
+
+	department_manager = fields.Many2one('hr.employee', string='Department Manager', 
+		default=_department_manager)
+
+	employee_id = fields.Many2one('hr.employee', string='Employee', default=default_employee)
+
+	def department_of_loggedin(self):
+		employee_id = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)])
+		if employee_id:
+			return employee_id.department_id
+
 	department_id = fields.Many2one('hr.department', string='Department')
+
+	active = fields.Boolean(string='Active', default=True)
 	contract_doc = fields.Many2many('ir.attachment',string='Attach a file(s)')
 	count_files = fields.Integer(compute='compute_count_files', string='Document(s)', attachment=True)
 
@@ -131,13 +156,12 @@ class KolaContractTerminate(models.Model):
 	#---------------------------------------------------------
 	@api.model
 	def create(self, values):
-		if len(values.get('kolacontract_line_terminate_id')) > 1:
-			raise ValidationError(_('Record limit Exceeded!'))
-		if not values.get('kolacontract_line_id'):
-			raise ValidationError(_('Please Specify the service for the Contract Draft'))
-		if len(values.get('kolacontract_line_id')) > 1:
-			raise ValidationError(_('Record limit Exceeded!'))
-			
+		# if len(values.get('kolacontract_line_terminate_id')) > 1:
+		# 	raise ValidationError(_('Record limit Exceeded!'))
+		# if not values.get('kolacontract_line_id'):
+		# 	raise ValidationError(_('Please Specify the service for the Contract Draft'))
+		# if len(values.get('kolacontract_line_id')) > 1:
+		# 	raise ValidationError(_('Record limit Exceeded!'))
 		rec = super(KolaContractTerminate, self).create(values)
 		return rec
 

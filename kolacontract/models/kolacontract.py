@@ -68,6 +68,24 @@ class kolacontract(models.Model):
 
 	user_id = fields.Many2one('res.users','Current User', default=lambda self: self.env.user)
 
+	def default_employee(self):
+		employee = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)], limit=1)
+		for empid in employee:
+			return empid.id
+
+	def _department_manager(self):
+		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		if employee_id:
+			manager_id = employee_id.department_id.manager_id.id
+			related_user_id = self.env['hr.employee'].search([('user_id', '=', manager_id)], limit=1)
+			for user in related_user_id:
+				return user.user_id
+
+	department_manager = fields.Many2one('hr.employee', string='Department Manager', 
+		default=_department_manager)
+
+	employee_id = fields.Many2one('hr.employee', string='Employee', default=default_employee)
+
 	amount = fields.Float(string='Amount', compute='_compute_contract_total', store=True,)
 	number_of_days_due = fields.Float(string='Number of Days Left', track_visibility='onchange', compute='_compute_days_left_to_expire', store=True,)
 
@@ -91,6 +109,11 @@ class kolacontract(models.Model):
 	past_deadline = fields.Boolean(string='Past Deadline', default=False, track_visibility='onchange', compute='_check_past_deadline', store=True)
 	kolacontract_line_id = fields.One2many('kola.contract.line', 'kolacontract_id', string='Contract line')
 
+	def department_of_loggedin(self):
+		employee_id = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)])
+		if employee_id:
+			return employee_id.department_id
+
 	ratings = fields.Selection(AVAILABLE_RATINGS, string='Rating')
 	privacy_visibility = fields.Selection([
 		('followers', _('On invitation Only')),
@@ -109,7 +132,8 @@ class kolacontract(models.Model):
 	company_id = fields.Many2one('res.company',
 		default=lambda self: self.env['res.company']._company_default_get('kolacontract'))
 	count_files = fields.Integer(compute='compute_count_files', string='Document(s)', attachment=True)
-	department_id = fields.Many2one('hr.department', string='Department')
+
+	department_id = fields.Many2one('hr.department', string='Department', default=department_of_loggedin)
 	comments_admin = fields.Html(string='Comments')
 	comments_user_department = fields.Html(string='Comments')
 	procurement_minute_extracts = fields.Binary(string='Minute Extracts', attachment=True)
@@ -456,8 +480,10 @@ class kolacontract(models.Model):
 
 	@api.multi
 	def contract_termination(self):
+		print('Department ID' +str(self.department_id.id))
+		print('Department Manager '+str(self.department_manager.id))
 		reload = {'type':'ir.actions.client', 'tag': 'reload'}
-		if any(contract.state != 'validate' for contract in self):
+		if any(contract.state not in  ['validate', 'renew'] for contract in self):
 			raise ValidationError(_('Contract must be running before it can be terminated'))
 		contract_lines = self.env['kola.contract.line'].search([('kolacontract_id.id', '=',self.id)])
 		for contract_line in contract_lines:
@@ -465,14 +491,15 @@ class kolacontract(models.Model):
 				'contract_id':self.id,
 				'date_from':self.date_from,
 				'date_to':self.date_to,
+				'department_manager': self.department_manager.id,
+				'department_id': self.department_id.id,
+				'state': 'draft',
 			})
 			self.env['kolacontract.terminate.line'].sudo().create({
 				'kolacontract_terminate_id':rec['id'],
 				'product_id':contract_line.product_id.id
 			})
-		self.write({
-			'active':False
-			})
+		self.write({'active':False})
 		self.send_email_notification(self)
 		return reload
 

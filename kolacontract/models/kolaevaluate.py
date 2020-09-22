@@ -34,6 +34,17 @@ class KolaEvaluate(models.Model):
 	service_line_ratings_id = fields.One2many('kola.rating.service', 'kolaevaluate_service_id', string='Service Ratings')
 	goods_line_ratings_id = fields.One2many('kola.rating.goods', 'kolaevaluate_goods_id', string='Supply Ratings')
 
+	def _department_manager(self):
+		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		if employee_id:
+			manager_id = employee_id.department_id.manager_id.id
+			related_user_id = self.env['hr.employee'].search([('user_id', '=', manager_id)], limit=1)
+			for user in related_user_id:
+				return user.user_id
+
+	department_manager = fields.Many2one('hr.employee', string='Department Manager', 
+		default=_department_manager)
+	
 	param_count_goods = fields.Integer(string='Param Count(Goods)',compute='_compute_params_goods', store=True,)
 	max_score_goods = fields.Float(string='Maximum Score', compute='_compute_maximum_score_goods', store=True,)
 	actual_supplier_score = fields.Float(string='Actual Supplier Score', compute='_compute_actual_supplier_score', store=True,)

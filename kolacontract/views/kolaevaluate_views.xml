@@ -54,6 +54,7 @@
 								<field name="actual_supplier_score" invisible="1"/>
 								<field name="supplier_score" invisible="1"/>
 								<field name="evaluation" readonly="1"/>
+								<field name="department_manager" invisible="1"/>
 							</group>
 						</group>
 						<notebook>
@@ -106,6 +107,7 @@
 								<field name="actual_provider_score" invisible="1"/>
 								<field name="service_provider_score" invisible="1"/>
 								<field name="evaluation" readonly="1"/>
+								<field name="department_manager" invisible="1"/>
 							</group>
 						</group>
 						<notebook>

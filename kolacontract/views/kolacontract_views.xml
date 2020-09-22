@@ -113,6 +113,7 @@
 								</div>
 								<field name="currency_id" invisible="1"/>
 								<field name="contract_doc" widget="many2many_binary"/>
+								<field name="department_manager" invisible="0"/>
 							</group>
 							<group>
 								<field name="contractor_id" options="{'no_create':True}"/>
