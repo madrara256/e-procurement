@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+
+
+		<record id="budget_activity_action" model="ir.actions.act_window">
+			<field name="nam">Budget Activity</field>
+			<field name="res_model">budget.activity.summary</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">pivot,graph,form</field>
+			<field name="help" type="xml">
+				<p class="o_view_nocontent_smiling_face">
+					Budget Activity Dashboard
+				</p>
+				<p>
+					Get a summary of your budget transition throughout the financial year
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			name="Budget Activity"
+			id="budget_activity_menu_id"
+			parent="menu_root_budget"
+			action="budget_activity_action"
+			sequence="2"/>
+	</data>
+</odoo>
