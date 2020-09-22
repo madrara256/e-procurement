@@ -7,7 +7,7 @@
 	</record>
 
 	<record id="kola_contract_user" model="res.groups">
-		<field name="name">User Department</field>
+		<field name="name">Users</field>
 		<field name="category_id" ref="kola_contract_category"/>
 		<field name="comment">These will be able to read,write,create,unlink(vague description)</field>
 	</record>
@@ -30,12 +30,6 @@
 		<field name="comment">These will be able to read,write,no create,no unlink (vague description)</field>
 	</record>
 
-	<record id="kola_contract_finance" model="res.groups">
-		<field name="name">Finance Department</field>
-		<field name="category_id" ref="kola_contract_category"/>
-		<field name="comment">These will be able to read,write,no create,no unlink (vague description)</field>
-	</record>
-
 	<record id="kola_contract_legal" model="res.groups">
 		<field name="name"> Legal Department</field>
 		<field name="category_id" ref="kola_contract_category"/>
@@ -48,39 +42,33 @@
 		<field name="comment">These will be system Administrator</field>
 	</record>
 
-
-	<!-- record rules -->
-	<record id="department_user_initiation" model="ir.rule">
-		<field name="name">Department User Initiates Contract</field>
-		<field name="model_id" ref="model_kola_contract"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_user')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[]</field>
-	</record>
-
-	<record id="department_user_initiation" model="ir.rule">
-		<field name="name">Department Head  Approval</field>
+	<record id="draft_contracts_rule_id" model="ir.rule">
+		<field name="name">Draft Contracts</field>
 		<field name="model_id" ref="model_kola_contract"/>
 		<field name="groups" eval="[4, ref('kolacontract.kola_contract_department_head')]"/>
 		<field name="perm_read" eval="1"/>
 		<field name="perm_write" eval="1"/>
 		<field name="perm_create" eval="1"/>
 		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[]</field>
+		<field name="domain_force">
+			[
+				('employee_id.user_id', '=', user.id),
+				('state', 'in', ['draft', 'validate1', 'validate2', 'validate', 'terminate'])
+			]</field>
 	</record>
 
-	<record id="department_user_initiation" model="ir.rule">
-		<field name="name">Administration Evaluation</field>
+	<record id="contract_eval_rule_id" model="ir.rule">
+		<field name="name">Contract Evaluation</field>
 		<field name="model_id" ref="model_kola_contract"/>
 		<field name="groups" eval="[4, ref('kolacontract.kola_contract_administration')]"/>
 		<field name="perm_read" eval="1"/>
 		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
+		<field name="perm_create" eval="0"/>
 		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[]</field>
+		<field name="domain_force">
+			[
+				('state', 'in', ['draft', 'validate1', 'validate2', 'validate', 'renew', 'reject', 'terminate'])
+			]</field>
 	</record>
 
 	<record id="department_user_initiation" model="ir.rule">
@@ -91,20 +79,12 @@
 		<field name="perm_write" eval="1"/>
 		<field name="perm_create" eval="1"/>
 		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[]</field>
+		<field name="domain_force">
+			[
+				('state', 'in', ['validate1', 'validate', 'reject', 'terminate'])
+			]
+		</field>
 	</record>
-
-	<record id="department_user_initiation" model="ir.rule">
-		<field name="name">Finance Review &amp; Evaluation</field>
-		<field name="model_id" ref="model_kola_contract"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_finance')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[]</field>
-	</record>
-
 
 	<record id="department_user_initiation" model="ir.rule">
 		<field name="name">System Administrative Role(ICT)</field>
@@ -114,7 +94,10 @@
 		<field name="perm_write" eval="1"/>
 		<field name="perm_create" eval="1"/>
 		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[]</field>
+		<field name="domain_force">
+			[
+				('state', 'in', ['draft', 'validate1', 'validate2', 'validate3', 'reject', 'terminate', 'validate', 'renew'])
+			]</field>
 	</record>
 
 </odoo>
