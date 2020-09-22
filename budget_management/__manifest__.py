@@ -38,7 +38,7 @@
 		'views/res_config_settings_views.xml',
 		'views/team_views.xml',
 		'views/budget_guidelines_views.xml',
-		'views/budget_activity_views.xml',
+		'report/budget_activity_views.xml',
 		'data/budget_config_data.xml',
 		'report/budget_reports.xml',
 		'report/budget_templates.xml',
