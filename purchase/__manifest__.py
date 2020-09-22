@@ -25,10 +25,14 @@
 		'report/purchase_bill_views.xml',
 		'report/purchase_report_views.xml',
 		'data/mail_template_data.xml',
+		#'report/report_paper_format.xml',
 		'views/portal_templates.xml',
 
 		'report/purchase_order_templates.xml',
 		'report/purchase_quotation_templates.xml',
+		'report/rfq_reports.xml',
+		'report/rfq_report_template.xml',
+
 		'data/purchase_order_line.xml',
 
 		'wizard/add_approval_comments_views.xml',
@@ -36,6 +40,8 @@
 		'wizard/add_validation_comments_views.xml',
 		'wizard/board_approval_views.xml',
 		'wizard/procurement_approval_views.xml',
+		'wizard/send_procurement_views.xml',
+
 
 	],
 	'demo': [

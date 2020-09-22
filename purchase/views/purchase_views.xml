@@ -37,11 +37,12 @@
 		<menuitem
 			action="uom.product_uom_form_action" id="menu_purchase_uom_form_action"
 			parent="purchase.menu_product_in_config_purchase" sequence="5"/>
+
 		<menuitem
 			id="purchase_tasks_menu"
 			name="Tasks"
 			parent="menu_purchase_root"
-			sequence="3"/>
+			sequence="4"/>
 
 		<menuitem
 			id="quotation_menu"
@@ -434,12 +435,12 @@
 
 														<t t-if="record.state.raw_value == 'sent'">
 															<button class="btn btn-sm btn-block btn-primary" name="action_procurement" type="object">Send for Procurement</button>
-															<button class="btn btn-sm btn-block btn-warning" name="button_cancel" type="object">Cancel Request</button>
+															<button class="btn btn-sm btn-block btn-warning" name="cancel_wizard" type="object">Cancel Request</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'procurement'">
 															<button class="btn btn-sm btn-block btn-primary" name="action_send_for_supervision" type="object">Send for Supervision</button>
-															<button class="btn btn-sm btn-block btn-warning" name="button_cancel" type="object">Cancel Request</button>
+															<button class="btn btn-sm btn-block btn-warning" name="cancel_wizard" type="object">Cancel Request</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'supervise'">
@@ -448,12 +449,12 @@
 														</t>
 														<t t-if="record.state.raw_value == 'to approve'">
 															<button class="btn btn-sm btn-block btn-primary" name="button_approve" type="object">Approve Order</button>
-															<button class="btn btn-sm btn-block btn-warning" name="button_cancel" type="object">Cancel Order</button>
+															<button class="btn btn-sm btn-block btn-warning" name="cancel_wizard" type="object">Cancel Order</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'board'">
 															<button class="btn btn-sm btn-block btn-primary" name="button_approve" type="object">Approve Order</button>
-															<button class="btn btn-sm btn-block btn-warning" name="button_cancel" type="object">Cancel Order</button>
+															<button class="btn btn-sm btn-block btn-warning" name="cancel_wizard" type="object">Cancel Order</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'purchase'">

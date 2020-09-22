@@ -594,11 +594,11 @@
 		<!-- purchase order cancelled -->
 		<record id="mail_template_cancelled" model="mail.template">
 			<field name="name">PO Cancel</field>
-			<field name="model_id" ref="purchase.model_purchase_order"/>
+			<field name="model_id" ref="model_purchase_order"/>
 			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
-			<field name="subject">Purchase Order Cancellation</field>
+			<field name="subject">Purchase Order Cancelled</field>
 			<field name="body_html"><![CDATA[
 				<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
 					<tr>
@@ -636,7 +636,7 @@
 														<div>
 															Dear Team,<br/> <br/>
 															Purchase Order ${object.name} has been cancelled<br/>
-															For more information use the link <a href="${object.access_url}"></a> <br/>
+															To Access Record use the link <a href="${object.access_url}"></a> <br/>
 														</div>
 													</td>
 												</tr>

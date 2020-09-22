@@ -48,7 +48,7 @@
 				<field name="due_date"/>
 				<field name="active"/>
 				<field name="create_date"/>
-				<progressbar field="state" colors='{"new":"primary"}'/>
+				<progressbar field="state" colors='{}'/>
 				<templates>
 					<t t-name="kanban-box" import="false">
 						<div class="#{kanban_color(record.color.raw_value)}">

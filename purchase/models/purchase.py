@@ -387,6 +387,7 @@ class PurchaseOrder(models.Model):
 		'''
 		This function opens a window to compose an email, with the edi purchase template message loaded by default
 		'''
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.ensure_one()
 		ir_model_data = self.env['ir.model.data']
 		try:
@@ -424,6 +425,7 @@ class PurchaseOrder(models.Model):
 		self = self.with_context(lang=lang)
 		if self.state in ['draft', 'sent']:
 			ctx['model_description'] = _('Request for Quotation')
+			return reload
 		else:
 			ctx['model_description'] = _('Purchase Order')
 
@@ -437,7 +439,7 @@ class PurchaseOrder(models.Model):
 			'view_id': compose_form_id,
 			'target': 'new',
 			'context': ctx,
-		}
+		},reload
 
 	@api.multi
 	@api.returns('mail.message', lambda value: value.id)
@@ -482,6 +484,17 @@ class PurchaseOrder(models.Model):
 		return reload
 
 	@api.multi
+	def forward_to_procurement(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
+		all_sent_rfqs = self.env['purchase.order'].search([('state', '=', 'sent')])
+		print('************Moving to Procurement')
+		for rfq in all_sent_rfqs:
+			rfq.write({'state': 'procurement'})
+			return reload
+		print('***********Done Moving Items to Productions************')
+
+
+	@api.multi
 	def button_approve(self, force=False):
 		#pass conditions to check the amount before approvals right here
 		reload = {'type':'ir.actions.client', 'tag': 'reload'}
@@ -521,6 +534,7 @@ class PurchaseOrder(models.Model):
 
 	@api.multi
 	def button_confirm(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		for order in self:
 			if order.state not in ['draft', 'sent', 'procurement', 'supervise']:
 				continue
@@ -535,16 +549,18 @@ class PurchaseOrder(models.Model):
 			# else:
 			order.write({'state': 'purchase'})
 		self.email_notification(self)
-		return True
+		return True, reload
 
 	@api.multi
 	def button_cancel(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		for order in self:
 			for inv in order.invoice_ids:
 				if inv and inv.state not in ('cancel', 'draft'):
 					raise UserError(_("Unable to cancel this purchase order. You must first cancel the related vendor bills."))
 
 		self.write({'state': 'cancel'})
+		return reload
 		#self.email_notification(self)
 
 	@api.multi
@@ -585,55 +601,73 @@ class PurchaseOrder(models.Model):
 
 	@api.multi
 	def action_send_for_supervision(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		#check security access rights
 		self.write({'state': 'supervise'})
 		self.email_notification(self)
+		return reload
 
 	@api.multi
 	def action_send_for_board(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		#check security access rights
 		self.write({'state': 'board'})
 		self.email_notification(self)
+		return reload
 
 	@api.multi
 	def action_board_approve(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
 		self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
 		self.email_notification(self)
+		return reload
 
 	@api.multi
 	def confirm_after_procurement(self, force=False):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
 		self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
 		self.email_notification(self)
+		return reload
 
 	@api.multi
 	def button_unlock(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		#check security access rights
 		self.write({'state': 'purchase'})
 		self.email_notification(self)
+		return reload
 
 	@api.multi
 	def button_done(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		#check security access rights
 		self.write({'state': 'done'})
+		return reload
 
 	@api.multi
 	def send_back_a_step(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		if self.state == 'sent':
 			self.write({'state': 'draft'})
 			self.email_notification(self)
+			return reload
 		elif self.state == 'procurement':
 			self.write({'state': 'sent'})
+			return reload
 		elif self.state == 'supervise':
 			self.write({'state': 'procurement'})
 			self.email_notification(self)
+			return reload
 		elif self.state == 'to approve':
 			self.write({'state': 'supervise'})
 			self.email_notification(self)
+			return reload
 		elif self.state == 'board':
 			self.write({'state': 'to approve'})
 			self.email_notification(self)
+			return reload
 
 
 	@api.multi

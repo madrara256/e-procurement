@@ -6,6 +6,7 @@ from . import add_refuse_reason
 from . import add_validation_comments
 from . import board_approval
 from . import procurement_approval
+from . import send_procurement
 
 
 
