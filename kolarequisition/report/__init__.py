@@ -3,3 +3,5 @@
 
 from . import requisition_report
 from . import kolaconsolidated_summary
+from . import kolarequest_summary
+

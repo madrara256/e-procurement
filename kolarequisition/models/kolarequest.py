@@ -329,14 +329,14 @@ class KolaRequisition(models.Model):
 		self._update_pr_based_on_budget()
 		return reload
 
-	@api.multi
-	def admin_approval(self):
-		current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
-		if any(purchase_request.state != 'validate1' for purchase_request in self):
-			raise ValidationError(_('Purchase Request must approved by department before approval by administration'))
-		self.write({'state':'validate2'})
-		self.send_email_notification(self)
-		self._update_pr_based_on_budget()
+	# @api.multi
+	# def admin_approval(self):
+	# 	current_employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+	# 	if any(purchase_request.state != 'validate1' for purchase_request in self):
+	# 		raise ValidationError(_('Purchase Request must approved by department before approval by administration'))
+	# 	self.write({'state':'validate2'})
+	# 	self.send_email_notification(self)
+	# 	self._update_pr_based_on_budget()
 
 	@api.multi
 	def finance_approval(self):

@@ -55,11 +55,11 @@
 			</field>
 		</record>
 
-		<menuitem
+		<!-- <menuitem
 			name="Purchase Cases"
 			id="purchase_cases_menu"
 			parent="kolarequisition_configs_menu"
 			action="kolarequisition_case_act_window"
-			sequence="1"/>
+			sequence="1"/> -->
 	</data>
 </odoo>

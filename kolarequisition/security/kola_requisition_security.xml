@@ -42,18 +42,6 @@
 		<field name="comment">Finance: create,read,write</field>
 	</record>
 
-	<record id="kola_requisition_ed" model="res.groups">
-		<field name="name">ED</field>
-		<field name="category_id" ref="kola_requisition_category"/>
-		<field name="comment">ED: create,read,write</field>
-	</record>
-
-	<record id="kola_requisition_procurement" model="res.groups">
-		<field name="name">Procurement</field>
-		<field name="category_id" ref="kola_requisition_category"/>
-		<field name="comment">Procurement: create,read,write</field>
-	</record>
-
 	<!-- Record rules -->
 
 	<record id="department_users_role" model="ir.rule">
@@ -65,7 +53,8 @@
 		<field name="perm_create" eval="1"/>
 		<field name="domain_force">
 			[
-				('employee_id.user_id','=',user.id)
+				('employee_id.user_id','=',user.id),
+				('state', 'in', ['draft', 'validate1', 'validate2', 'validate3', 'validate', 'order', 'reject'])
 			]
 		</field>
 		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_user'))]"/>
@@ -80,9 +69,8 @@
 		<field name="perm_create" eval="1"/>
 		<field name="domain_force">
 			[
-				'|',
-				('employee_id.user_id','=',user.id),
-				('department_manager_id.user_id', '=', user.id)
+				('approver_id.id', '=', user.id),
+				('state', 'in', ['validate1'])
 			]</field>
 		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_officer'))]"/>
 	</record>
@@ -96,9 +84,8 @@
 		<field name="perm_create" eval="1"/>
 		<field name="domain_force">
 			[
-				'|',
-				('employee_id.user_id', '=', user.id),
-				('department_manager_id.user_id', '=', user.id)
+				('department_manager_id.user_id', '=', user.id),
+				('state', 'in', ['validate2'])
 			]
 		</field>
 		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_manager'))]"/>
@@ -111,7 +98,10 @@
 		<field name="perm_read" eval="1"/>
 		<field name="perm_write" eval="1"/>
 		<field name="perm_create" eval="1"/>
-		<field name="domain_force">[]</field>
+		<field name="domain_force">
+			[
+				('state', 'in', ['validate3', 'validate', 'order', 'reject'])
+			]</field>
 		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_administration'))]"/>
 	</record>
 
@@ -122,30 +112,10 @@
 		<field name="perm_read" eval="1"/>
 		<field name="perm_write" eval="1"/>
 		<field name="perm_create" eval="1"/>
-		<field name="domain_force">[]</field>
+		<field name="domain_force">
+			[
+				('state', 'in', ['validate3', 'validate', 'order', 'reject'])
+			]</field>
 		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_finance'))]"/>
 	</record>
-
-	<record id="ed_user_role" model="ir.rule">
-		<field name="name">ED: create,read,write,unlink</field>
-		<field name="model_id" ref="model_kola_requisition"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="domain_force">[]</field>
-		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_ed'))]"/>
-	</record>
-
-	<record id="procurement_user_role" model="ir.rule">
-		<field name="name">Procurement: create,read,write,unlink</field>
-		<field name="model_id" ref="model_kola_requisition"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="domain_force">[]</field>
-		<field name="groups" eval="[(4,ref('kolarequisition.kola_requisition_procurement'))]"/>
-	</record>
-
 </odoo>

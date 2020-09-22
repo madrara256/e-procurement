@@ -27,7 +27,7 @@
 		<field name="target">new</field>
 	</record>
 
-	<menuitem id="menu_consolidate_requests" parent="kolarequisition_menu_root"
+	<!-- <menuitem id="menu_consolidate_requests" parent="kolarequisition_menu_root"
 		action="action_consolidate_purchase_requests"
-		sequence="2"/>
+		sequence="2"/> -->
 </odoo>

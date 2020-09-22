@@ -125,22 +125,19 @@
 							attrs="{'invisible': [('state', '!=', 'validate1')]}"
 							/>
 
-						<button name="admin_approval" string="Submit to Admin" type="object" class="oe_highlight"
-							attrs="{'invisible': [('state', '!=', 'validate2')]}"
+						<button name="finance_approval" string="Submit to Admin &amp; Finance" type="object"
+							class="oe_highlight" attrs="{'invisible':[('state', '!=', 'validate2')]}"
+							groups="kolarequisition.kola_requisition_manager, kolarequisition.kola_requisition_regional_manager"/>
+
+						<button name="procurement_approval" string="Approve Request" type="object"
+							class="oe_highlight" attrs="{'invisible':[('state', '!=', 'validate3')]}"
 							groups="kolarequisition.kola_requisition_administration"/>
 
-						<button name="finance_approval" string="Submit to Finance" type="object"
-							class="oe_highlight" attrs="{'invisible':[('state', '!=', 'validate2')]}"
-							groups="kolarequisition.kola_requisition_finance"/>
-
-						<button name="procurement_approval" string="Send for Approval" type="object"
-							class="oe_highlight" attrs="{'invisible':[('state', '!=', 'validate3')]}"
-							groups="kolarequisition.kola_requisition_procurement"/>
-
-						<button name="send_back_astep" string="Send Back" type="object"/>
-
 						<button name="validate_request" string="Generate RFQ" type="object" class="oe_highlight"
-							attrs="{'invisible': [('state', '!=', 'validate'),('is_service', '=', True)]}"/>
+							attrs="{'invisible': [('state', '!=', 'validate'),('is_service', '=', True)]}"
+							groups="kolarequisition.kola_requisition_administration"/>
+
+						<button name="send_back_astep" string="Send Back" type="object"/>					
 
 						<button name="generate_contract_draft" string="Create Contract Draft" type="object"
 							class="oe_highlight"
@@ -176,7 +173,6 @@
 								<field name="user_id" readonly="1"/>
 								<field name="employee_id" invisible="1"/>
 								<field name="department_id" invisible="1"/>
-								<field name="department_manager_id" string="Department Manager" invisible="1"/>
 								<field name="company_id" invisible="1"/>
 								<field name="name" invisible="1"/>
 								<field name="is_service"/>
@@ -189,8 +185,8 @@
 								<field name="requisition_deadline" invisible="1"/>
 								<field name="currency_id" groups="base.group_multi_currency" force_save="1" invisible="1"/>
 								<field name="doc_attachment" widget="many2many_binary"/>
-								<field name="department_manager_id" invisible="1"/>
-								<field name="approver_id" invisible="1"/>
+								<field name="department_manager_id"/>
+								<field name="approver_id"/>
 								<field name="tag_id" widget="many2one" options="{'no_create':True}"/>
 							</group>
 						</group>
@@ -209,9 +205,12 @@
 										<field name="budgeted_units" string="Budgeted Units"/>
 										<field name="budget_balance"/>
 										<button name="approve_purchase_line" string="Approve" type="object" class="btn btn-sm btn-block btn-primary"
-											confirm="Confirm purchase line approval"/>
+											confirm="Confirm purchase line approval" groups="kolarequisition.kola_requisition_officer, kolarequisition.kola_requisition_manager,
+											kolarequisition.kola_requisition_regional_manager"/>
 										<button name="reject_purchase_line" string="Reject" type="object" class="btn btn-sm btn-block btn-warning"
-											confirm="Confirm purchase line rejection"/>
+											confirm="Confirm purchase line rejection" groups="kolarequisition.kola_requisition_officer,
+											kolarequisition.kola_requisition_manager,
+											kolarequisition.kola_requisition_regional_manager"/>
 										<field name="product_uom_id" invisible="1" options="{'no_create':True}"/>
 										<field name="purchase_item_state" string="State"/>
 									</tree>
