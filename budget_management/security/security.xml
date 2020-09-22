@@ -43,7 +43,7 @@
 
 
 	<!-- Record rules -->
-	<!-- <record id="users_can_modify_budget" model="ir.rule">
+	<record id="users_can_modify_budget" model="ir.rule">
 		<field name="name">User Drafts Budget</field>
 		<field name="model_id" ref="model_budget_management"/>
 		<field name="groups" eval="[(4, ref('budget_management.bm_unit_users'))]"/>
@@ -53,12 +53,13 @@
 		<field name="perm_unlink" eval="0"/>
 		<field name="domain_force">
 			[
-				('department_id.member_ids.user_id', 'in', [user.id]),
+				('department_id.member_ids.user_id', '=', user.id),
+				('state', 'in', ['draft', 'validate'])
 			]
 		</field>
-	</record> -->
+	</record>
 
-	<!-- <record id="managers_can_alter_budgets" model="ir.rule">
+	<record id="managers_can_alter_budgets" model="ir.rule">
 		<field name="name">Unit Manager Approval</field>
 		<field name="model_id" ref="model_budget_management"/>
 		<field name="groups" eval="[(4, ref('budget_management.bm_manager'))]"/>
@@ -68,12 +69,13 @@
 		<field name="perm_unlink" eval="0"/>
 		<field name="domain_force">
 			[
+				('department_manager_id.user_id', '=', user.id),
 				('state', 'in', ['draft', 'propose', 'validate', 'reject'])
 			]
 		</field>
-	</record> -->
+	</record>
 
-	<!-- <record id="reg_managers_can_alter_budgets" model="ir.rule">
+	<record id="reg_managers_can_alter_budgets" model="ir.rule">
 		<field name="name">Regional Manager Approval</field>
 		<field name="model_id" ref="model_budget_management"/>
 		<field name="groups" eval="[(4, ref('budget_management.bm_reg_manager'))]"/>
@@ -82,13 +84,14 @@
 		<field name="perm_create" eval="1"/>
 		<field name="perm_unlink" eval="0"/>
 		<field name="domain_force">
-			[
+			[	
+				('department_manager_id.user_id', '=', user.id),
 				('state', 'in', ['draft', 'propose', 'validate', 'reject'])
 			]
 		</field>
-	</record> -->
+	</record>
 
-	<!-- <record id="finance_can_alter_budgets" model="ir.rule">
+	<record id="finance_can_alter_budgets" model="ir.rule">
 		<field name="name">Finance Review/Consolidation</field>
 		<field name="model_id" ref="model_budget_management"/>
 		<field name="groups" eval="[(4, ref('budget_management.bm_finance'))]"/>
@@ -101,21 +104,34 @@
 				('state', 'in', ['draft', 'propose', 'review1', 'review', 'validate', 'reject'])
 			]
 		</field>
-	</record> -->
+	</record>
 
-	<!-- <record id="board_can_alter_budgets" model="ir.rule">
+	<record id="board_can_alter_budgets" model="ir.rule">
 		<field name="name">Management Review/Approval</field>
 		<field name="model_id" ref="model_budget_management"/>
 		<field name="groups" eval="[(4, ref('budget_management.bm_approval_committee'))]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
 		<field name="perm_create" eval="0"/>
 		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('state', 'in', ['consolidate', 'review', 'validate', 'reject'])
-			]
-		</field>
-	</record> -->
+		<field name="domain_force">[('state', 'in', ['consolidate', 'review', 'validate', 'reject'])]</field>
+	</record>
+
+	<record id="manager_budget_activity_rule" model="ir.rule">
+		<field name="name">Managers: Budget Activity</field>
+		<field name="model_id" ref="model_budget_activity"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_manager'))]"/>
+		<field name="perm_create" eval="0"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">[('department_manager_id.user_id', '=', user.id)]</field>
+	</record>
+
+
+	<record id="manager_budget_activity_rule" model="ir.rule">
+		<field name="name">Regional Managers: Budget Activity</field>
+		<field name="model_id" ref="model_budget_activity"/>
+		<field name="groups" eval="[(4, ref('budget_management.bm_reg_manager'))]"/>
+		<field name="perm_create" eval="0"/>
+		<field name="perm_unlink" eval="0"/>
+		<field name="domain_force">[('department_manager_id.user_id', '=', user.id)]</field>
+	</record>
 
 </odoo>

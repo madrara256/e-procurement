@@ -21,6 +21,8 @@ access_finance_loan,loan.forecasts,model_loan_forecasts,bm_finance,1,1,1,0
 access_finance_savings,savings.forecasts,model_savings_forecasts,bm_finance,1,1,1,0
 access_finance_staffing,staff.forecasts,model_staff_forecasts,bm_finance,1,1,1,0
 access_finance_manpower,manpower.forecasts,model_manpower_forecasts,bm_finance,1,1,1,0
+access_finance_budget_act,budget.activity,model_budget_activity,bm_finance,1,1,1,0
+
 
 
 access_board_budget_management,budget.management,model_budget_management,bm_approval_committee,1,1,1,0
@@ -32,7 +34,7 @@ access_board_loan,loan.forecasts,model_loan_forecasts,bm_approval_committee,1,1,
 access_board_savings,savings.forecasts,model_savings_forecasts,bm_approval_committee,1,1,1,0
 access_board_staffing,staff.forecasts,model_staff_forecasts,bm_approval_committee,1,1,1,0
 access_board_manpower,manpower.forecasts,model_manpower_forecasts,bm_approval_committee,1,1,1,0
-
+access_board_budget_act,budget.activity,model_budget_activity,bm_approval_committee,1,1,1,0
 
 access_user_budget_management,budget.management,model_budget_management,bm_unit_users,1,1,1,0
 access_user_configs,budget.config,model_budget_config,bm_unit_users,1,1,0,0
@@ -54,6 +56,7 @@ access_manager,loan.forecasts,model_loan_forecasts,bm_manager,1,1,1,0
 access_manager_savings,savings.forecasts,model_savings_forecasts,bm_manager,1,1,1,0
 access_manager_staffing,staff.forecasts,model_staff_forecasts,bm_manager,1,1,1,0
 access_manager_manpower,manpower.forecasts,model_manpower_forecasts,bm_manager,1,1,1,0
+access_manager_budget_act,budget.activity,model_budget_activity,bm_manager,1,1,1,0
 
 
 access_reg_manager_budget_management,budget.management,model_budget_management,bm_reg_manager,1,1,1,0
@@ -65,8 +68,8 @@ access_reg_manager_loan,loan.forecasts,model_loan_forecasts,bm_reg_manager,1,1,1
 access_reg_manager_savings,savings.forecasts,model_savings_forecasts,bm_reg_manager,1,1,1,1
 access_reg_manager_staffing,staff.forecasts,model_staff_forecasts,bm_reg_manager,1,1,1,1
 access_reg_manager_manpower,manpower.forecasts,model_manpower_forecasts,bm_reg_manager,1,1,1,1
+access_reg_manager_budget_act,budget.activity,model_budget_activity,bm_reg_manager,1,1,1,0
 
-access_activity,budget.activity,model_budget_activity,bm_finance,1,1,1,0
 access_activity_ict,budget.activity,model_budget_activity,bm_ict_admin,1,1,1,0
 
 

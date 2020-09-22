@@ -23,6 +23,16 @@ class BudgetActivity(models.Model):
 	name = fields.Char(string='Budget Reference')
 	budget_id = fields.Many2one('budget.management', string='Budget Name')
 	department_id = fields.Many2one('hr.department', related='budget_id.department_id', string='Department')
+	def department_manager(self):
+		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+		if employee_id:
+			manager_id = employee_id.department_id.manager_id.id
+			related_user_id = self.env['hr.employee'].search([('user_id', '=', manager_id)], limit=1)
+			for user in related_user_id:
+				return user.user_id
+				
+	department_manager_id = fields.Many2one('hr.employee',default=department_manager, string='Manager')
+
 	budget_amount = fields.Float(string='Amount', related='budget_id.total_budget_cost')
 
 	color = fields.Integer(string='Color')

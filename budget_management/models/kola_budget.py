@@ -52,10 +52,13 @@ class BudgetManagement(models.Model):
 		employee_id = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)])
 		return employee_id
 
-	def default_manager(self):
+	def department_manager(self):
 		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		if employee_id:
-			return employee_id.department_id.manager_id
+			manager_id = employee_id.department_id.manager_id.id
+			related_user_id = self.env['hr.employee'].search([('user_id', '=', manager_id)], limit=1)
+			for user in related_user_id:
+				return user.user_id
 
 	name = fields.Char(string='Reference', default='New', required=True, track_visibility='onchange')
 	employee_id = fields.Many2one('hr.employee', default=default_employee)
@@ -63,7 +66,7 @@ class BudgetManagement(models.Model):
 	budget_config_id = fields.Many2one('budget.config', string='Budget Type', track_visibility='onchange')
 	bm_budget_lines_id = fields.One2many('bm.budget.lines', 'budget_management_id', 'Budget line', required=True)
 	department_id = fields.Many2one('hr.department', string='Department',default=default_department, track_visibility='onchange')
-	department_manager_id = fields.Many2one('hr.employee',default=default_manager, string='Manager')
+	department_manager_id = fields.Many2one('hr.employee',default=department_manager, string='Manager')
 
 	state = fields.Selection([
 		('draft', 'To Submit'),

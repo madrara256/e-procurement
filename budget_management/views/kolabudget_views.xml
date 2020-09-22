@@ -152,7 +152,7 @@
 						<group>
 							<group>
 								<field name="name" invisible="1"/>
-								<field name="department_manager_id" invisible="0"/>
+								<field name="department_manager_id"/>
 								<label for="date_from"/>
 								<div>
 									<field name="date_from" widget="date" class="oe_inline"/> --
