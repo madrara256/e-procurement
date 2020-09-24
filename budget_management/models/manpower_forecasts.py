@@ -25,11 +25,16 @@ class ManPowerPlan(models.Model):
 								('sep','September'),
 								('oct','October'),
 								('nov', 'November'),
-								('dec', 'December')],string='Months',)
+								('dec', 'December')],string='Months',
+								group_expand='_expand_states',)
+	def _expand_states(self, states, domain, order):
+		return [key for key, val in type(self).months.selection]
+
 	job_id = fields.Many2one('hr.job', string='Position')
 	current_number = fields.Integer(string='Current No.')
 	proposed_number = fields.Integer(string='Proposed')
 	difference = fields.Integer(string='Variance')
+	color = fields.Integer(string='Index')
 
 	@api.model
 	def create(self,values):
