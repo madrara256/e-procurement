@@ -12,6 +12,7 @@ class StaffForecasts(models.Model):
 	_rec_name = 'department_id'
 	_inherit = ['mail.thread', 'mail.activity.mixin']
 
+	team_id = fields.Many2one('budget.team',string='Branch',)
 	months = fields.Selection([
 								('jan', 'January'),
 								('feb', 'February'),
@@ -24,12 +25,17 @@ class StaffForecasts(models.Model):
 								('sep','September'),
 								('oct','October'),
 								('nov', 'November'),
-								('dec', 'December')],string='Months',)
+								('dec', 'December')],string='Months',
+								group_expand='_expand_states',)
+	def _expand_states(self, states, domain, order):
+		return [key for key, val in type(self).months.selection]
+
 	department_id = fields.Many2one('hr.department', string='Department')
 	job_id = fields.Many2one('hr.job', string='Position')
 	current_number = fields.Integer(string='Current No.')
 	proposed_number = fields.Integer(string='Proposed')
 	difference = fields.Integer(string='Variance')
+	color = fields.Integer(string='Index')
 
 
 	@api.model
