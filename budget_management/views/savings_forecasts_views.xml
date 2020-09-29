@@ -1,16 +1,24 @@
 <odoo>
 	<data>
+		<record id="sequence_saving_code" model="ir.sequence">
+			<field name="name">savings sequence</field>
+			<field name="code">savings.sequence.code</field>
+			<field name="active">TRUE</field>
+			<field name="prefix">SVPROJ</field>
+			<field name="padding">6</field>
+			<field name="number_next">1</field>
+			<field name="number_increment">1</field>
+		</record>
+
 		<record model='ir.ui.view' id='savings_forecasts_tree'>
 			<field name='name'>Projections</field>
 			<field name='model'>savings.forecasts</field>
 			<field name='arch' type='xml'>
 				<tree string="description">
-					<field name="team_id"/>
-					<field name="months"/>
-					<field name="forecast_volume"/>
-					<field name="forecast_cases"/>
-					<field name="actual_volume"/>
-					<field name="actual_cases"/>
+					<field name="name"/>
+					<!-- <field name="team_id"/> -->
+					<field name="year"/>
+					<field name="active"/>
 				</tree>
 			</field>
 		</record>
@@ -28,17 +36,31 @@
 						</div>
 						<group>
 							<group>
-								<field name="team_id"/>
-								<field name="budget_id"/>
-								<field name="forecast_volume"/>
-								<field name="forecast_cases"/>
+								<field name="name"/>
+								<!-- <field name="team_id"/> -->
 							</group>
 							<group>
-								<field name="months"/>
-								<field name="actual_volume"/>
-								<field name="actual_cases"/>
+								<!-- <label for="date_from"/>
+								<div>
+									<field name="date_from" widget="date" class="oe_inline"/>
+									<field name="date_to" widget="date" class="oe_inline"/>
+								</div> -->
+								<field name="active"/>
 							</group>
 						</group>
+						<!-- <notebook>
+							<page string="Loan Projections">
+								<field name="projection_period_id" widget="one2many">
+									<tree string="Projection Details" editable="button">
+										<field name="name"/>
+										<field name="forecasts_volume"/>
+										<field name="forecast_cases"/>
+										<field name="actual_volume"/>
+										<field name="actual_cases"/>
+									</tree>
+								</field>
+							</page>
+						</notebook> -->
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
@@ -53,7 +75,7 @@
 			<field name="model">savings.forecasts</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<filter name="months" string="By Months" domain="[]" context="{'group_by' : 'months'}"/>
+					
 				</search>
 			</field>
 		</record>
@@ -62,15 +84,11 @@
 			<field name="name">Savings Forecasts</field>
 			<field name="model">savings.forecasts</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="months" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
-					<field name="team_id"/>
-					<field name="months"/>
-					<field name="forecast_volume"/>
-					<field name="forecast_cases"/>
-					<field name="actual_volume"/>
-					<field name="actual_cases"/>
+				<kanban default_group_by="month" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
+					<field name="month"/>
 					<field name="active"/>
 					<field name="color"/>
+					<field name="name"/>
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
@@ -86,14 +104,14 @@
 								<div class="o_kanban_content">
 									<div class="o_kanban_details">
 										<div class="o_kanban_details_wrapper">
-											<div class="o_kanban_record_title o_text_overflow">
+											<!-- <div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal;">
 													<div class="o_primary"><strong><field name="team_id"/></strong></div>
 												</span>
-											</div>
+											</div> -->
 											<div class="o_kanban_record_body">
-												<span>Volume forecast: <field name="forecast_volume"/></span><br/>
-												<span>Case forecast: <field name="forecast_cases"/></span><br/>
+												<!-- <span>Volume forecast: <field name="forecast_volume"/></span><br/>
+												<span>Case forecast: <field name="forecast_cases"/></span><br/> -->
 												<div class="row">
 													<div class="col-xl-6 o_kanban_primary_left">
 														<span></span>
@@ -122,7 +140,7 @@
 						</t>
 					</templates>
 					<searchpanel>
-						<field name="months"/>
+						<field name="month"/>
 					</searchpanel>
 				</kanban>
 			</field>
@@ -165,12 +183,5 @@
 			</field>
 		</record>
 
-		<!-- <menuitem
-			id="savings_forecasts_analysis_menu"
-			name="Savings Analysis"
-			parent="budget_forecasts_menu"
-			action="savings_forecasts_analysis_action"
-			sequence="2"/>
- -->
 	</data>
 </odoo>
