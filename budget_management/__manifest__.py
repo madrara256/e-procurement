@@ -45,8 +45,6 @@
 		'views/assets.xml',
 		'views/templates.xml',
 		'data/budgets_data.xml',
-		#'data/budget_line_data.xml',
-		#'data/ir_ui_views.xml',
 
 
 	],

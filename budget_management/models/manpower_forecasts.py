@@ -12,6 +12,23 @@ class ManPowerPlan(models.Model):
 	_description = 'manpower forecasts'
 	_rec_name='team_id'
 
+
+	@api.depends('projection_period_id.current_number')
+	def _compute_current_number(self):
+		for record in self:
+			current_total = 0
+			for item in record.projection_period_id:
+				current_total += item.current_number
+				record.update({'current_total_number':current_total})
+
+	@api.depends('projection_period_id.proposed_number')
+	def _compute_proposed_number(self):
+		for record in self:
+			proposed_total = 0
+			for item in record.projection_period_id:
+				proposed_total += item.proposed_number
+				record.update({'propose_total_number':proposed_total})
+
 	name = fields.Char(string='Reference', default='New', required=True)
 	team_id = fields.Many2one('budget.team',string='Branch',)
 	projection_period_id = fields.One2many('manpower.projection.period', 'man_projection_id', 
@@ -20,8 +37,20 @@ class ManPowerPlan(models.Model):
 	color = fields.Integer(string='Index')
 	date_from = fields.Date(string='Period')
 	date_to = fields.Date(string='End Date')
+	current_total_number = fields.Float(string='Current Total Number', compute='_compute_current_number',)
+	propose_total_number = fields.Float(string='Propose Total Number', compute='_compute_proposed_number',)
 
+	manpower_variance = fields.Float(string='Variance', compute='_compute_manpower_variance')
 
+	@api.depends('current_total_number', 'propose_total_number')
+	def _compute_manpower_variance(self):
+		for record in self:
+			if record.propose_total_number > 0:
+				mean = (record.propose_total_number+record.current_total_number)/2
+				mean_difference_current = (record.current_total_number - mean)**2
+				mean_difference_propose = (record.propose_total_number - mean)**2
+				record.manpower_variance = (mean_difference_current - mean_difference_propose)/2
+				return record.manpower_variance
 	@api.model
 	def create(self,values):
 		if values.get('name', 'New') == 'New':

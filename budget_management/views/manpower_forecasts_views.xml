@@ -52,8 +52,8 @@
 										<field name="name"/>
 										<field name="department_id"/>
 										<field name="job_id"/>
-										<field name="current_number"/>
-										<field name="proposed_number"/>
+										<field name="current_number" sum="Current Total"/>
+										<field name="proposed_number" sum="Proposed Total"/>
 										<field name="difference"/>
 									</tree>
 								</field>
@@ -113,10 +113,15 @@
 													<div class="col-xl-6 o_kanban_primary_left">
 														<span class="o_budget_forecasts_view">Branch: <field name="team_id"/></span><br/>
 														<span>From: <field name="date_from" widget="date"/></span><br/>
-														<span>To: <field name="date_to" widget="date"/></span><br/>
+														
+														<span>Current Total</span><br/>
+														<span class="o_budget_forecasts_view"><field name="current_total_number"/></span>
 													</div>
 													<div class="col-xl-6 o_kanban_primary_right">
 														<button class="btn btn-sm btn-block btn-warning" type="open">View Details</button>
+														<span>To: <field name="date_to" widget="date"/></span><br/>
+														<span>Proposed</span>
+														<span class="o_budget_forecasts_view"><field name="propose_total_number"/></span>
 													</div>
 												</div>
 												<div class="row">

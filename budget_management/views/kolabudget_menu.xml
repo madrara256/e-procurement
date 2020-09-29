@@ -14,7 +14,7 @@
 		id="budget_forecasts_menu"
 		name="Budget Forecasts"
 		parent="menu_root_budget"
-		sequence="3"/>
+		sequence="2"/>
 
 	<menuitem
 		name="Dashboard"

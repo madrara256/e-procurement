@@ -564,7 +564,7 @@ class BudgetLines(models.Model):
 	theoritical_amount = fields.Float(string='Theoretical Amount', digits=0)
 	percentage = fields.Float(string='Achievement')
 	total_qty = fields.Float(string='Units', track_visibility='onchange', store=True)
-	unit_cost = fields.Float( ing='Unit Cost')
+	unit_cost = fields.Float( string='Unit Cost')
 	product_id = fields.Many2one('product.product', string='Product')
 	actual_amount = fields.Float(string='Actual Cost')
 	actual_spent = fields.Float(string='Amount Spent')

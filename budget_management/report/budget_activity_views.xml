@@ -20,16 +20,19 @@
 			<field name="model">budget.activity.summary</field>
 			<field name="arch" type="xml">
 				<pivot>
-					<!-- <field name="department_id" type="col"/> -->
-					<!-- <field name="product_id" type="measure"/> -->
 					<field name="budget_quantity" type="measure"/>
 					<field name="budget_unit_cost" type="measure"/>
 					<field name="budget_subtotal" type="measure"/>
-
+					<field name="purchased_qnty" type="measure"/>
+					<field name="purchase_unit_cost" type="measure"/>
+					<field name="order_reference" type="measure"/>
+					<field name="purchase_tax" type="measure"/>
+					<field name="purchase_total" type="measure"/>
+					<field name="quantity_left" type="measure"/>
+					<field name="budget_balance" type="measure"/>
 				</pivot>
 			</field>
 		</record>
-
 
 		<record id="budget_activity_action" model="ir.actions.act_window">
 			<field name="nam">Budget Progress</field>
@@ -44,7 +47,7 @@
 			</field>
 			<field name="help" type="xml">
 				<p class="o_view_nocontent_smiling_face">
-					Budget Activity Dashboard
+					Budget Progress Dashboard
 				</p>
 				<p>
 					Get a summary of your budget transition throughout the financial year
@@ -57,6 +60,6 @@
 			id="budget_activity_menu_id"
 			parent="menu_root_budget"
 			action="budget_activity_action"
-			sequence="2"/>
+			sequence="3"/>
 	</data>
 </odoo>
