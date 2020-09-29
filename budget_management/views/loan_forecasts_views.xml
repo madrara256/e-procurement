@@ -16,8 +16,12 @@
 			<field name='arch' type='xml'>
 				<tree string="description">
 					<field name="name"/>
-					<!-- <field name="team_id"/> -->
-					<field name="year"/>
+					<field name="forecasts_volume"/>
+					<field name="forecast_cases"/>
+					<field name="actual_volume"/>
+					<field name="actual_cases"/>
+					<field name="month"/>
+					<!-- <field name="year"/> -->
 					<field name="active"/>
 				</tree>
 			</field>
@@ -37,30 +41,16 @@
 						<group>
 							<group>
 								<field name="name"/>
-								<!-- <field name="team_id"/> -->							
+								<field name="forecasts_volume"/>
+								<field name="forecast_cases"/>
 							</group>
 							<group>
-								<!-- <label for="date_from"/>
-								<div>
-									<field name="date_from" widget="date" class="oe_inline"/>
-									<field name="date_to" widget="date" class="oe_inline"/>
-								</div> -->
-								<field name="active"/>						
+								<field name="actual_volume"/>
+								<field name="actual_cases"/>
+								<field name="month"/>
+								<field name="active" invisible="1"/>						
 							</group>
 						</group>
-						<!-- <notebook>
-							<page string="Loan Projections">
-								<field name="projection_period_id" widget="one2many">
-									<tree string="Projection Details" editable="button">
-										<field name="name"/>
-										<field name="forecasts_volume"/>
-										<field name="forecast_cases"/>
-										<field name="actual_volume"/>
-										<field name="actual_cases"/>
-									</tree>
-								</field>
-							</page>
-						</notebook> -->
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
@@ -79,8 +69,76 @@
 					<field name="active"/>
 					<field name="color"/>
 					<field name="name"/>
+					<field name="forecasts_volume"/>
+					<field name="forecast_cases"/>
+					<field name="actual_volume"/>
+					<field name="actual_cases"/>
 					<templates>
-						
+						<t t-name="kanban-box">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_dropdown_kanban dropdown" groups="base.group_user">
+									<a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+										<span class="fa fa-ellipsis-v"/>
+									</a>
+									<div class="dropdown-menu" role="menu">
+										<t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-pencil-square-o" />Edit</a></t>
+										<t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash-o" />Delete</a></t>
+									</div>
+								</div>
+								<div class="o_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="month"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="o_kanban_record_body">
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span>Forecasts</span><br/>
+														<span class="o_budget_forecasts_view">Vol: <field name="forecasts_volume"/></span><br/>
+														<span class="o_budget_forecasts_view">Cases: <field name="forecast_cases"/></span><br/>
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<span>Actuals</span><br/>
+														<span class="o_budget_forecasts_view">Vol: <field name="actual_volume"/></span><br/>
+														<span class="o_budget_forecasts_view">Cases: <field name="actual_cases"/></span><br/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xl-12 o_kanban_primary_left" >
+														<span>Volume Variance</span><br/>
+														<span style="background-color:#DCDCDC; border-radius: 10px;">
+															<field name="volume_variance" widget="progressbar"/>
+														</span>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xl-12 o_kanban_primary_left">
+														<span>Case Variance</span><br/>
+														<span style="background-color:#DCDCDC; border-radius: 10px;">
+															<field name="case_variance" widget="progressbar"/>
+														</span>
+													</div>
+												</div>
+											</div>
+
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+
+												</div>
+												<div class="oe_kanban_bottom_right">
+													
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
 					</templates>
 					<searchpanel>
 						<field name="month"/>
