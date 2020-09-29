@@ -1,15 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
+		<record id="sequence_staffing_code" model="ir.sequence">
+			<field name="name">staffing sequence</field>
+			<field name="code">staffing.sequence.code</field>
+			<field name="active">TRUE</field>
+			<field name="prefix">STPROJ</field>
+			<field name="padding">6</field>
+			<field name="number_next">1</field>
+			<field name="number_increment">1</field>
+		</record>
+
 		<record model="ir.ui.view" id="staffing_tree_id">
 			<field name="name">Staffing Projections</field>
 			<field name="model">staff.forecasts</field>
 			<field name="arch" type="xml">
 				<tree string="description">
-					<field name="department_id"/>
-					<field name="job_id"/>
-					<field name="current_number"/>
-					<field name="proposed_number"/>
-					<field name="difference" invisible="1"/>
+					<field name="name"/>
+					<field name="team_id"/>
+					<field name="active"/>
+					<field name="color"/>
 				</tree>
 			</field>
 		</record>
@@ -22,16 +32,32 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="department_id"/>
-								<field name="months"/>
-								<field name="job_id"/>
+								<field name="name"/>
+								<field name="team_id"/>
 							</group>
 							<group>
-								<field name="current_number"/>
-								<field name="proposed_number"/>
-								<field name="difference" invisible="1"/>
+								<label for="date_from"/>
+								<div>
+									<field name="date_from" widget="date" class="oe_inline"/> --
+									<field name="date_to" widget="date" class="oe_inline"/>
+								</div>
+								<field name="active"/>
 							</group>
 						</group>
+						<notebook>
+							<page string="Projections">
+								<field name="projection_period_id" widget="one2many">
+									<tree string="Projection Details" editable="button">
+										<field name="name"/>
+										<field name="department_id"/>
+										<field name="job_id"/>
+										<field name="current_number"/>
+										<field name="proposed_number"/>
+										<field name="difference"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
@@ -45,15 +71,11 @@
 			<field name="name">Staffing Projections</field>
 			<field name="model">staff.forecasts</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="months" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
+				<kanban  class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
 					<field name="team_id"/>
-					<field name="months"/>
-					<field name="department_id"/>
-					<field name="job_id"/>
-					<field name="current_number"/>
-					<field name="proposed_number"/>
-					<field name="difference"/>
+					<field name="active"/>
 					<field name="color"/>
+					<field name="name"/>
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
@@ -80,13 +102,13 @@
 								<div class="o_kanban_content">
 									<div class="o_kanban_details">
 										<div class="o_kanban_details_wrapper">
-											<div class="o_kanban_record_title o_text_overflow">
+											<!-- <div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
 														<div class="o_primary"><strong><field name="team_id"/></strong></div>
 													</a>
 												</span>
-											</div>
+											</div> -->
 											<div class="oe_kanban_body">
 												<div class="row">
 													<div class="col-xl-6 o_kanban_primary_left">
@@ -115,7 +137,7 @@
 			<field name="model">staff.forecasts</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<filter name="department_id" string="By Department" domain="[]" context="{'group_by' : 'department_id'}"/>
+					
 				</search>
 			</field>
 		</record>
@@ -143,41 +165,11 @@
 			action="staffing_projections_action"
 			sequence="3"/>
 
-		<record id="staffing_forecasts_analysis_pivot" model="ir.ui.view">
-			<field name="name">Staffing Analysis</field>
-			<field name="model">staff.forecasts</field>
-			<field name="arch" type="xml">
-				<pivot string="Staffing Analysis">
-					<field name="months" type="measure"/>
-					<field name="department_id" type="measure"/>
-					<field name="job_id" type="measure"/>
-					<field name="current_number" type="measure"/>
-					<field name="proposed_number" type="measure"/>
-					<field name="difference" type="measure"/>
-				</pivot>
-			</field>
-		</record>
-
-		<record id="staffing_forecasts_analysis_graph" model="ir.ui.view">
-			<field name="name">Staffing Analysis</field>
-			<field name="model">staff.forecasts</field>
-			<field name="arch" type="xml">
-				<graph string="Staffing Analysis">
-					<field name="months" type="measure"/>
-					<field name="department_id" type="col"/>
-					<field name="job_id" type="row"/>
-					<field name="current_number" type="measure"/>
-					<field name="proposed_number" type="measure"/>
-					<field name="difference" type="measure"/>
-				</graph>
-			</field>
-		</record>
-
 		<record id="staffing_projections_analysis_action" model="ir.actions.act_window">
 			<field name="name">Staffing Forecast Analysis</field>
 			<field name="res_model">staff.forecasts</field>
 			<field name="view_mode">graph,pivot,activity</field>
-			<field name="context">{'search_default_department_id':1}</field>
+			<field name="context">{}</field>
 			<field name="domain">[]</field>
 			<field name="help" type="html">
 				<p class="o_view_nocontent_smiling_face">
