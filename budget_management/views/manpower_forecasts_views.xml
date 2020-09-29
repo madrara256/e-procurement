@@ -1,15 +1,24 @@
 <odoo>
 	<data>
+		<record id="sequence_man_power_code" model="ir.sequence">
+			<field name="name">man power forecast sequence</field>
+			<field name="code">manpower.sequence.code</field>
+			<field name="active">TRUE</field>
+			<field name="prefix">MPROJ</field>
+			<field name="padding">6</field>
+			<field name="number_next">1</field>
+			<field name="number_increment">1</field>
+		</record>
+
 		<record model="ir.ui.view" id="man_power_projections_tree_id">
 			<field name="name">Man Power Projections</field>
 			<field name="model">manpower.forecasts</field>
 			<field name="arch" type="xml">
 				<tree string="description">
+					<field name="name"/>
 					<field name="team_id"/>
-					<field name="job_id"/>
-					<field name="current_number"/>
-					<field name="proposed_number"/>
-					<field name="difference" invisible="1"/>
+					<field name="active"/>
+					<field name="color"/>
 				</tree>
 			</field>
 		</record>
@@ -22,16 +31,32 @@
 					<sheet>
 						<group>
 							<group>
+								<field name="name"/>
 								<field name="team_id"/>
-								<field name="months"/>
-								<field name="job_id"/>
 							</group>
 							<group>
-								<field name="proposed_number"/>
-								<field name="current_number"/>
-								<field name="difference"/>
+								<label for="date_from"/>
+								<div>
+									<field name="date_from" widget="date" class="oe_inline"/> --
+									<field name="date_to" widget="date" class="oe_inline"/>
+								</div>
+								<field name="active"/>
 							</group>
 						</group>
+						<notebook>
+							<page string="Projections">
+								<field name="projection_period_id" widget="one2many">
+									<tree string="Projection Details" editable="button">
+										<field name="name"/>
+										<field name="department_id"/>
+										<field name="job_id"/>
+										<field name="current_number"/>
+										<field name="proposed_number"/>
+										<field name="difference"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 				</form>
 			</field>
@@ -41,14 +66,11 @@
 			<field name="name">Man Power Projections</field>
 			<field name="model">manpower.forecasts</field>
 			<field name="arch" type="xml">
-				<kanban default_group_by="months" class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
+				<kanban  class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
 					<field name="team_id"/>
-					<field name="months"/>
-					<field name="job_id"/>
-					<field name="current_number"/>
-					<field name="proposed_number"/>
-					<field name="difference"/>
+					<field name="active"/>
 					<field name="color"/>
+					<field name="name"/>
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
@@ -75,13 +97,13 @@
 								<div class="o_kanban_content">
 									<div class="o_kanban_details">
 										<div class="o_kanban_details_wrapper">
-											<div class="o_kanban_record_title o_text_overflow">
+											<!-- <div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
 														<div class="o_primary"><strong><field name="team_id"/></strong></div>
 													</a>
 												</span>
-											</div>
+											</div> -->
 											<div class="oe_kanban_body">
 												<div class="row">
 													<div class="col-xl-6 o_kanban_primary_left">
@@ -110,9 +132,7 @@
 			<field name="model">manpower.forecasts</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<filter name="team_id" string="By Branch" domain="[]" context="{'group_by' : 'team_id'}"/>
-					<separator/>
-					<filter name="job_id" string="Position" domain="[]" context="{'group_by': 'job_id'}"/>
+					
 				</search>
 			</field>
 		</record>
