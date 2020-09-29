@@ -112,5 +112,80 @@
 		<field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
 	</record>
 
+	<record id="purchase_user_rule_id" model="ir.rule">
+		<field name="name">User: Rule</field>
+		<field name="model_id" ref="model_purchase_order"/>
+		<field name="perm_create" eval=""/>
+		<field name="perm_read" eval=""/>
+		<field name="perm_write" eval=""/>
+		<field name="perm_unlink" eval=""/>
+		<field name="domain_force">
+			[
+
+			]
+		</field>
+		<field name="groups" eval="[(4,ref('purchase.group_purchase_user'))]"/>
+	</record>
+
+	<record id="purchase_admin_rule_id" model="ir.rule">
+		<field name="name">Admin: Rule</field>
+		<field name="model_id" ref="model_purchase_order"/>
+		<field name="perm_create" eval=""/>
+		<field name="perm_read" eval=""/>
+		<field name="perm_write" eval=""/>
+		<field name="perm_unlink" eval=""/>
+		<field name="domain_force">
+			[
+
+			]
+		</field>
+		<field name="groups" eval="[(4, ref('purchase.purchases_admin'))]"/>
+	</record>
+
+	<record id="purchase_procurement_rule_id" model="ir.rule">
+		<field name="name">Procurement: Rule</field>
+		<field name="model_id" ref="model_purchase_order"/>
+		<field name="perm_create" eval=""/>
+		<field name="perm_read" eval=""/>
+		<field name="perm_write" eval=""/>
+		<field name="perm_unlink" eval=""/>
+		<field name="domain_force">
+			[
+
+			]
+		</field>
+		<field name="groups" eval="[(4, ref('purchase.purchases_procurement'))]"/>
+	</record>
+
+	<record id="purchase_finance_rule_id" model="ir.rule">
+		<field name="name">Finance: Rule</field>
+		<field name="model_id" ref="model_purchase_order"/>
+		<field name="perm_create" eval=""/>
+		<field name="perm_read" eval=""/>
+		<field name="perm_write" eval=""/>
+		<field name="perm_unlink" eval=""/>
+		<field name="domain_force">
+			[
+
+			]
+		</field>
+		<field name="groups" eval="[(4, ref('purchase.purchases_finance'))]"/>
+	</record>
+
+	<record id="purchase_board_rule_id" model="ir.rule">
+		<field name="name">Board: Rule</field>
+		<field name="model_id" ref="model_purchase_order"/>
+		<field name="perm_create" eval=""/>
+		<field name="perm_read" eval=""/>
+		<field name="perm_write" eval=""/>
+		<field name="perm_unlink" eval=""/>
+		<field name="domain_force">
+			[
+
+			]
+		</field>
+		<field name="groups" eval="[(4, ref('purchase.purchases_board'))]"/>
+	</record>
+
 </data>
 </odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+
+		<record id="purchase_request_summary_action" model="ir.actions.act_window">
+			<field name="name">Department Summary</field>
+			<field name="res_model">purchase.request.summary</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">graph,pivot,form</field>
+			<field name="help" type="xml">
+				<p class="o_view_nocontent_smiling_face">
+					Purchase Requests Summary
+				</p>
+				<p>
+					Get a brief Summary of your Purchase Requests
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id="purchase_requests_dept_summary"
+			name="Request Summary"
+			parent="kolarequisition_menu_root"
+			action="purchase_request_summary_action"
+			sequence="2"/>
+
+	</data>
+</odoo>

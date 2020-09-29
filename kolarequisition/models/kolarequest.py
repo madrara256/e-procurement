@@ -626,7 +626,6 @@ class kolaRequisitionLine(models.Model):
 	def copy_data(self, context=None):
 		raise UserError(_('Request lines can not be duplicated'))
 
-
 	#-----------------------------------------------------------------
 	#Business logic
 	#-----------------------------------------------------------------

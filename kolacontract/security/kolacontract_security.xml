@@ -42,7 +42,7 @@
 		<field name="comment">These will be system Administrator</field>
 	</record>
 
-	<record id="draft_contracts_rule_id" model="ir.rule">
+	<!-- <record id="draft_contracts_rule_id" model="ir.rule">
 		<field name="name">Draft Contracts</field>
 		<field name="model_id" ref="model_kola_contract"/>
 		<field name="groups" eval="[4, ref('kolacontract.kola_contract_department_head')]"/>
@@ -101,7 +101,6 @@
 			]</field>
 	</record>
 
-	<!--Contract termination rules -->
 	<record id="contract_terminate_department_rule" model="ir.rule">
 		<field name="name">Department: Contract Termination</field>
 		<field name="model_id" ref="model_kolacontract_terminate"/>
@@ -183,5 +182,5 @@
 		<field name="perm_unlink" eval="0"/>
 		<field name="domain_force">[(1, '=', 1)]</field>
 	</record>
-
+ -->
 </odoo>

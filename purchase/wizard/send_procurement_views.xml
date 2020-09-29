@@ -1,0 +1,76 @@
+<odoo>
+
+	<record id="view_send_rfqs_to_procurement" model="ir.ui.view">
+		<field name="name">Send To Procurement</field>
+		<field name="model">procurement.stage</field>
+		<field name="arch" type="xml">
+			<form string="Send To Procurement">
+				<group>
+					
+				</group>
+				<footer>
+					<button name="move_records_to_procurement" string="Send RFQs to Procurement" type="object" class="btn-primary"/>
+					<!-- <button name="print_report" string="Print RFQs" type="object" class="btn-primary"/> -->
+					<button string="Cancel" special="cancel" class="btn-default"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_purchase_send_to_procurement" model="ir.actions.act_window">
+		<field name="name">Send To Procurement</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">procurement.stage</field>
+		<field name="view_type">form</field>
+		<field name="view_id" ref="view_send_rfqs_to_procurement"/>
+		<field name="view_mode">form</field>
+		<field name="target">new</field>
+	</record>
+
+	<record id="print_rfqs_view" model="ir.ui.view">
+		<field name="name">Print RFQs</field>
+		<field name="model">procurement.stage</field>
+		<field name="arch" type="xml">
+			<form string="Print RFQs for Procurement">
+				<group>
+
+				</group>
+
+				<footer>
+					<button name="print_report" string="Print RFQs" type="object" class="btn-primary"/>
+					<button string="Cancel" special="cancel" class="btn-default"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_print_rfq" model="ir.actions.act_window">
+		<field name="name">Print RFQs</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">procurement.stage</field>
+		<field name="view_type">form</field>
+		<field name="view_id" ref="print_rfqs_view"/>
+		<field name="view_mode">form</field>
+		<field name="target">new</field>
+	</record>
+
+	<menuitem
+		id="procurement_stage_menu"
+		name="Procurement"
+		parent="menu_purchase_root"
+		sequence="3"/>
+
+	<menuitem
+		id="procurement_send_menu"
+		name="Move RFQs to Procurement"
+		parent="procurement_stage_menu"
+		action="action_purchase_send_to_procurement"
+		sequence="1"/>
+
+	<menuitem
+		id="procurement_report_menu"
+		name="Print RFQs for Procurement"
+		parent="procurement_stage_menu"
+		action="action_print_rfq"
+		sequence="2"/>
+</odoo>

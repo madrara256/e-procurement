@@ -66,12 +66,5 @@
 			parent="kolarequisition_menu_root"
 			action="purchase_request_dashboard_action"
 			sequence="3"/>
-
-		<!-- <menuitem
-			id="purchase_requests_dept_summary"
-			name="Department Summary"
-			parent="kolarequisition_menu_1"
-			action="purchase_request_dashboard_action"
-			sequence="2"/> -->
 	</data>
 </odoo>
