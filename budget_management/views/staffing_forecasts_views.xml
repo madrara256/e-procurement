@@ -41,7 +41,9 @@
 									<field name="date_from" widget="date" class="oe_inline"/> --
 									<field name="date_to" widget="date" class="oe_inline"/>
 								</div>
-								<field name="active"/>
+								<field name="current_total_number"/>
+								<field name="propose_total_number"/>
+								<field name="active" invisible="1"/>
 							</group>
 						</group>
 						<notebook>
@@ -76,6 +78,8 @@
 					<field name="active"/>
 					<field name="color"/>
 					<field name="name"/>
+					<field name="current_total_number"/>
+					<field name="propose_total_number"/>
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
@@ -102,21 +106,41 @@
 								<div class="o_kanban_content">
 									<div class="o_kanban_details">
 										<div class="o_kanban_details_wrapper">
-											<!-- <div class="o_kanban_record_title o_text_overflow">
+											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="team_id"/></strong></div>
+														<div class="o_primary"><strong><field name="name"/></strong></div>
 													</a>
 												</span>
-											</div> -->
+											</div>
 											<div class="oe_kanban_body">
 												<div class="row">
 													<div class="col-xl-6 o_kanban_primary_left">
-
+														<span class="o_budget_forecasts_view">Branch: <field name="team_id"/></span><br/>
+														<span>From: <field name="date_from"/></span><br/>
 													</div>
 													<div class="col-xl-6 o_kanban_primary_right">
-														<button class="btn btn-sm btn-block btn-primary" type="open">View Details</button>
+														<button class="btn btn-sm btn-block btn-warning" type="open">View Details</button>
+														<span>To: <field name="date_to"/></span><br/>
 													</div>
+												</div>
+
+												<div class="row">
+													<div class="col-xl-12 o_kanban_primary_left" >
+														<span>Variance</span><br/>
+														<span style="background-color:#DCDCDC; border-radius: 10px;">
+															<field name="propose_total_number" widget="progressbar"/>
+														</span>
+													</div>
+												</div>
+											</div>
+
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+
+												</div>
+												<div class="oe_kanban_bottom_right">
+													
 												</div>
 											</div>
 										</div>
