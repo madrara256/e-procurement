@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<report
+			string="Consolidated Budget Report"
+			id="action_consolidated_budget_report"
+			model="budget.management"
+			report_type="qweb-pdf"
+			name="budget_management.report_consolidated_budget"
+			file="budget_management.report_consolidated_budget"
+			menu="False"/>
+
+		<record id="action_consolidated_budget_report" model="ir.actions.report">
+				<field name="paperformat_id" ref="budget_management.paperformat_consolidated_summary"/>
+			</record>
+	</data>
+</odoo>
