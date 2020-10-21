@@ -130,10 +130,24 @@ class BudgetManagement(models.Model):
 	total_budget_line_requests_rejected = fields.Integer(
 		compute='_compute_budget_line_request_rejected',
 		string='Rejected Requests')
+	budget_refuse_reason = fields.Char(string='Refuse Reason')
+
 
 	#--------------------------------------------------------------------------------
 	#Overried ORM methods
 	#--------------------------------------------------------------------------------
+
+	@api.multi
+	def add_refuse_reason_wizard(self):
+		return {
+			'name': ('Add Refuse Reason'),
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'budget.refuse.reason',
+			'view_id': False,
+			'type': 'ir.actions.act_window',
+			'target': 'new'
+		}
 
 	@api.multi
 	def mail_notification(self, obj):
@@ -389,7 +403,7 @@ class BudgetManagement(models.Model):
 			raise UserError(_('Budget must be consolidated by finance team before it can be reviewed by administration'))
 		#self._check_budgetline_approvals()
 		self.write({'state':'validate'})
-		self.mail_notification()
+		self.mail_notification(self)
 		return reload
 
 	@api.multi
