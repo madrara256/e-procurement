@@ -9,6 +9,11 @@
 					You will be able to generate consolidated report of all the purchase request<br/>
 					This will be the report to be presented to the Procurement Committee
 				</p>
+				<group>
+					<field name="date_from"/>
+					<field name="request_type"/>
+					<field name="depts"/>
+				</group>
 
 				<footer>
 					<button name="print_consolidated_requests" string="Consolidate Requests"
@@ -27,7 +32,7 @@
 		<field name="target">new</field>
 	</record>
 
-	<!-- <menuitem id="menu_consolidate_requests" parent="kolarequisition_menu_root"
+	<menuitem id="menu_consolidate_requests" parent="kolarequisition_menu_root"
 		action="action_consolidate_purchase_requests"
-		sequence="2"/> -->
+		sequence="2"/>
 </odoo>
