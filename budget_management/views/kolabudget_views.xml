@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
 		<record id="view_budget_line_search_filter" model="ir.ui.view">
@@ -5,8 +6,13 @@
 			<field name="model">bm.budget.lines</field>
 			<field name="arch" type="xml">
 				<search string="Budget lines">
-					<field name="name" string="Budget" domain="[]"/>
-					<field name="budget_management_id"/>
+					<filter name="name" string="Budget" domain="[]"/>
+					<filter name="budget_management_id"/>
+					<filter name="Department Manager"/>
+					<filter name="active"/>
+					<filter name="state"/>
+					<filter name="date_from"/>
+					<filter name="date_to"/>
 				</search>
 			</field>
 		</record>
@@ -125,7 +131,7 @@
 						<button name="action_propose_draft" states="draft" string="Submit Draft" type="object" class="oe_highlight"
 							groups="budget_management.bm_manager,budget_management.bm_reg_manager"/>
 						<button name="action_review_proposal" states="propose" string="Accept Budget Proposal" type="object" class="oe_highlight"/>
-						<button name="action_reject_proposal" states="propose" string="Reject Proposal" type="object" class="oe_highlight btn-danger"/>
+						<button name="add_refuse_reason_wizard" states="propose" string="Reject Proposal" type="object" class="oe_highlight btn-danger"/>
 						<button name="action_consolidate_proposal" states="review1" string="Consolidate Budget" type="object" class="oe_highlight"/>
 						<button name="action_reject_consolidation" states="review1" string="Reject" type="object" class="oe_highlight btn-danger"/>
 						<button name="action_submit_for_mgt_review" states="consolidate" string="Submit To Management" type="object" class="oe_highlight"/>
@@ -321,7 +327,7 @@
 														</t>
 														<t t-if="record.state.raw_value == 'propose'">
 															<button class="btn btn-sm btn-block btn-primary" name="action_review_proposal" type="object">Send for Review</button>
-															<button class="btn btn-sm btn-block btn-warning" name="action_reject_proposal" type="object">Reject Proposal</button>
+															<button class="btn btn-sm btn-block btn-warning" name="add_refuse_reason_wizard" type="object">Reject Proposal</button>
 														</t>
 														<t t-if="record.state.raw_value == 'review1'">
 															<button class="btn btn-sm btn-block btn-primary" name="action_consolidate_proposal" type="object">Consolidate</button>
@@ -370,13 +376,14 @@
 			<field name="arch" type="xml">
 				<search string="String">
 					<field name="name" string="Reference"/>
-					<separator/>
 					<filter name="department_id" string="Department"/>
 					<filter name="state" string="Draft Budget" domain="[('state', '=', 'draft')]"/>
 					<filter name="name" string="Reference"/>
 					<filter name="budget_config_id" string="Budget Type"/>
 					<filter name="active" string="Active"/>
-					<field name="creating_user_id" string="Responsible"/>
+					<filter name="creating_user_id" string="Responsible"/>
+					<filter name="date_from" string="Start Date" domain="{}" context="{'group_by':'date_from'}"/>
+					<filter name="date_to" string="Closing Date" domain="{}" context="{'group_by':'date_to'}"/>
 					<group expand="0" string="Group By">
 						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
 					</group>
@@ -422,14 +429,12 @@
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<field name="name" string="Draft Budget Proposal"/>
-					<field name="department_id" string="Unit"/>
-					<separator/>
+					<filter name="name" string="Draft Budget Proposal"/>
+					<field name="department_id" string="Department"/>
 					<filter name="department_id" string="Department"/>
-					<separator/>
 					<filter name="state" string="Draft Budget" domain="[('state', '=', 'propose')]"/>
 					<separator/>
-					<field name="creating_user_id" string="Responsible"/>
+					<filter name="creating_user_id" string="Department Manager"/>
 					<group expand="0" string="Group By">
 						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
 					</group>
@@ -460,14 +465,12 @@
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<field name="name" string="Draft Budget Review"/>
-					<field name="department_id" string="Unit"/>
-					<separator/>
+					<filter name="name" string="Draft Budget Review"/>
+					<filter name="department_id" string="Unit"/>
 					<filter name="department_id" string="Department"/>
-					<separator/>
 					<filter name="state" string="Draft Budget" domain="[('state', '=', 'review1')]"/>
 					<separator/>
-					<field name="creating_user_id" string="Responsible"/>
+					<filter name="creating_user_id" string="Responsible"/>
 					<group expand="0" string="Group By">
 						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
 					</group>
@@ -498,14 +501,12 @@
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<field name="name" string="Consolidated Budget"/>
-					<field name="department_id" string="Unit"/>
-					<separator/>
+					<filter name="name" string="Consolidated Budget"/>
+					<filter name="department_id" string="Unit"/>
 					<filter name="department_id" string="Department"/>
-					<separator/>
 					<filter name="state" string="Draft Budget" domain="[('state', '=', 'consolidate')]"/>
 					<separator/>
-					<field name="creating_user_id" string="Responsible"/>
+					<filter name="creating_user_id" string="Responsible"/>
 					<group expand="0" string="Group By">
 						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
 					</group>
@@ -537,14 +538,11 @@
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<field name="name" string="Consolidated for Management Review"/>
-					<field name="department_id" string="Unit"/>
-					<separator/>
+					<filter name="name" string="Consolidated for Management Review"/>
+					<filter name="department_id" string="Unit"/>
 					<filter name="department_id" string="Department"/>
-					<separator/>
 					<filter name="state" string="Draft Budget" domain="[('state', '=', 'review')]"/>
-					<separator/>
-					<field name="creating_user_id" string="Responsible"/>
+					<filter name="creating_user_id" string="Responsible"/>
 					<group expand="0" string="Group By">
 						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
 					</group>
@@ -608,14 +606,11 @@
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
 				<search string="String">
-					<field name="name" string="Rejected Budgets"/>
-					<field name="department_id" string="Unit"/>
-					<separator/>
+					<filter name="name" string="Rejected Budgets"/>
+					<filter name="department_id" string="Unit"/>
 					<filter name="department_id" string="Department"/>
-					<separator/>
 					<filter name="state" string="Rejected Budget" domain="[('state', '=', 'reject')]"/>
-					<separator/>
-					<field name="creating_user_id" string="Responsible"/>
+					<filter name="creating_user_id" string="Responsible"/>
 					<group expand="0" string="Group By">
 						<filter name="department_id" string="Department" domain="[]" context="{'group_by': 'department_id'}"/>
 					</group>
@@ -700,27 +695,26 @@
 		</record>
 
 		<record id="budget_analytics_pivot_view" model="ir.ui.view">
-			<field name="name">Budget Analysis</field>
+			<field name="name">Budget Dashboard</field>
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
 				<pivot string="Budgets Analysis">
-					<field name="name" type="measure"/>
-					<field name="department_id" type="measure"/>
+					<field name="department_id" type="col"/>
 					<field name="state" type="measure"/>
-					<field name="total_used_budget" type="measure"/>
 					<field name="total_budget_cost" type="measure"/>
 				</pivot>
 			</field>
 		</record>
 
 		<record id="budget_analytics_graph_view" model="ir.ui.view">
-			<field name="name">Budget Analysis</field>
+			<field name="name">Budget Dashboard</field>
 			<field name="model">budget.management</field>
 			<field name="arch" type="xml">
-				<graph string="Budgets Analysis">
-					<field name="total_budget_cost" type="measure"/>
+				<graph string="Budget Dashboard">
 					<field name="department_id" type="col"/>
-					<field name="total_budget_cost" type="row"/>
+					<field name="total_budget_cost" type="measure"/>
+					<!-- <field name="total_budget_cost" type="measure" widget="monetary"/>
+					<field name="department_id" type="col"/> -->
 				</graph>
 			</field>
 		</record>
@@ -731,20 +725,26 @@
 			<field name="arch" type="xml">
 				<search string="Budget Analysis">
 					<filter name="state" string="Status" domain="[]"/>
-					<separator/>
 					<filter name="department_id" string="Department" domain="[]"/>
+					<filter name="date_from" string="Start Date"/>
+					<filter name="date_to" string="Closing Date"/>
+					<filter name="creating_user_id" string="By Department Head"/>
+					<filter name="budget_config_id" string="Budget Type"/>
+					<group expand="0">
+						<filter name="state" string="Status" domain="[]" context="{'group_by':'state'}"/>
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by':'department_id'}"/>
+						<filter name="budget_config_id" string="Budget Types" domain="[]" context="{'group_by': 'budget_config_id'}"/>
+					</group>
 				</search>
 			</field>
 		</record>
 
 		<record id="budget_analysis_action" model="ir.actions.act_window">
-			<field name="name">Budget Analysis</field>
+			<field name="name">Budget Dashboard</field>
 			<field name="res_model">budget.management</field>
 			<field name="view_mode">graph,pivot</field>
-			<field name="context">{
-				'search_default_state':1,
-				'search_default_department_id':1
-				}</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
 			<field name="arch" type="html">
 				<p class="o_view_nocontent_smiling_face">
 					Budget Analysis Window
@@ -760,20 +760,7 @@
 			name="Budgets"
 			id="budgets_submenu"
 			parent="menu_root_budget"
-			sequence="1"/>
-
-		<menuitem
-			name="Organizational Budget"
-			id="budgets_main_menu"
-			parent="budgets_submenu"
 			action="action_budget_management"
-			sequence="1"/>
-
-		<menuitem
-			id="budget_analysis_menu"
-			name="Budget Dashboard"
-			parent="budgets_analytics_menu"
-			action="budget_analysis_action"
 			sequence="1"/>
 
 	</data>
