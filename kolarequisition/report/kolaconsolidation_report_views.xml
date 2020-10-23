@@ -9,29 +9,37 @@
 
 					<table class="table table-bordered mb32" style="table-layout:auto">
 						<thead>
+							<th class="text-center">Department</th>
+							<th class="text-center">Purchase Requests</th>
+							<th class="text-center">Product/Service</th>
+							
 							<th>
-								Department
-							</th>
-							<th>
-								Employee
-							</th>
-							<th>
-								Product/Service
-							</th>
-							<th>
-								Quantity
+								<tr>
+								<strong><td class="text-center">Quantity</td></strong>
+								<t t-foreach="get_purchase_requests" t-as="requests">
+									<t t-esc="requests['name']"/>
+								</t>
+							</tr>
 							</th>
 						</thead>
 						<tbody>
-							<t t-foreach="get_department_id" t-as="obj">
-								<tr t-if="'department' in obj">
-									<td style="background-color:#ababab">
-										<strong><t t-esc="obj['department']"/></strong>
-									</td>
-								</tr>
-							</t>
+							
 						</tbody>
 					</table>
+
+					<div class="col-xs-3 col-xs-offset-5 mt32">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th class="col-xs-1">Purchase Request</th>
+								<th class="text-center">State</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
+					</table>
+				</div>
 				</div>
 			</t>
 		</t>

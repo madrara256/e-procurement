@@ -13,6 +13,8 @@ class RequisitionReport(models.Model):
 	employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True, )
 	department_id = fields.Many2one('hr.department', string='Department', readonly=True, )
 	requisition_date = fields.Datetime(string='Request Date', readonly=True, )
+	requisition_amount = fields.Float(string='Total Amount', readonly=True)
+	state = fields.Char(string='Status', readonly=True)
 	def _select(self):
 		return """
 			SELECT
@@ -21,7 +23,9 @@ class RequisitionReport(models.Model):
 				kr.employee_id,
 				kr.department_id,
 				kr.requisition_date,
-				kr.name as reference_number
+				kr.name as reference_number,
+				kr.requisition_amount,
+				kr.state
 		"""
 
 	def _from(self):
@@ -43,7 +47,9 @@ class RequisitionReport(models.Model):
 				kr.employee_id,
 				kr.department_id,
 				kr.requisition_date,
-				kr.reference_number
+				kr.reference_number,
+				kr.requisition_amount,
+				kr.state
 		"""
 
 	def init(self):

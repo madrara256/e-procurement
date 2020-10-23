@@ -6,14 +6,16 @@
 			<field name="model">requisition.dashboard</field>
 			<field name="arch" type="xml">
 				<search>
-					<filter name="reference_number"/>
-					<filter name="active"/>
-					<filter name="employee_id"/>
-					<filter name="department_id"/>
-					<filter name="requisition_date"/>
+					<filter name="department_id" string="Department"/>
+					<filter name="requisition_date" string="Request Date" domain="[]" context="{'group_by':'requisition_date'}"/>
+					<filter name="state" string="Status"/>
+					<filter name="active" string="Active"/>
+					<filter name="employee_id" string="Employee"/>
 					<group expand="0">
-						<filter name="department_id"/>
-						<filter name="employee_id"/>
+						<filter name="reference_number" string="Reference" domain="[]" context="{'group_by':'reference_number'}"/>
+						<filter name="department_id" string="Department" domain="[]" context="{'group_by':'department_id'}"/>
+						<filter name="employee_id" string="Employee" domain="[]" context="{'group_by': 'employee_id'}"/>
+						<filter name="state" string="Status" domain="[]" context="{'group_by':'state'}"/>
 					</group>
 				</search>
 			</field>
@@ -24,10 +26,10 @@
 			<field name="model">requisition.dashboard</field>
 			<field name="arch" type="xml">
 				<pivot string="Requests Dashboard" stacked="True">
-					<field name="department_id" type="row"/>
+					<field name="reference_number" type="row"/>
+					<field name="requisition_date" type="measure" widget="date"/>
+					<field name="requisition_amount" type="measure"/>
 					<field name="employee_id" type="col"/>
-					<field name="active" type="measure"/>
-					<field name="reference_number" type="measure"/>
 				</pivot>
 			</field>
 		</record>
@@ -37,10 +39,8 @@
 			<field name="model">requisition.dashboard</field>
 			<field name="arch" type="xml">
 				<graph string="Requests Dashboard">
-					<field name="department_id" type="row"/>
-					<field name="reference_number" type="col"/>
-					<field name="reference_number" type="measure"/>
-					<!-- <field name="requisition_date" type="measure"/> -->
+					<field name="department_id" type="col"/>
+					<field name="requisition_amount" type="measure"/>
 				</graph>
 			</field>
 		</record>
@@ -50,6 +50,8 @@
 			<field name="res_model">requisition.dashboard</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">graph,pivot,form</field>
+			<field name="context">{'search_default_reference_number':1}</field>
+			<field name="domain">[]</field>
 			<field name="help" type="xml">
 				<p class="o_view_nocontent_smiling_face">
 					Purchase Requests Summary
