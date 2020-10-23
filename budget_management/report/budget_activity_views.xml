@@ -60,6 +60,6 @@
 			id="budget_activity_menu_id"
 			parent="menu_root_budget"
 			action="budget_activity_action"
-			sequence="3"/>
+			sequence="4"/>
 	</data>
 </odoo>

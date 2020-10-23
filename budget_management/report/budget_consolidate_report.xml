@@ -7,7 +7,7 @@
 			model="budget.management"
 			report_type="qweb-pdf"
 			name="budget_management.report_consolidated_budget"
-			file="budget_management.report_consolidated_budget"
+			file="budget_management.report_consolidated_budgetl"
 			menu="False"/>
 
 		<record id="action_consolidated_budget_report" model="ir.actions.report">
