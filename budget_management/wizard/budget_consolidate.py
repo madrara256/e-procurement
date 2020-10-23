@@ -1,4 +1,4 @@
-from odoo import api, fields, models, tools
+from odoo import api, fields, models, tools,_
 import time
 import logging
 import threading
@@ -23,7 +23,6 @@ class BudgetConsolidate(models.TransientModel):
 		('reject', 'Rejected Budget'),
 		('reset', 'Reset To Draft')
 		], string='Request Status', required=True, default='validate')
-
 
 	@api.multi
 	def print_consolidated_budget(self):
