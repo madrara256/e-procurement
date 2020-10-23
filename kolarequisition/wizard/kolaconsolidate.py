@@ -1,4 +1,4 @@
-from odoo import api, fields, models, tools
+from odoo import api, fields, models, tools,_
 import time
 import logging
 import threading
@@ -38,7 +38,7 @@ class KolaConsolidateCompute(models.TransientModel):
 			'model': 'hr.department',
 			'form': data
 		}		
-		return self.env.ref('kolarequisition.action_consolidated_purchase_request').with_context(from_transition_model=True).report_action(departments, datas)
+		return self.env.ref('kolarequisition.action_consolidated_purchase_request').with_context(from_transition_model=True).report_action(departments, data=datas)
 
 
 
