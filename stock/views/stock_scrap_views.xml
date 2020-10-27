@@ -72,15 +72,45 @@
 			<field name="name">stock.scrap.kanban</field>
 			<field name="model">stock.scrap</field>
 			<field name="arch" type="xml">
-				<kanban class="o_kanban_mobile">
+				<kanban class="o_kanban_mobile" default_group_by="state">
 					<field name="name"/>
 					<field name="product_id"/>
 					<field name="date_expected"/>
 					<field name="scrap_qty"/>
 					<field name="state"/>
+					<field name="color"/>
 					<templates>
 						<t t-name="kanban-box">
-							<div class="oe_kanban_global_click">
+							<div class="#{kanban_color(record.color.raw_value)}">
+								<div class="o_kanban_content">
+									<div class="o_kanban_details">
+										<div class="o_kanban_details_wrapper">
+											<div class="o_kanban_record_title o_text_overflow">
+												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
+													<a type="open">
+														<div class="o_primary"><strong><field name="name"/></strong></div>
+													</a>
+												</span>
+											</div>
+											<div class="oe_kanban_body">
+												<div class="row">
+													<div class="col-xl-6 o_kanban_primary_left">
+														<span>Date: <field name="date_expected" widget="date"/></span><br/>
+														<span>Product: <field name="product_id"/></span><br/>
+														<span>Quantity: <field name="scrap_qty"/></span><br/>
+
+													</div>
+													<div class="col-xl-6 o_kanban_primary_right">
+														<t t-if="record.state.raw_value == 'draft'">
+															<button class="btn btn-sm btn-block btn-primary" name="action_validate" type="object">Validate</button>
+														</t>
+													</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="oe_kanban_global_click">
 								<div class="row mb4">
 									<strong class="col-6">
 										<span t-esc="record.name.value"/>
@@ -99,10 +129,13 @@
 											<field name="state"/>
 										</span>
 									</div>
-								</div>
+								</div> -->
 							</div>
 						</t>
 					</templates>
+					<searchpanel>
+						<field name="state"/>
+					</searchpanel>
 				</kanban>
 			</field>
 		</record>
@@ -129,7 +162,7 @@
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">stock.scrap</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">tree,form,kanban</field>
+			<field name="view_mode">kanban,tree,form</field>
 			<field name="help" type="html">
 			  <p class="o_view_nocontent_smiling_face">
 				Scrap products
