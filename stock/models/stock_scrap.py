@@ -51,8 +51,13 @@ class StockScrap(models.Model):
 	scrap_qty = fields.Float('Quantity', default=1.0, required=True, states={'done': [('readonly', True)]})
 	state = fields.Selection([
 		('draft', 'Draft'),
-		('done', 'Done')], string='Status', default="draft")
+		('done', 'Done')], string='Status', group_expand='_expand_states', default="draft")
+
+	def _expand_states(self, states, domain, order):
+		return [key for key, val in type(self).state.selection]
+
 	date_expected = fields.Datetime('Expected Date', default=fields.Datetime.now)
+	color = fields.Integer(string='Index')
 
 	@api.onchange('picking_id')
 	def _onchange_picking_id(self):
@@ -104,12 +109,13 @@ class StockScrap(models.Model):
 
 	@api.multi
 	def do_scrap(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		for scrap in self:
 			move = self.env['stock.move'].create(scrap._prepare_move_values())
 			# master: replace context by cancel_backorder
 			move.with_context(is_scrap=True)._action_done()
 			scrap.write({'move_id': move.id, 'state': 'done'})
-		return True
+		return True,reload
 
 	def action_get_stock_picking(self):
 		action = self.env.ref('stock.action_picking_tree_all').read([])[0]
@@ -122,6 +128,7 @@ class StockScrap(models.Model):
 		return action
 
 	def action_validate(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.ensure_one()
 		if self.product_id.type != 'product':
 			return self.do_scrap()
@@ -134,7 +141,7 @@ class StockScrap(models.Model):
 															strict=True).mapped('quantity'))
 		scrap_qty = self.product_uom_id._compute_quantity(self.scrap_qty, self.product_id.uom_id)
 		if float_compare(available_qty, scrap_qty, precision_digits=precision) >= 0:
-			return self.do_scrap()
+			return self.do_scrap(), reload
 		else:
 			return {
 				'name': _('Insufficient Quantity'),
