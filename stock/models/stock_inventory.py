@@ -40,11 +40,16 @@ class Inventory(models.Model):
 		states={'done': [('readonly', True)]})
 	state = fields.Selection(string='Status', selection=[
 		('draft', 'Draft'),
-		('cancel', 'Cancelled'),
 		('confirm', 'In Progress'),
-		('done', 'Validated')],
-		copy=False, index=True, readonly=True,
+		('done', 'Validated'),
+		('cancel', 'Cancelled')	
+		],
+		copy=False, index=True, readonly=True, group_expand='_expand_states',
 		default='draft')
+
+	def _expand_states(self, states, domain, order):
+		return [key for key, val in type(self).state.selection]
+
 	company_id = fields.Many2one(
 		'res.company', 'Company',
 		readonly=True, index=True, required=True,
@@ -88,7 +93,8 @@ class Inventory(models.Model):
 		readonly=True, states={'draft': [('readonly', False)]},
 		help="Specify Product Category to focus your inventory on a particular Category.")
 	exhausted = fields.Boolean('Include Exhausted Products', readonly=True, states={'draft': [('readonly', False)]})
-
+	color = fields.Integer(string='Index')
+	
 	@api.one
 	@api.depends('product_id', 'line_ids.product_qty')
 	def _compute_total_qty(self):
@@ -164,6 +170,7 @@ class Inventory(models.Model):
 		return True
 
 	def action_validate(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		inventory_lines = self.line_ids.filtered(lambda l: l.product_id.tracking in ['lot', 'serial'] and not l.prod_lot_id and l.theoretical_qty != l.product_qty)
 		lines = self.line_ids.filtered(lambda l: float_compare(l.product_qty, 1, precision_rounding=l.product_uom_id.rounding) > 0 and l.product_id.tracking == 'serial' and l.prod_lot_id)
 		if inventory_lines and not lines:
@@ -176,7 +183,7 @@ class Inventory(models.Model):
 					'res_model': 'stock.track.confirmation',
 					'target': 'new',
 					'res_id': wiz.id,
-				}
+				},reload
 		else:
 			self._action_done()
 
@@ -204,19 +211,22 @@ class Inventory(models.Model):
 			inventory.line_ids._generate_moves()
 
 	def action_cancel_draft(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.mapped('move_ids')._action_cancel()
 		self.write({
 			'line_ids': [(5,)],
 			'state': 'draft'
 		})
+		return reload
 
 	def action_start(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		for inventory in self.filtered(lambda x: x.state not in ('done','cancel')):
 			vals = {'state': 'confirm', 'date': fields.Datetime.now()}
 			if (inventory.filter != 'partial') and not inventory.line_ids:
 				vals.update({'line_ids': [(0, 0, line_values) for line_values in inventory._get_inventory_lines_values()]})
 			inventory.write(vals)
-		return True
+		return True,reload
 
 	def action_inventory_line_tree(self):
 		action = self.env.ref('stock.action_inventory_line_tree').read()[0]
