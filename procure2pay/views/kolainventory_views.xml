@@ -6,50 +6,13 @@
 			name="Inventory"
 			parent="procure2pay_root_menu"
 			sequence="7"/>
-
-
-		<record id="p2p_stock_picking_type_action" model="ir.actions.act_window">
-			<field name="name">Inventory Overview</field>
-			<field name="res_model">stock.picking.type</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">kanban,form</field>
-			<field name="help" type="html">
-				<p class="o_view_nocontent_smiling_face">
-					Create a new operation type
-				</p><p>
-					The operation type system allows you to assign each stock
-					operation a specific type which will alter its views accordingly.
-					On the operation type you could e.g. specify if packing is needed by default,
-					if it should show the customer.
-				</p>
-			</field>
-		</record>
-
-		<record id="p2p_action_picking_tree_all" model="ir.actions.act_window">
-			<field name="name">Transfers</field>
-			<field name="res_model">stock.picking</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,kanban,form,calendar</field>
-			<field name="domain"></field>
-			<field name="context">{
-					'contact_display': 'partner_address',
-			}
-			</field>
-			<!-- <field name="search_view_id" ref="view_picking_internal_search"/> -->
-			<field name="help" type="html">
-			  <p class="o_view_nocontent_smiling_face">
-				Define a new transfer
-			  </p>
-			</field>
-		</record>
+			
 
 		<menuitem
 			id="p2p_inventory_overview_menu"
 			name="Overview"
 			parent="p2p_invenorty_root_menu"
-			action="p2p_stock_picking_type_action"
+			action="stock.stock_picking_type_action"
 			sequence="1"/>
 
 		<menuitem
@@ -62,148 +25,87 @@
 			name="Transfers"
 			parent="procure2pay_inventory_operations_menu"
 			sequence="2"
-			action="p2p_action_picking_tree_all"/>
+			action="stock.action_picking_tree_all"/>
 
-		<record id="p2p_action_inventory_form" model="ir.actions.act_window">
-		<field name="name">Inventory Adjustments</field>
-		<field name="type">ir.actions.act_window</field>
-		<field name="res_model">stock.inventory</field>
-		<field name="view_type">form</field>
-		<field name="view_mode">tree,kanban,form</field>
-		<!-- <field name="view_id" ref="view_inventory_tree"/>
-		<field name="search_view_id" ref="view_inventory_filter"/> -->
-		<field name="help" type="html">
-			<p class="o_view_nocontent_smiling_face">
-				Create a new inventory adjustment
-			</p><p>
-				This is used to correct the product quantities you have in stock.
-			</p>
-		</field>
-	</record>
+		<menuitem
+			action="stock.action_inventory_form"
+			id="p2p_menu_action_inventory_form"
+			parent="procure2pay_inventory_operations_menu"
+			sequence="3"/>
 
-	<menuitem
-		action="p2p_action_inventory_form"
-		id="p2p_menu_action_inventory_form"
-		parent="procure2pay_inventory_operations_menu"
-		sequence="3"/>
+		<menuitem
+			id="p2p_menu_stock_scrap"
+			name="Scrap"
+			parent="procure2pay_inventory_operations_menu"
+			action="stock.action_stock_scrap"
+			sequence="4"/>
 
+		<menuitem id="procure_assets_menu"
+			name="Assets Management"
+			parent="procure2pay_root_menu"
+			sequence="8"/>
 
-	<record model="ir.actions.act_window" id="p2p_action_stock_scrap">
-			<field name="name">Scrap Orders</field>
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">stock.scrap</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form,kanban</field>
-			<field name="help" type="html">
-				<p class="o_view_nocontent_smiling_face">
-					Scrap products
-				</p><p>
-					Scrapping a product will remove it from your stock. The product will
-					end up in a scrap location that can be used for reporting purpose.
-				</p>
-			</field>
-		</record>
+		<menuitem id="id_assets_menu"
+			name="Assets"
+			parent="procure_assets_menu"
+			action="asset_stock.action_assets_stock"
+			sequence="1"/>
 
-	<menuitem
-		id="p2p_menu_stock_scrap"
-		name="Scrap"
-		parent="procure2pay_inventory_operations_menu"
-		action="p2p_action_stock_scrap"
-		sequence="4"/>
+		<menuitem id="id_asset_states"
+			parent="procure_assets_menu"
+			action="asset_stock.action_management_assets_stock"
+			sequence="2"/>
 
-	<menuitem id="procure_assets_menu"
-		name="Assets"
-		parent="procure2pay_root_menu"
-		sequence="8"/>
+		<menuitem
+			id="p2p_inventory_master_data_menu"
+			name="Master Data"
+			parent="procure2pay_root_menu"
+			sequence="9"/>
 
-	<menuitem id="id_assets_menu"
-		name="Assets"
-		parent="procure_assets_menu"
-		action="asset_stock.action_assets_stock"
-		sequence="1"/>
+		<menuitem
+			id="p2p_inventory_schedular_menu"
+			name="Run Scheduler"
+			parent="procure2pay_inventory_operations_menu"
+			action="stock.action_procurement_compute"
+			sequence="5"/>
 
-	<menuitem id="id_asset_states"
-		parent="procure_assets_menu"
-		action="asset_stock.action_management_assets_stock"
-		sequence="2"/>
+		<menuitem
+			id="p2p_inventory_warehouse"
+			parent="inventory_config_menu" action="stock.action_warehouse_form"
+			sequence="1"/>
 
-	<menuitem
-		id="p2p_inventory_master_data_menu"
-		name="Master Data"
-		parent="procure2pay_root_menu"
-		sequence="9"/>
+		<menuitem
+			id="p_stock_location_menu"
+			parent="inventory_config_menu" action="stock.action_location_form"
+			sequence="2"/>
 
-	<menuitem
-		id="p2p_inventory_products_menu"
-		name="Products"
-		parent="p2p_inventory_master_data_menu"
-		action="stock.product_template_action_product"
-		sequence="1"/>
+		<menuitem
+			id="p2p_inventory_operations_menu"
+			parent="inventory_config_menu" action="stock.action_picking_type_list"
+			sequence="3"/>
 
-	<menuitem
-		id="p2p_inventory_product_variants_menu"
-		name="Product Variants"
-		parent="p2p_inventory_master_data_menu"
-		action="product.product_normal_action"
-		sequence="2"/>
+		<menuitem id="p2p_products_category_menu"
+			parent="inventory_product_cat_menu" action="product.product_category_action_form"
+			sequence="1"/>
 
-	<!-- <menuitem id="kola_contract_vendors"
-		name="Vendors"
-		parent="p2p_inventory_master_data_menu"
-		action="kolacontract.res_partner_action_window"
-		sequence="3"/> -->
+		<menuitem id="p_products_attribute_menu"
+			parent="inventory_product_cat_menu" action="product.attribute_action"
+			sequence="2"/>
 
-	<menuitem
-		id="p2p_inventory_ordering_rules_menu"
-		name="Reordering Rules"
-		parent="p2p_inventory_master_data_menu"
-		action="stock.action_orderpoint_form"
-		sequence="4"/>
+		<menuitem id="p_products_attribute_value_menu"
+			parent="inventory_product_cat_menu" action="product.variants_action"
+			sequence="3"/>
 
-	<menuitem
-		id="p2p_inventory_schedular_menu"
-		name="Run Scheduler"
-		parent="procure2pay_inventory_operations_menu"
-		action="stock.action_procurement_compute"
-		sequence="5"/>
+		<menuitem id="p_barcodes_menu" parent="inventory_product_cat_menu"
+			action="barcodes.action_barcode_nomenclature_form"/>
 
-	<menuitem
-		id="p2p_inventory_warehouse"
-		parent="inventory_config_menu" action="stock.action_warehouse_form"
-		sequence="1"/>
+		<menuitem id="uom_categories_menu" name="UoM Categories" parent="inventory_uom_menu"
+			action="uom.product_uom_categ_form_action"
+			sequence="1"/>
 
-	<menuitem
-		id="p_stock_location_menu"
-		parent="inventory_config_menu" action="stock.action_location_form"
-		sequence="2"/>
-
-	<menuitem
-		id="p2p_inventory_operations_menu"
-		parent="inventory_config_menu" action="stock.action_picking_type_list"
-		sequence="3"/>
-
-	<menuitem id="p2p_products_category_menu"
-		parent="inventory_product_cat_menu" action="product.product_category_action_form"
-		sequence="1"/>
-
-	<menuitem id="p_products_attribute_menu"
-		parent="inventory_product_cat_menu" action="product.attribute_action"
-		sequence="2"/>
-
-	<menuitem id="p_products_attribute_value_menu"
-		parent="inventory_product_cat_menu" action="product.variants_action"
-		sequence="3"/>
-
-	<menuitem id="p_barcodes_menu" parent="inventory_product_cat_menu"
-		action="barcodes.action_barcode_nomenclature_form"/>
-
-	<menuitem id="uom_categories_menu" name="UoM Categories" parent="inventory_uom_menu"
-		action="uom.product_uom_categ_form_action"
-		sequence="1"/>
-
-	<menuitem id="uom_menu" name="UoM" parent="inventory_uom_menu"
-		action="uom.product_uom_form_action"
-		sequence="2"/>
+		<menuitem id="uom_menu" name="UoM" parent="inventory_uom_menu"
+			action="uom.product_uom_form_action"
+			sequence="2"/>
 
 	</data>
 </odoo>
