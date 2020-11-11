@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="budget_consolidate_wizard_form" model="ir.ui.view">
+		<field name="name">Consolidate Budget</field>
+		<field name="model">budget.history</field>
+		<field name="arch" type="xml">
+			<form string="Consolidated Budget">
+				<p>
+					You will be able to generate consolidated Budget for the organization<br/>
+				</p>
+				<group>
+					<field name="date"/>
+				</group>
+				<footer>
+					<button name="open_table" string="Consolidate Budget"
+						type="object" class="btn-primary"/>
+					<button string="Cancel" class="btn-secondary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_budget_history" model="ir.actions.act_window">
+		<field name="name">Consolidated Budget</field>
+		<field name="res_model">budget.history</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="view_budget_line_tree"/>
+		<field name="target">new</field>
+		<field name="context">{}</field>
+	</record>
+
+	<menuitem
+		id="menu_consolidate_budget"
+		name="Consolidated Budget"
+		parent="menu_root_budget"
+		sequence="2"
+		action="action_budget_history"/>
+</odoo>
