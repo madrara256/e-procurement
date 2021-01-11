@@ -11,19 +11,24 @@ from werkzeug import url_encode
 class KolaEvaluate(models.Model):
 	_name = 'kolacontract.evaluate'
 	_inherit = ['mail.thread']
-	_rec_name = 'supplier_id'
+	_rec_name = 'contract_id'
 	_description = 'Contract Evaluation'
 
-	#contract_id = fields.Many2one('kola.contract', string='Contract', track_visibility='onchange')
+	contract_id = fields.Many2one('kola.contract', string='Contractor', track_visibility='onchange')
+	contract_name = fields.Char(related='contract_id.name', string='Contract')
+	date_from = fields.Datetime(related='contract_id.date_from', string='Start Date')
+	date_to = fields.Datetime(related='contract_id.date_to', string='End Date')
 	supplier_id = fields.Many2one('res.partner',string='Vendor', domain=[('is_company', '=', True),('supplier', '=', True)])
 	address = fields.Char(string='Address')
 	evaluation_date = fields.Datetime(string='Date', default=datetime.today().now(), track_visibility='onchange')
 	user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
-	def default_employee(self):
-		employee_id = self.env['hr.employee'].search([('active','=',True), ('user_id', '=', self.env.uid)])
-		if employee_id:
-			return employee_id.department_id
-	employee_id = fields.Many2one('hr.employee', string='Employee', track_visibility='onchange', default=default_employee)
+	evaluation_docs = fields.Many2many('ir.attachment', string='Attachments')
+	count_eval_files = fields.Integer(compute='compute_count_files', string='Document(s)')
+	# def default_employee(self):
+	# 	employee_id = self.env['hr.employee'].search([('active','=',True), ('user_id', '=', self.env.uid)])
+	# 	if employee_id:
+	# 		return employee_id.department_id
+	# employee_id = fields.Many2one('hr.employee', string='Employee', track_visibility='onchange', default=default_employee)
 	def default_department(self):
 		employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
 		return employee_id.department_id.id
@@ -60,6 +65,12 @@ class KolaEvaluate(models.Model):
 		('service', 'Provision Of Service')], 
 	string='Evaluation for?', default='supply')
 	active = fields.Boolean(string='Active', default=True)
+
+
+	@api.multi
+	def compute_count_files(self):
+		for record in self:
+			record.count_eval_files = len(record.evaluation_docs)
 
 	#goods
 	@api.depends('goods_line_ratings_id.score')
@@ -203,15 +214,21 @@ class KolaEvaluate(models.Model):
 
 	@api.multi
 	def confirm_evaluation(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state':'confirm'})
+		return reload
 
 	@api.multi
 	def validate_evaluation(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state': 'validate'})
+		return reload
 
 	@api.multi
 	def reset_to_draft(self):
+		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({'state': 'draft'})
+		return reload
 
 
 class VendorScore(models.Model):

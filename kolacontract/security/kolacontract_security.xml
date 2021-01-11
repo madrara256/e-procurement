@@ -42,145 +42,26 @@
 		<field name="comment">These will be system Administrator</field>
 	</record>
 
-	<!-- <record id="draft_contracts_rule_id" model="ir.rule">
-		<field name="name">Draft Contracts</field>
+	<!-- <record id="user_access_rule_id" model="ir.rule">
+		<field name="name">User access rules</field>
 		<field name="model_id" ref="model_kola_contract"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_department_head')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('department_id.manager_id.user_id', '=',user.id),
-				('state', 'in', ['draft', 'validate2', 'validate', 'renew', 'reject', 'terminate'])
-
-			]</field>
-	</record>
-
-	<record id="contract_eval_rule_id" model="ir.rule">
-		<field name="name">Contract Evaluation</field>
-		<field name="model_id" ref="model_kola_contract"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_administration')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="0"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('state', 'in', ['draft', 'validate1', 'validate2', 'validate', 'renew', 'reject', 'terminate'])
-			]</field>
-	</record>
-
-	<record id="department_user_initiation" model="ir.rule">
-		<field name="name">Administration Evaluation</field>
-		<field name="model_id" ref="model_kola_contract"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_procurement')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('state', 'in', ['validate1', 'validate', 'reject', 'terminate'])
-			]
-		</field>
-	</record>
-
-	<record id="department_user_initiation" model="ir.rule">
-		<field name="name">System Administrative Role(ICT)</field>
-		<field name="model_id" ref="model_kola_contract"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_ict_admin')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('state', 'in', ['draft', 'validate1', 'validate2', 'validate3', 'reject', 'terminate', 'validate', 'renew'])
-			]</field>
-	</record>
-
-	<record id="contract_terminate_department_rule" model="ir.rule">
-		<field name="name">Department: Contract Termination</field>
-		<field name="model_id" ref="model_kolacontract_terminate"/>
-		<field name="groups" eval="[4,ref('kolacontract.kola_contract_department_head')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('department_id.manager_id.user_id', '=',user.id),
-				('state', 'in', ['draft', 'validate1', 'validate2', 'validate', 'reject'])
-			]
-		</field>
-	</record>
-
-	<record id="contract_terminate_admin_rule" model="ir.rule">
-		<field name="name">Admin: Contract Termination</field>
-		<field name="model_id" ref="model_kolacontract_terminate"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_administration')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="0"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[('state', 'in', ['confirm','validate1', 'validate2', 'validate', 'reject'])]</field>
-	</record>
-
-	<record id="contract_terminate_proc_rule" model="ir.rule">
-		<field name="model_id" ref="model_kolacontract_terminate"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_procurement')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="0"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[('state', 'in' ['validate1'])]</field>
-	</record>
-
-	<record id="contract_terminate_legal_rule" model="ir.rule">
-		<field name="model_id" ref="model_kolacontract_terminate"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_legal')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="0"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[('state', 'in' ['validate2', 'validate3', 'validate', 'reject'])]</field>
-	</record>
-
-	<record id="contract_dasboard_dept_rule" model="ir.rule">
-		<field name="model_id" ref="model_kolacontract_dashboard"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_department_head')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="0"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-				('department_id.manager_id.user_id', '=', user.id)
-			]
-		</field>
-	</record>
-
-	<record id="contract_evaluate_dept" model="ir.rule">
-		<field name="model_id" ref="model_kolacontract_evaluate"/>
-		<field name="groups" eval="[4, ref('kolacontract.kola_contract_department_head')]"/>
-		<field name="perm_read" eval="1"/>
-		<field name="perm_write" eval="1"/>
-		<field name="perm_create" eval="1"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">
-			[
-			('department_id.manager_id.user_id', '=', user.id)
-			]
-		</field>
-	</record>
-
-	<record id="contract_evaluate_user" model="ir.rule">
-		<field name="model_id" ref="model_kolacontract_evaluate"/>
 		<field name="groups" eval="[4, ref('kolacontract.kola_contract_user')]"/>
-		<field name="perm_unlink" eval="0"/>
-		<field name="domain_force">[(1, '=', 1)]</field>
-	</record>
- -->
+		<field name="perm_read" eval="1"/>
+		<field name="domain_force">
+			[('department_id.user_id', '=', user.id)]
+		</field>
+	</record> -->
+
+	<!-- <record id="dept_head_access_rule_id" model="ir.rule">
+		<field name="name">HOD Access rule</field>
+		<field name="model_id" ref="model_kola_contract"/>
+		<field name="groups" eval="[4, ref('kolacontract.kola_contract_department_head')]"/>
+		<field name="perm_read" eval="1"/>
+		<field name="perm_write" eval="1"/>
+		<field name="perm_create" eval="1"/>
+		<field name="domain_force">
+			[('department.manager_id.user_id', '=', user.id)]
+		</field>
+	</record> -->
+	
 </odoo>

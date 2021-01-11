@@ -12,10 +12,12 @@ class KolaevaluateOverall(models.Model):
 	_name = 'kola.evaluate.overall'
 	_description = 'Kola Evaluate Overall Score'
 	_auto = False
-	_rec_name = 'supplier_id'
+	_rec_name = 'contract_id'
 
 
-	supplier_id = fields.Many2one('res.partner',string='Supplier', readonly=True)
+	contract_id = fields.Many2one('kola.contract',string='Contract', readonly=True)
+	#contract_name = fields.Char(related='contract_id.name',string='Contract', readonly=True)
+	evaluation_count = fields.Integer(string='Evaluations', readonly=True)
 	department_id = fields.Many2one('hr.department', readonly=True)
 	color = fields.Integer(string='Index', readonly=True)
 	surveys_submitted = fields.Integer(string='Surveys', readonly=True)
@@ -27,15 +29,16 @@ class KolaevaluateOverall(models.Model):
 		return """ 
 			SELECT 
 				min(ke.id) as id,
-				ke.supplier_id,
+				ke.contract_id,
 				ke.department_id,
 				ke.evaluation,
-				count(supplier_id) as surveys_submitted,
+				count(ke.id) as evaluation_count,
+				count(contract_id) as surveys_submitted,
 				(sum(service_provider_score)/
-				count(supplier_id)
+				count(ke.id)
 				) AS service_provider_average_score,
 				(sum(supplier_score)/
-					count(supplier_id)
+					count(ke.id)
 				) AS supplier_average_score
 				
 		"""
@@ -49,7 +52,7 @@ class KolaevaluateOverall(models.Model):
 	def _groupby(self):
 		return """
 			GROUP BY
-				ke.supplier_id,
+				ke.contract_id,
 				ke.department_id,
 				ke.evaluation
 		"""

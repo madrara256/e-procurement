@@ -7,7 +7,7 @@
 			<field name="model">kola.evaluate.overall</field>
 			<field name="arch" type="xml">
 				<tree>
-					<field name="supplier_id"/>
+					<field name="contract_id"/>
 					<field name="department_id"/>
 					<field name="surveys_submitted" invisible="1"/>
 					<field name="evaluation"/>
@@ -23,7 +23,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="supplier_id"/>
+								<field name="contract_id"/>
 								<field name="surveys_submitted"/>
 								<field name="evaluation"/>
 								<field name="department_id"/>
@@ -44,7 +44,11 @@
 			<field name="model">kola.evaluate.overall</field>
 			<field name="arch" type="xml">
 				<kanban class="o_kanban_medium_column" import="false" disable_drag_drop_record="true">
-					<field name="supplier_id"/>
+					<field name="contract_id"/>
+					<field name="evaluation_count"/>
+					<!-- <field name="name"/> -->
+					<field name="department_id"/>
+					<!-- <field name="contract_name"/> -->
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
@@ -54,30 +58,48 @@
 											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="supplier_id"/></strong></div>
+														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
 													</a>
 												</span>
 											</div>
 											<div class="o_kanban_record_body">
 												<div class="row">
 													<div class="col-xl-6 o_kanban_primary_left">
-														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Evaluation for: 
+														<span class="o_kolacontract_kanban_view" style="font-size:12px;font-weight:normal; font-family:Arial;">Evaluation for: 
 															<field name="evaluation"/>
 														</span><br/>
-														<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">Department:  
+														<span class="o_kolacontract_kanban_view" style="font-size:12px;font-weight:normal; font-family:Arial;">Department:  
 															<field name="department_id"/>
 														</span><br/>
+														<!-- <span style="font-size:12px;font-weight:normal; font-family:Arial;">Contract:  
+															<field name="contract_name"/>
+														</span><br/> -->
 													</div>
 
 													<div class="col-xl-6 o_kanban_primary_right">
 														<t t-if="record.evaluation.raw_value == 'supply'">
+															<span>Average Score</span><br/>
 															<field name="supplier_average_score" widget="progressbar"/>
 														</t>
 
 														<t t-if="record.evaluation.raw_value == 'service'">
+															<span>Average Score</span><br/>
 															<field name="service_provider_average_score" widget="progressbar"/>
 														</t>
 													</div>
+												</div>
+											</div>
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+													<img t-att-src="kanban_image('kola.evaluate.overall.', 'image_small', record.contract_id.raw_value)" t-att-title="record.contract_id.value" t-att-alt="record.contract_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
+												</div>
+
+												<div class="oe_kanban_bottom_right">
+													<a name="" type="object">
+														<span title='Evaluations'><i class='fa fa-book' role="img" aria-label="Evaluations"/>
+															<t t-esc="record.evaluation_count.raw_value"/>
+														</span>
+													</a>
 												</div>
 											</div>
 										</div>

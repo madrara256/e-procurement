@@ -24,10 +24,10 @@
 			<field name="description">Contract has been approved and running</field>
 	</record>
 
-	<record id="mt_request_reject" model="mail.message.subtype">
-			<field name="name">Rejected contract</field>
+	<record id="mt_request_evaluate" model="mail.message.subtype">
+			<field name="name">Evaluate contract</field>
 			<field name="res_model">kola.contract</field>
-			<field name="description">Contract has been rejected</field>
+			<field name="description">Contract has been evaluated</field>
 	</record>
 
 	<record id="mt_request_renew" model="mail.message.subtype">

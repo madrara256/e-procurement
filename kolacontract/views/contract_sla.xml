@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="contract_sla_tree" model="ir.ui.view">
+			<field name="name">Contract SLA</field>
+			<field name="model">contract.sla</field>
+			<field name="arch" type="xml">
+				<tree string="Contract SLA" import="false">
+					<field name="name"/>
+					<field name="maximum_time_for_action"/>
+					<field name="active"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="contract_sla_form" model="ir.ui.view">
+			<field name="name">Contract SLA</field>
+			<field name="model">contract.sla</field>
+			<field name="arch" type="xml">
+				<form string="Contract SLAs" import="false">
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<field name="maximum_time_for_action"/>
+							</group>
+							<group>
+								<field name="active"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" help="Follow this 		project to automatically track the events associated to tasks and issues of 	this project." groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread" options="							{'post_refresh':'reciepients'}"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="contract_sla_action" model="ir.actions.act_window">
+			<field name="name">Contract SLAs</field>
+			<field name="res_model">contract.sla</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+			<field name="context">{}</field>
+			<field name="domain">[]</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Create SLA(Service Level Agreements) for Contracts
+				</p>
+				<p>
+					Configure Purchase Request SLA's with a click of a button
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			name="Contracts SLAs"
+			id="contracts_sla_menu"
+			parent="configs_menu"
+			action="contract_sla_action"
+			sequence="11"/>
+	</data>
+</odoo>

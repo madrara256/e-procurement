@@ -9,7 +9,7 @@
 		<menuitem
 			name="Vendor Management" id="kolacontract_configs_menu"
 			parent="kolacontract_root_menu"
-			groups="kolacontract.kola_contract_ict_admin"
+			groups="kolacontract.kola_contract_ict_admin,kolacontract.kola_contract_administration"
 			sequence="9"/>
 
 		<menuitem
@@ -37,6 +37,52 @@
 					('id', '=', active_id),
 				]
 			</field>
+		</record>
+
+
+		<record id="ir_attachment_view_search_inherit_kola_contract" model="ir.ui.view">
+			<field name="name">ir.attachment.search.inherit.kolacontract</field>
+			<field name="model">ir.attachment</field>
+			<field name="mode">primary</field>
+			<field name="inherit_id" ref="base.view_attachment_search"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='create_date']" position="after">
+					<field name="index_content" string="Content"/>
+				</xpath>
+				<xpath expr="//filter[@name='my_documents_filter']" position="attributes">
+					<attribute name='invisible'>1</attribute>
+				</xpath>
+				<xpath expr="//filter[@name='url_filter']" position="attributes">
+					<attribute name='invisible'>1</attribute>
+				</xpath>
+				<xpath expr="//filter[@name='binary_filter']" position="attributes">
+					<attribute name='invisible'>1</attribute>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="contract_evaluation_line" model="ir.actions.act_window">
+			<field name="name">Evaluation form</field>
+			<field name="res_model">kolacontract.evaluate</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="domain">[('evaluation', '=', 'service')]</field>
+			<field name="view_id" ref="contract_evaluate_services_form"/>
+			<field name="context">{
+				'search_default_contract_id': [active_id],
+				'default_contract_id': active_id,
+				'default_evaluation': 'service'
+				}
+			</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Evaluate Contract
+				</p>
+				<p>
+					Use this window to manage contract evaluation process
+				</p>
+			</field>
+
 		</record>
 
 		<record model="ir.ui.view" id="kolacontract_form">
@@ -74,26 +120,28 @@
 						<button name="send_contract_back_astep" string="Send Back" type="object" class="oe_highlight"
 							attrs="{'invisible': [('state', '=', 'draft')]}"/>
 
-						<button string="Reject Contract" name="contract_rejection" type="object"
+						<button string="Evaluate Contract" name="contract_evaluate" type="object"
 							attrs="{'invisible': [('state', 'not in', ('draft', 'validate1'))]}"
 							class="oe_highlight btn-danger"/>
 
 						<button name="reset_to_draft" states="state" string="Reset to Draft" type="object"
-							attrs="{'invisible': [('state', 'not in', ('reject', 'terminate'))]}"
+							attrs="{'invisible': [('state', 'not in', ('evaluate', 'terminate'))]}"
 							class="oe_highlight btn-warning"/>
 
 
-						<button string="Terminate Contract" name="contract_termination" type="object"
-							attrs="{'invisible': [('state', 'not in', ['validate', 'renew'])]}"
+						<button string="Initiate Termination" name="terminate_reason_wizard" type="object"
+							attrs="{'invisible': [('state', 'not in', ['evaluate'])]}"
 							class="oe_highlight btn-danger"/>
 
-						<field name="state" widget="statusbar" statusbar_visible="draft,validate1,validate2,validate3,validate,renew,reject,terminate"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,validate1,validate2,validate3,validate,renew,evaluate,terminate"/>
 					</header>
 					<sheet>
 						<div class="oe_button_box" name="button_box">
-							<button type="action" name="%(kolacontract.action_kolacontract_files_all_contract)d" class="statinfo"
-								icon="fa-file-text-o">
-								<field name="count_files" widget="statinfo"/>
+							<button name="action_get_attachment_tree_view"
+								class="oe_stat_button"
+								icon="fa-book"
+								type="object">
+								<field name="count_files" widget="statinfo" string="Documents"/>
 							</button>
 
 							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
@@ -150,6 +198,7 @@
 										</group>
 									</form>
 								</field>
+								<field name="reason_for_termination" attrs="{'invisible':[('state', 'not in', ['terminate', 'evaluate'])]}"/>
 								<group class="oe_subtotal_footer oe_right">
 									<div class="oe_subtotal_footer_separator oe_inline">
 										<label for="amount"/>
@@ -226,8 +275,10 @@
 					<field name="color"/>
 					<field name="active"/>
 					<field name="alias_id"/>
+					<field name="count_files"/>
+					<field name="attachment_number"/>
 					<field name="state"/>
-					<progressbar field="state" colors='{"reject": "danger"}'/>
+					<progressbar field="state" colors='{"evaluate": "danger"}'/>
 					<templates>
 						<t t-name="kanban-box">
 							<div class="#{kanban_color(record.color.raw_value)}">
@@ -248,7 +299,7 @@
 											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="contractor_id"/></strong></div>
+														<div class="o_primary"><strong><field name="name"/></strong></div>
 													</a>
 												</span>
 											</div>
@@ -282,7 +333,7 @@
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/><br/></span>
 														</t>
 
-														<t t-if="record.state.raw_value == 'reject'">
+														<t t-if="record.state.raw_value == 'evaluate'">
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">From: <field name="date_from" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">To: <field name="date_to" widget="date"/></span><br/>
 															<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;">USh: <field name="amount"/></span>
@@ -299,13 +350,13 @@
 
 														<t t-if="record.state.raw_value == 'draft'">
 															<button class="btn btn-sm btn-block btn-primary" name="contract_review_by_procurement" type="object">Submit to Procurement</button>
-															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_evaluation" type="object">Reject Contract</button>
 														</t>
 
-														<t t-if="record.state.raw_value == 'reject'">
+														<!-- <t t-if="record.state.raw_value == 'evaluate'">
 															<button class="btn btn-sm btn-block btn-primary" name="reset_to_draft" type="object">Reset to Draft</button>
 															<button class="btn btn-sm btn-block btn-warning" name="toggle_active" type="object">Archive</button>
-														</t>
+														</t> -->
 
 														<t t-if="record.state.raw_value == 'terminate'">
 															<button class="btn btn-sm btn-block btn-primary" name="reset_to_draft" type="object">Reset to Draft</button>
@@ -314,38 +365,54 @@
 
 														<t t-if="record.state.raw_value == 'validate1'">
 															<button class="btn btn-sm btn-block btn-primary" name="contract_review_by_legal" type="object">Submit to Legal</button>
-															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_evaluation" type="object">Evaluate Contract</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'validate2'">
 															<button class="btn btn-sm btn-block btn-primary" name="contract_signoff" type="object">Submit for Sign Off</button>
-															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_evaluation" type="object">Evaluate Contract</button>
+														</t>
+
+														<t t-if="record.state.raw_value == 'validate'">
+															<button class="btn btn-sm btn-block btn-primary" type="open">Contract Details
+															</button>
+															<button class="btn btn-sm btn-block btn-danger" name="terminate_reason_wizard" type="object">Initiate Termination</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'validate3'">
 															<button class="btn btn-sm btn-block btn-primary" name="contract_validattion" type="object">Approve Contract</button>
-															<button class="btn btn-sm btn-block btn-warning" name="contract_rejection" type="object">Reject Contract</button>
-														</t>
-
-														<t t-if="record.state.raw_value == 'validate'">
-															<button class="btn btn-sm btn-block btn-primary" name="contract_renewal" type="object">Renew Contract</button>
-															<button class="btn btn-sm btn-block btn-danger" name="contract_termination" type="object">Terminate Contract</button>
+															<button class="btn btn-sm btn-block btn-warning" name="contract_evaluate" type="object">Move to Evaluation</button>
 														</t>
 
 														<t t-if="record.state.raw_value == 'renew'">
-															<button class="btn btn-sm btn-block btn-primary" name="contract_renewal" type="object">Renew Contract</button>
-															<button class="btn btn-sm btn-block btn-danger" name="contract_termination" type="object">Terminate Contract</button>
+															<button class="btn btn-sm btn-block btn-primary" type="open">
+																Contract Details
+															</button>
+															<button class="btn btn-sm btn-block btn-primary" name="contract_evaluate" type="object">Move To Evaluation</button>
+														</t>
+
+ 														<t t-if="record.state.raw_value == 'evaluate'">
+															<!-- <button class="btn btn-sm btn-block btn-primary" name="contract_renewal" type="object">Renew Contract</button> -->
+															<button class="btn btn-sm btn-block btn-primary" type="action"
+																name="%(contract_evaluation_line)d" string="Star Evaluation">Open Evaluation form</button>
+															<button class="btn btn-sm btn-block btn-danger" name="terminate_reason_wizard" type="object">Initiate Termination</button>
 														</t>
 													</div>
 												</div>
 											</div>
 											<div class="o_kanban_record_bottom">
 												<div class="oe_kanban_bottom_left">
-												<!-- 	<span class="pull-left text-left" style="font-size:12px;font-weight:normal; font-family:Arial;"><field name="ratings" widget="priority"/></span> -->
-												</div>
-												<div class="oe_kanban_bottom_right">
 													<img t-att-src="kanban_image('kola.contract.', 'image_small', record.contractor_id.raw_value)" t-att-title="record.contractor_id.value" t-att-alt="record.contractor_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
 												</div>
+												<div class="oe_kanban_bottom_right">
+													<a name="action_get_attachment_tree_view" type="object">
+														<span title='Documents'><i class='fa fa-book' role="img" aria-label="Documents"/>
+															<t t-esc="record.count_files.raw_value"/>
+														</span>
+													</a>
+													
+												</div>
+												
 											</div>
 										</div>
 									</div>
@@ -362,6 +429,8 @@
 			</field>
 		</record>
 
+
+
 		<record model="ir.ui.view" id="kolacontract_review_filter">
 			<field name="name">Contracts for Renewal</field>
 			<field name="model">kola.contract</field>
@@ -373,6 +442,7 @@
 					<field name="active"/>
 					<filter name="product_id" string="Services"/>
 					<field name="ratings"/>
+					<field name="contract_doc" filter_domain="[('contract_doc.index_content', 'ilike', self)]" string="Attachments"/>
 					<filter name="contractor_id" string="Suppliers"/>
 					<filter name="active" string="Active Contracts"/>
 					<filter name="state" string="Status"/>

@@ -51,7 +51,7 @@ class kolacontract(models.Model):
 		('validate3', 'To Sign Off'),
 		('validate', 'Running Contracts'),
 		('renew', 'Contract Due To Expire'),
-		('reject', 'Rejected Contracts'),
+		('evaluate', 'Evaluate Contracts'),
 		('terminate', 'Terminated Contracts')]
 		, string='Status', group_expand='_expand_states',
 		track_visibility='onchange', help='Status of the contract',
@@ -65,6 +65,7 @@ class kolacontract(models.Model):
 	date_from = fields.Datetime(string='Period', track_visibility='onchange')
 	date_to = fields.Datetime(string='End Date', track_visibility='onchange')
 	duration = fields.Float(string='Duration of Contract', compute='_compute_duration', track_visibility='onchange',store=True)
+	attachment_number = fields.Integer(compute='_get_attachment_number', string='Number Of Attachments')
 
 	user_id = fields.Many2one('res.users','Current User', default=lambda self: self.env.user)
 
@@ -87,9 +88,11 @@ class kolacontract(models.Model):
 	employee_id = fields.Many2one('hr.employee', string='Employee', default=default_employee)
 
 	amount = fields.Float(string='Amount', compute='_compute_contract_total', store=True,)
-	number_of_days_due = fields.Float(string='Number of Days Left', track_visibility='onchange', compute='_compute_days_left_to_expire', store=True,)
+	number_of_days_due = fields.Float(string='Number of Days Left', track_visibility='onchange')
 
-	contract_doc = fields.Many2many('ir.attachment',string='Attach a file(s)')
+
+	#attachment_ids = fields.One2many('ir.attachment', 'res_id', domain=[('res_model', '=', 'kola.contract')], string='Attachments')
+	contract_doc = fields.Many2many('ir.attachment', 'res_id', domain=[('res_model', '=', 'kola.contract')], string='Attachments')
 	contract_file_name = fields.Char(string='Contract file')
 	company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.user.company_id.id)
 	currency_id = fields.Many2one('res.currency', 'Currency', required=True,
@@ -108,6 +111,7 @@ class kolacontract(models.Model):
 
 	past_deadline = fields.Boolean(string='Past Deadline', default=False, track_visibility='onchange', compute='_check_past_deadline', store=True)
 	kolacontract_line_id = fields.One2many('kola.contract.line', 'kolacontract_id', string='Contract line')
+	contract_evaluate_id = fields.One2many('kolacontract.evaluate', 'contract_id', string='Contract Evaluation')
 
 	def department_of_loggedin(self):
 		employee_id = self.env['hr.employee'].search([('active', '=', True), ('user_id', '=', self.env.uid)])
@@ -137,6 +141,21 @@ class kolacontract(models.Model):
 	comments_admin = fields.Html(string='Comments')
 	comments_user_department = fields.Html(string='Comments')
 	procurement_minute_extracts = fields.Binary(string='Minute Extracts', attachment=True)
+	reason_for_termination = fields.Html(string='Submit Reasons')
+
+
+
+	@api.multi
+	def terminate_reason_wizard(self, context=None):
+		return {
+			'name': ('Termination Initiation Reason'),
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': 'kolacontract.terminate.reason',
+			'view_id': False,
+			'type': 'ir.actions.act_window',
+			'target': 'new'
+		}
 
 	def _compute_access_url(self):
 		action = self.env.ref('kolacontract.kolacontract_action').id
@@ -184,7 +203,6 @@ class kolacontract(models.Model):
 				timedelta = float(math.ceil(timedelta.days))
 				record.duration = timedelta
 
-	@api.depends('duration','date_to')
 	@api.onchange('duration','date_to')
 	def _compute_days_left_to_expire(self):
 		for record in self:
@@ -216,32 +234,47 @@ class kolacontract(models.Model):
 	#Override ORM methods
 	#---------------------------------------------------------------
 
-	def compute_the_legal_team(self):
-		legal_team = self.env['hr.employee'].search([('active', '=', True), ('department_id.name', 'like', 'Legal')])
-		for record in legal_team:
-			receipients.append(record.work_email)
+	# def compute_the_legal_team(self):
+	# 	legal_team = self.env['hr.employee'].search([('active', '=', True), ('department_id.name', 'like', 'Legal')])
+	# 	for record in legal_team:
+	# 		receipients.append(record.work_email)
 
-	#check notification receipients
-	def compute_notification_receipients(self):
+	@api.model
+	def get_email_to(self):
 		for record in self:
 			if record.state == 'draft':
-				administration = self.env['hr.department'].search([('name', 'like', 'Administration')])
-				user_department = self.env['hr.department'].browse(record.department_id)
-				for record in administration:
-					receipients.append(record.manager_id.work_email)
-				for record in user_department:
-					receipients.append(record.manager_id.work_email)
-
+				user_group = self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email 
+				]
+				return ",".join(email_list)
+			#procurement
 			elif record.state == 'validate1':
-				pass
-			elif record.state == 'validate':
-				pass
-			elif record.state == 'renew':
-				pass
-			elif record.state == 'reject':
-				pass
-			elif record.state == 'terminate':
-				pass
+				user_group = self.env.ref('kolacontract.kola_contract_procurement')
+				email_list = [
+					user.partner_id.email for user in user_group if user.partner_id.email
+				]
+				return ",".join(email_list)
+			#legal
+			elif record.state == 'validate2' or record.state == 'validate':
+				user_group = self.env.ref('kolacontract.kola_contract_legal') and self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group if user.partner_id.email
+				]
+				return ",".join(email_list)
+
+			elif record.state == 'validate' or record.state == 'renew' or record.state == 'terminate':
+				user_group = self.env.ref('kolacontract.kola_contract_administration') and self.env.ref('kolacontract.kola_contract_legal') and self.env.ref('kolacontract.kola_contract_user')
+				email_list = [
+					user.partner_id.email for user in user_group if user.partner_id.email
+				]
+				return ",".join(email_list)
+			elif record.state == 'evaluate':
+				user_group = self.env.ref('kolacontract.')
+				email_list = [
+
+				]
+				return ",".join(email_list)
 
 	def send_email_notification(self, obj):
 		for record in self:
@@ -275,8 +308,8 @@ class kolacontract(models.Model):
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
-			elif record.state == 'reject':
-				template_id = self.env.ref('kolacontract.contract_reject_mail_template')
+			elif record.state == 'evaluate':
+				template_id = self.env.ref('kolacontract.contract_evaluate_mail_template')
 				if template_id:
 					self.env['mail.template'].browse(template_id.id).send_mail(obj.id, force_send=True)
 
@@ -356,8 +389,8 @@ class kolacontract(models.Model):
 			return 'kolacontract.mt_request_validate1'
 		if 'state' in init_values and self.state == 'validate':
 			return 'kolacontract.mt_request_validate'
-		if 'state' in init_values and self.state == 'reject':
-			return 'kolacontract.mt_request_reject'
+		if 'state' in init_values and self.state == 'evaluate':
+			return 'kolacontract.mt_request_evaluate'
 		if 'state' in init_values and self.state == 'renew':
 			return 'kolacontract.mt_request_renew'
 		if 'state' in init_values and self.state == 'terminate':
@@ -375,7 +408,7 @@ class kolacontract(models.Model):
 			app_action = self._notification_link_helper('controller', controller='/kolacontract/approve')
 			contract_actions +=[{'url': app_action, 'title':_('Approve')}]
 		if self.state in ['new','finished', 'cancelled']:
-			ref_action = self._notification_link_helper('controller', controller='/kolacontract/reject')
+			ref_action = self._notification_link_helper('controller', controller='/kolacontract/evaluate')
 			contract_actions += [{'url': ref_action, 'title': _('Reject')}]
 
 		if self.state == 'running':
@@ -401,6 +434,27 @@ class kolacontract(models.Model):
 	#---------------------------------------------------------------------
 	#Business methods
 	#---------------------------------------------------------------------
+
+
+	@api.multi
+	def _get_attachment_number(self):
+		read_group_res = self.env['ir.attachment'].read_group(
+			[('res_model', '=', 'kola.contract'), ('res_id', 'in', self.ids)],
+			['res_id'], ['res_id'])
+		attach_data = dict((res['res_id'], res['res_id_count']) for res in read_group_res)
+		for record in self:
+			record.attachment_number = attach_data.get(record.id, 0)
+
+
+	@api.multi
+	def action_get_attachment_tree_view(self):
+		attachment_action = self.env.ref('base.action_attachment')
+		action = attachment_action.read()[0]
+		action['context'] = {'default_res_model': self._name, 'default_res_id': self.ids[0]}
+		action['domain'] = str(['&', ('res_model', '=', self._name), ('res_id', 'in', self.ids)])
+		action['search_view_id'] = (self.env.ref('kolacontract.ir_attachment_view_search_inherit_kola_contract').id, )
+		return action
+
 
 	@api.multi
 	def contract_review_by_procurement(self):
@@ -479,11 +533,19 @@ class kolacontract(models.Model):
 
 
 	@api.multi
+	def contract_evaluate(self):
+		reload = {'type': 'ir.actions.client', 'tag': 'reload'}
+		if any(contract.state != 'renew' for contract in self):
+			raise ValidationError(_('Contract must be due to expire before it can be moved to evaluation'))
+		else:
+			self.write({'state': 'evaluate'})
+		return reload
+
+
+	@api.multi
 	def contract_termination(self):
-		print('Department ID' +str(self.department_id.id))
-		print('Department Manager '+str(self.department_manager.id))
 		reload = {'type':'ir.actions.client', 'tag': 'reload'}
-		if any(contract.state not in  ['validate', 'renew'] for contract in self):
+		if any(contract.state not in  ['renew'] for contract in self):
 			raise ValidationError(_('Contract must be running before it can be terminated'))
 		contract_lines = self.env['kola.contract.line'].search([('kolacontract_id.id', '=',self.id)])
 		for contract_line in contract_lines:
@@ -516,17 +578,6 @@ class kolacontract(models.Model):
 		return reload
 
 	@api.multi
-	def contract_rejection(self):
-		reload = {'type':'ir.actions.client', 'tag': 'reload'}
-		if any(contract.state not in ['draft', 'validate1', 'validate2', 'validate3'] for contract in self):
-			raise ValidationError(_('Contract must be either drafted, Reviewed or Negotiated before it can be rejected'))
-		self.write({
-				'state':'reject'
-				})
-		self.send_email_notification(self)
-		return reload
-
-	@api.multi
 	def reset_to_draft(self):
 		reload = {'type':'ir.actions.client', 'tag': 'reload'}
 		self.write({
@@ -544,7 +595,6 @@ class kolacontract(models.Model):
 				contract.sudo().write({'state':'renew'})
 		self.send_email_notification(self)
 		return reload
-
 
 	@api.multi
 	def send_contract_back_astep(self):

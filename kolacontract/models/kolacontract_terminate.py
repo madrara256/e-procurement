@@ -115,6 +115,48 @@ class KolaContractTerminate(models.Model):
 		#check the department raising the request,legal & administration head/supervisor
 		pass
 
+
+	@api.model
+	def get_email_to(self):
+		for record in self:
+			if record.state == 'draft':
+				user_group = self.env.ref('kolacontract.kola_contract_user') or self.env.ref('kolacontract.kola_contract_legal') or self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email
+				]
+				return ",".join(email_list)
+			if record.state == 'confirm':
+				user_group  = self.env.ref('kolacontract.kola_contract_legal') or self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email
+				]
+				return ",".join(email_list)
+			if record.state == 'validate1':
+				user_group = self.env.ref('kolacontract.kola_contract_legal') or self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email
+				]
+				return ",".join(email_list)
+			if record.state == 'validate2':
+				user_group = self.env.ref('kolacontract.kola_contract_legal') or self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email
+				]
+				return ",".join(email_list)
+			if record.state == 'validate':
+				user_group = self.env.ref('kolacontract.kola_contract_user') or self.env.ref('kolacontract.kola_contract_legal') or self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email
+				]
+				return ",".join(email_list)
+			if record.state == 'reject':
+				user_group = self.env.ref('kolacontract.kola_contract_user') or self.env.ref('kolacontract.kola_contract_legal') or self.env.ref('kolacontract.kola_contract_administration')
+				email_list = [
+					user.partner_id.email for user in user_group.users if user.partner_id.email
+				]
+				return ",".join(email_list)
+
+
 	def send_email_notification(self, obj):
 		for record in self:
 			if record.state == 'draft':

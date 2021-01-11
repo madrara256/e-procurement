@@ -4,4 +4,4 @@ from . import controllers
 from . import models
 from . import crons
 from . import report
-
+from . import wizard

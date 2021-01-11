@@ -55,6 +55,8 @@
 								<field name="supplier_score" invisible="1"/>
 								<field name="evaluation" readonly="1"/>
 								<field name="department_manager" invisible="1"/>
+								<field name="date_from" invisible="0"/>
+								<field name="date_to" invisible="0"/>
 							</group>
 						</group>
 						<notebook>
@@ -97,10 +99,13 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="supplier_id" options="{'no_create':True}" string="Supplier"/>
+								<field name="contract_id" options="{'no_create':True}" string="Contract" readonly="1"/>
+								<field name="contract_name"/>
+								<!-- <field name="supplier_id" options="{'no_create':True}" string="Supplier"/> -->
 								<field name="department_id"/>
 								<field name="param_count_service" invisible="1"/>
 								<field name="max_score_service" invisible="1"/>
+								<field name="evaluation_docs" widget="many2many_binary"/>
 							</group>
 							<group>
 								<field name="evaluation_date" widget="date" invisible="1"/>
@@ -108,6 +113,8 @@
 								<field name="service_provider_score" invisible="1"/>
 								<field name="evaluation" readonly="1"/>
 								<field name="department_manager" invisible="1"/>
+								<field name="date_from" invisible="0"/>
+								<field name="date_to" invisible="0"/>
 							</group>
 						</group>
 						<notebook>
@@ -177,7 +184,7 @@
 											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="supplier_id"/></strong></div>
+														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
 													</a>
 												</span>
 											</div>
@@ -187,8 +194,14 @@
 														<span style="font-size:12px;font-family:Arial;">
 															<field name="department_id" style="text-transform: lowercase;"/>
 														</span><br/>
-														<span style="font-size:12px;font-family:Arial;">Date:
+														<span class="o_kolacontract_kanban_view" style="font-size:12px;font-family:Arial;">Date:
 															<field name="evaluation_date" style="text-transform: lowercase;" widget="date"/>
+														</span><br/>
+														<span class="o_kolacontract_kanban_view" style="font-size:12px;font-family:Arial;">Starts:
+															<field name="date_from" style="text-transform: lowercase;" widget="date"/>
+														</span><br/>
+														<span class="o_kolacontract_kanban_view" style="font-size:12px;font-family:Arial;">Ends:
+															<field name="date_to" style="text-transform: lowercase;" widget="date"/>
 														</span><br/>
 													</div>
 													<div class="col-xl-6 o_kanban_primary_right">
@@ -208,6 +221,12 @@
 													<div class="col-xl-12 o_kanban_primary_right">
 														<field name="supplier_score" widget="progressbar"/>
 													</div>
+												</div>
+											</div>
+
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+													<img t-att-src="kanban_image('kola.evaluate.', 'image_small', record.contract_id.raw_value)" t-att-title="record.contract_id.value" t-att-alt="record.contract_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
 												</div>
 											</div>
 
@@ -243,9 +262,11 @@
 					<field name="actual_supplier_score"/>
 					<field name="supplier_score"/>
 					<field name="param_count_service"/>
+					<field name="evaluation_docs"/>
 					<field name="max_score_service"/>
 					<field name="actual_provider_score"/>
 					<field name="service_provider_score"/>
+					<field name="count_eval_files"/>
 					<progressbar field="state" colors='{"validate": "primary"}' />
 					<templates>
 						<t t-name="kanban-box">
@@ -271,7 +292,7 @@
 											<div class="o_kanban_record_title o_text_overflow">
 												<span class="pull-left text-left" style="font-size:14px;font-weight:normal; font-family:Arial;">
 													<a type="open">
-														<div class="o_primary"><strong><field name="supplier_id"/></strong></div>
+														<div class="o_primary"><strong><field name="contract_id"/></strong></div>
 													</a>
 												</span>
 											</div>
@@ -281,8 +302,14 @@
 														<span style="font-size:12px;font-family:Arial;">
 															<field name="department_id" style="text-transform: lowercase;"/>
 														</span><br/>
-														<span style="font-size:12px;font-family:Arial;">Date:
+														<span class="o_kolacontract_kanban_view" style="font-size:12px;font-family:Arial;">Date:
 															<field name="evaluation_date" style="text-transform: lowercase;" widget="date"/>
+														</span><br/>
+														<span style="font-size:12px;font-family:Arial;">Starts:
+															<field name="date_from" style="text-transform: lowercase;" widget="date"/>
+														</span><br/>
+														<span style="font-size:12px;font-family:Arial;">Ends:
+															<field name="date_to" style="text-transform: lowercase;" widget="date"/>
 														</span><br/>
 
 													</div>
@@ -299,10 +326,23 @@
 														</t>
 													</div>
 												</div>
+												
 												<div class="row">
 													<div class="col-xl-12 o_kanban_primary_right">
 														<field name="service_provider_score" widget="progressbar"/>
 													</div>
+												</div>
+											</div>
+											<div class="o_kanban_record_bottom">
+												<div class="oe_kanban_bottom_left">
+													<img t-att-src="kanban_image('kola.evaluate.', 'image_small', record.contract_id.raw_value)" t-att-title="record.contract_id.value" t-att-alt="record.contract_id.value" width="24" height="24" class="oe_kanban_avatar float-right"/>
+												</div>
+												<div class="oe_kanban_bottom_right">
+													<a name="" type="object">
+														<span title='Documents'><i class='fa fa-book' role="img" aria-label="Documents"/>
+															<t t-esc="record.count_eval_files.raw_value"/>
+														</span>
+													</a>
 												</div>
 											</div>
 										</div>

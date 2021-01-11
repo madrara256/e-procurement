@@ -5,7 +5,7 @@
 		<record id="contract_terminate_share_mail_template" model="mail.template">
 			<field name="name">Share Template</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Contract Termination Review</field>
@@ -94,7 +94,7 @@
 		<record id="con_terminate_draft" model="mail.template">
 			<field name="name">Contract Termination Draft</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Contract Termination</field>
@@ -180,7 +180,7 @@
 		<record id="con_terminate_confirm" model="mail.template">
 			<field name="name">Contract Termination Confirmation</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Termination Confirmation</field>
@@ -268,7 +268,7 @@
 		<record id="con_terminate_proc_review" model="mail.template">
 			<field name="name">Contract Termination Procurement Review</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Contract Termination Review</field>
@@ -355,7 +355,7 @@
 		<record id="con_terminate_legal_review" model="mail.template">
 			<field name="name">Contract Termination Legal Review</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Contract Termination</field>
@@ -442,7 +442,7 @@
 		<record id="con_terminate_signoff" model="mail.template">
 			<field name="name">Contract Termination for Sign Off</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Termination Sign Off</field>
@@ -530,7 +530,7 @@
 		<record id="con_terminate_signoff_confirm" model="mail.template">
 			<field name="name">Contract Termination Approved</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Termination Approval</field>
@@ -618,7 +618,7 @@
 		<record id="con_terminate_signoff_rejected" model="mail.template">
 			<field name="name">Contract Termination Rejected</field>
 			<field name="model_id" ref="kolacontract.model_kolacontract_terminate"/>
-			<field name="email_to">herbert.ichama@financetrust.co.ug</field>
+			<field name="email_to">${object.get_email_to()}</field>
 			<field name="auto_delete" eval="True"/>
 			<field name="lang">${object.lang}</field>
 			<field name="subject">Termination Rejection</field>

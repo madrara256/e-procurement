@@ -13,3 +13,4 @@ class kolacontractstage(models.Model):
 	fold = fields.Boolean(string='Folded in Kanban',
 		help='This stage is folded in the kanban view when there are no records in that stage to display.', default=False)
 	active = fields.Boolean(string='Active', default=True)
+	

@@ -23,13 +23,14 @@ class kolaratingService(models.Model):
 	def _compute_average_score(self):
 		for record in self:
 			if record.ratings == 4:
-				return record.update({'score':4.0})
+				#record.score = 4.0
+				record.update({'score':4.0})
 			elif record.ratings == 3:
-				return record.update({'score':3.0})
+				record.update({'score':3.0})
 			elif record.ratings == 2:
-				return record.update({'score':2.0})
+				record.update({'score':2.0})
 			elif record.ratings == 1:
-				return record.update({'score':1.0})
+				record.update({'score':1.0})
 
 class KolaratingGoods(models.Model):
 	_name = 'kola.rating.goods'

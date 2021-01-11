@@ -1,0 +1,10 @@
+.o_kolacontract_kanban_view {
+	border: solid 2px #ff6b6c;
+	border-radius: 5px;
+	font-weight: bold;
+	padding: 3px;
+	&:hover {
+		background: #ff6b6c;
+		color: #ffffff;
+	}
+}

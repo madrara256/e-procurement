@@ -9,7 +9,7 @@ from . import kolacontract_terminate
 from . import kolaevaluate
 from . import Rating_parameters
 from . import kolaevaluate_overall
-
+from . import kolacontract_sla
 
 
 

@@ -50,6 +50,7 @@
 		<menuitem id="contract_dashboard"
 			parent="kolacontract_root_menu"
 			action="action_kolacontract_dashboard_action"
-			sequence="10"/>
+			sequence="10"
+			groups="kolacontract.kola_contract_department_head,kolacontract.kola_contract_administration,kolacontract.kola_contract_procurement,kolacontract.kola_contract_legal,kolacontract.kola_contract_ict_admin"/>
 	</data>
 </odoo>

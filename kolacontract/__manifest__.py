@@ -25,6 +25,7 @@
 		'base',
 		'mail',
 		'portal',
+		'document',
 	],
 
 	# always loaded
@@ -40,11 +41,13 @@
 		'views/kolaevaluate_views.xml',
 		'views/rating_params_views.xml',
 		'views/kolaevaluate_overall_views.xml',
+		'views/contract_sla.xml',
 
 		'data/kolacontract_terminate_data.xml',
 		'data/kolacontract_data.xml',
 		'data/mail_template.xml',
 		'data/terminate_mail_template.xml',
+		'wizard/add_reason_views.xml',
 
 		'crons/cron_mail_template.xml',
 		'crons/expiry_reminders_views.xml',
